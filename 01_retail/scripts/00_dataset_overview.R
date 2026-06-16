@@ -17,3 +17,20 @@ str(retail_sales)
 
 cat("\nSAMPLE ROWS\n")
 head(retail_sales, 10)
+
+# 3. Data types
+cat("\nCOLUMN TYPES\n")
+glimpse(retail_sales)
+
+# 4. Missing values
+cat("\nMISSING VALUES BY COLUMN\n")
+retail_sales %>%
+  summarise(across(everything(), ~ sum(is.na(.))))
+
+# 5. Duplicate rows
+cat("\nDUPLICATE ROW COUNT\n")
+sum(duplicated(retail_sales))
+
+# 6. Summary statistics
+cat("\nSUMMARY STATISTICS\n")
+summary(retail_sales)
