@@ -34,3 +34,12 @@ sum(duplicated(retail_sales))
 # 6. Summary statistics
 cat("\nSUMMARY STATISTICS\n")
 summary(retail_sales)
+
+# 7. Unique values for key categorical columns
+cat("\nGENDER VALUES\n")
+retail_sales %>%
+  count(Gender)
+
+cat("\nPRODUCT CATEGORY VALUES\n")
+retail_sales %>%
+  count(`Product Category`)
