@@ -72,3 +72,27 @@ retail_sales %>%
   summarise(
     incorrect_total_amount_rows = sum(`Total Amount` != Quantity * `Price per Unit`)
   )
+
+# 10. Business understanding
+cat("\nRETAIL DATASET BUSINESS OVERVIEW\n")
+cat("
+This dataset represents retail sales transactions.
+Each row is one customer purchase, including the transaction date,
+customer details, product category, quantity purchased, unit price,
+and total transaction value.
+
+This dataset can help answer:
+- Which product categories generate the most revenue?
+- Which categories sell the most units?
+- How do sales vary over time?
+- Which customer groups contribute most to revenue?
+- What is the average transaction value?
+    
+Possible KPIs:
+- Total Revenue
+- Total Transactions
+- Units Sold
+- Average Order Value
+- Average Units per Transaction
+- Top Product Category by Revenue
+")
