@@ -43,3 +43,32 @@ retail_sales %>%
 cat("\nPRODUCT CATEGORY VALUES\n")
 retail_sales %>%
   count(`Product Category`)
+
+# 8. Date range
+cat("\nDATE RANGE\n")
+retail_sales %>%
+  summarise(
+    earliest_date = min(Date),
+    latest_date = max(Date)
+  )
+
+# 9. Basic business checks
+cat("\nTRANSACTION ID UNIQUENESS CHECK\n")
+retail_sales %>%
+  summarise(
+    total_rows = n(),
+    unique_transaction_ids = n_distinct(`Transaction ID`)
+  )
+
+cat("\nCUSTOMER ID UNIQUENESS CHECK\n")
+retail_sales %>%
+  summarise(
+    total_rows = n(),
+    unique_customer_ids = n_distinct(`Customer ID`)
+  )
+
+cat("\nTOTAL AMOUNT VALIDATION\n")
+retail_sales %>%
+  summarise(
+    incorrect_total_amount_rows = sum(`Total Amount` != Quantity * `Price per Unit`)
+  )
