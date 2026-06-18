@@ -72,7 +72,7 @@ category_palette <- c(
 )
 
 format_dollar <- function(x) {
-  paste0("$", format(round(x, 0), big.mark = ",", scientific = FALSE))
+  paste0("$", trimws(format(round(x, 0), big.mark = ",", scientific = FALSE)))
 }
 
 format_percent <- function(x) {
@@ -80,8 +80,11 @@ format_percent <- function(x) {
 }
 
 format_number <- function(x) {
-  format(round(x, 0), big.mark = ",", scientific = FALSE)
+  trimws(format(round(x, 0), big.mark = ",", scientific = FALSE))
 }
+
+monthly_sales_trends_display <- monthly_sales_trends %>%
+  filter(year_month != "2024-01")
 
 # 1. Revenue contribution by category
 # Business question:
@@ -118,7 +121,8 @@ ggsave(
   revenue_contribution_by_category_plot,
   width = 9,
   height = 4,
-  dpi = 300
+  dpi = 300,
+  bg = "white"
 )
 
 # 2. Category performance ranking
@@ -160,7 +164,8 @@ ggsave(
   category_performance_ranking_plot,
   width = 9,
   height = 5,
-  dpi = 300
+  dpi = 300,
+  bg = "white"
 )
 
 # 3. Category value vs volume comparison
@@ -178,13 +183,13 @@ category_value_vs_volume_plot <- ggplot(
   geom_point(alpha = 0.85) +
   geom_text(
     aes(label = product_category),
-    vjust = -1.2,
+    nudge_y = 3,
     fontface = "bold",
     size = 3.8,
     show.legend = FALSE
   ) +
-  scale_x_continuous(labels = format_number) +
-  scale_y_continuous(labels = format_dollar) +
+  scale_x_continuous(labels = format_number, expand = expansion(mult = c(0.12, 0.12))) +
+  scale_y_continuous(labels = format_dollar, expand = expansion(mult = c(0.18, 0.18))) +
   scale_size_continuous(range = c(10, 18), labels = format_dollar) +
   scale_color_manual(values = category_palette) +
   labs(
@@ -193,25 +198,30 @@ category_value_vs_volume_plot <- ggplot(
     caption = "Source: category_ranking.csv"
   ) +
   dashboard_theme +
-  theme(legend.position = "bottom")
+  coord_cartesian(clip = "off") +
+  theme(
+    legend.position = "none",
+    plot.margin = margin(25, 35, 35, 35)
+  )
 
 ggsave(
   file.path(out_dir, "03_category_value_vs_volume.png"),
   category_value_vs_volume_plot,
-  width = 9,
-  height = 5.5,
-  dpi = 300
+  width = 11,
+  height = 7,
+  dpi = 300,
+  bg = "white"
 )
 
 # 4. Monthly performance heatmap
 # Business question:
 # Which months were strongest or weakest by revenue intensity?
-monthly_performance_heatmap <- monthly_sales_trends %>%
+monthly_performance_heatmap <- monthly_sales_trends_display %>%
   mutate(
     month_label = factor(year_month, levels = year_month),
     label_color = if_else(total_revenue < 15000, "#333333", "white")
   ) %>%
-  ggplot(aes(x = month_label, y = 1, fill = total_revenue)) +
+  ggplot(aes(x = month_label, y = "Revenue", fill = total_revenue)) +
   geom_tile(color = "white", linewidth = 1.2, height = 0.75) +
   geom_text(
     aes(label = format_dollar(total_revenue), color = label_color),
@@ -224,13 +234,6 @@ monthly_performance_heatmap <- monthly_sales_trends %>%
     high = "#145DA0",
     labels = format_dollar,
     breaks = scales::pretty_breaks(n = 4)
-  ) +
-  guides(
-    fill = guide_colorbar(
-      title = NULL,
-      barwidth = grid::unit(3.5, "in"),
-      barheight = grid::unit(0.18, "in")
-    )
   ) +
   labs(
     title = "Monthly Revenue Heatmap",
@@ -245,8 +248,7 @@ monthly_performance_heatmap <- monthly_sales_trends %>%
     axis.text.y = element_blank(),
     axis.ticks.y = element_blank(),
     panel.grid = element_blank(),
-    legend.position = "bottom",
-    legend.margin = margin(t = 8),
+    legend.position = "none",
     plot.margin = margin(20, 30, 20, 30)
   )
 
@@ -255,7 +257,8 @@ ggsave(
   monthly_performance_heatmap,
   width = 11,
   height = 4.8,
-  dpi = 300
+  dpi = 300,
+  bg = "white"
 )
 
 # 5. Customer segment contribution heatmap
@@ -285,7 +288,12 @@ customer_segment_contribution_heatmap <- ggplot(
     fontface = "bold",
     size = 3.3
   ) +
-  scale_fill_gradient(low = "#E8F3EC", high = "#1F7A4D", labels = format_dollar) +
+  scale_fill_gradient(
+    low = "#E8F3EC",
+    high = "#1F7A4D",
+    labels = format_dollar,
+    breaks = scales::pretty_breaks(n = 4)
+  ) +
   labs(
     title = "Customer Segment Revenue Contribution",
     subtitle = "Revenue contribution across existing age-group and gender outputs",
@@ -294,15 +302,17 @@ customer_segment_contribution_heatmap <- ggplot(
   dashboard_theme +
   theme(
     axis.text.x = element_text(angle = 30, hjust = 1),
-    legend.position = "bottom"
+    legend.position = "none",
+    plot.margin = margin(20, 30, 25, 30)
   )
 
 ggsave(
   file.path(out_dir, "05_customer_segment_contribution_heatmap.png"),
   customer_segment_contribution_heatmap,
-  width = 9,
-  height = 5,
-  dpi = 300
+  width = 11,
+  height = 6,
+  dpi = 300,
+  bg = "white"
 )
 
 # 6. Revenue share breakdown
@@ -344,7 +354,8 @@ ggsave(
   revenue_share_breakdown_plot,
   width = 7,
   height = 6,
-  dpi = 300
+  dpi = 300,
+  bg = "white"
 )
 
 # 7. Category x customer segment interaction heatmap
@@ -365,20 +376,29 @@ category_customer_segment_heatmap <- ggplot(
     fontface = "bold",
     size = 3
   ) +
-  scale_fill_gradient(low = "#F4E7D3", high = "#A64B2A", labels = format_dollar) +
+  scale_fill_gradient(
+    low = "#F4E7D3",
+    high = "#A64B2A",
+    labels = format_dollar,
+    breaks = scales::pretty_breaks(n = 4)
+  ) +
   labs(
     title = "Category x Customer Segment Revenue",
     subtitle = "Revenue intensity by age group and product category",
     caption = "Source: customer_category_preferences_by_age_group.csv"
   ) +
   dashboard_theme +
-  theme(legend.position = "bottom")
+  theme(
+    legend.position = "none",
+    plot.margin = margin(20, 30, 25, 30)
+  )
 
 ggsave(
   file.path(out_dir, "07_category_customer_segment_heatmap.png"),
   category_customer_segment_heatmap,
-  width = 9,
-  height = 6,
-  dpi = 300
+  width = 11,
+  height = 7,
+  dpi = 300,
+  bg = "white"
 )
 
