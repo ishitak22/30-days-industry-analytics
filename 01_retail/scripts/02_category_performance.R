@@ -10,7 +10,7 @@ if (!dir.exists("outputs")) {
 }
 
 if (!exists("retail_sales_clean")) {
-  retail_sales_clean <- read_csv("data/retail_sales.csv", show_col_types = FALSE) %>%
+  retail_sales_clean <- read_csv("01_retail/data/retail_sales.csv", show_col_types = FALSE) %>%
     rename_with(
       ~ .x %>%
         str_to_lower() %>%
