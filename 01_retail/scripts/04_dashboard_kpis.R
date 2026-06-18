@@ -5,10 +5,6 @@
 
 library(tidyverse)
 
-if (!dir.exists("outputs")) {
-  dir.create("outputs")
-}
-
 # Load engineered dataset created in scripts/03_feature_engineering.R.
 retail_sales_engineered <- read_csv(
   "outputs/retail_sales_engineered.csv",
