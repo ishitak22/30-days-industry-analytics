@@ -11,17 +11,16 @@ if (!dir.exists("outputs")) {
   dir.create("outputs")
 }
 
-if (!dir.exists("outputs/visualisations")) {
-  dir.create("outputs/visualisations")
-}
+out_dir <- file.path("outputs", "visualisations")
+dir.create(out_dir, recursive = TRUE, showWarnings = FALSE)
 
 required_outputs <- c(
-  "outputs/category_ranking.csv",
-  "outputs/revenue_share_by_category.csv",
-  "outputs/monthly_sales_trends.csv",
-  "outputs/kpi_revenue_by_age_group.csv",
-  "outputs/kpi_revenue_by_gender.csv",
-  "outputs/customer_category_preferences_by_age_group.csv"
+  "01_retail/outputs/category_ranking.csv",
+  "01_retail/outputs/revenue_share_by_category.csv",
+  "01_retail/outputs/monthly_sales_trends.csv",
+  "01_retail/outputs/kpi_revenue_by_age_group.csv",
+  "01_retail/outputs/kpi_revenue_by_gender.csv",
+  "01_retail/outputs/customer_category_preferences_by_age_group.csv"
 )
 
 missing_outputs <- required_outputs[!file.exists(required_outputs)]
@@ -115,7 +114,7 @@ revenue_contribution_by_category_plot <- ggplot(
   theme(axis.text.y = element_blank())
 
 ggsave(
-  "outputs/visualisations/01_revenue_contribution_by_category.png",
+  file.path(out_dir, "01_revenue_contribution_by_category.png"),
   revenue_contribution_by_category_plot,
   width = 9,
   height = 4,
@@ -157,7 +156,7 @@ category_performance_ranking_plot <- ggplot(
   theme(legend.position = "none")
 
 ggsave(
-  "outputs/visualisations/02_category_performance_ranking.png",
+  file.path(out_dir, "02_category_performance_ranking.png"),
   category_performance_ranking_plot,
   width = 9,
   height = 5,
@@ -197,7 +196,7 @@ category_value_vs_volume_plot <- ggplot(
   theme(legend.position = "bottom")
 
 ggsave(
-  "outputs/visualisations/03_category_value_vs_volume.png",
+  file.path(out_dir, "03_category_value_vs_volume.png"),
   category_value_vs_volume_plot,
   width = 9,
   height = 5.5,
@@ -231,7 +230,7 @@ monthly_performance_heatmap <- monthly_sales_trends %>%
   )
 
 ggsave(
-  "outputs/visualisations/04_monthly_performance_heatmap.png",
+  file.path(out_dir, "04_monthly_performance_heatmap.png"),
   monthly_performance_heatmap,
   width = 10,
   height = 4.5,
@@ -278,7 +277,7 @@ customer_segment_contribution_heatmap <- ggplot(
   )
 
 ggsave(
-  "outputs/visualisations/05_customer_segment_contribution_heatmap.png",
+  file.path(out_dir, "05_customer_segment_contribution_heatmap.png"),
   customer_segment_contribution_heatmap,
   width = 9,
   height = 5,
@@ -320,7 +319,7 @@ revenue_share_breakdown_plot <- ggplot(
   )
 
 ggsave(
-  "outputs/visualisations/06_revenue_share_breakdown.png",
+  file.path(out_dir, "06_revenue_share_breakdown.png"),
   revenue_share_breakdown_plot,
   width = 7,
   height = 6,
@@ -355,9 +354,10 @@ category_customer_segment_heatmap <- ggplot(
   theme(legend.position = "bottom")
 
 ggsave(
-  "outputs/visualisations/07_category_customer_segment_heatmap.png",
+  file.path(out_dir, "07_category_customer_segment_heatmap.png"),
   category_customer_segment_heatmap,
   width = 9,
   height = 6,
   dpi = 300
 )
+
