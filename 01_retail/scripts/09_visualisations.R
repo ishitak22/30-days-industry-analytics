@@ -15,12 +15,12 @@ out_dir <- file.path("outputs", "visualisations")
 dir.create(out_dir, recursive = TRUE, showWarnings = FALSE)
 
 required_outputs <- c(
-  "01_retail/outputs/category_ranking.csv",
-  "01_retail/outputs/revenue_share_by_category.csv",
-  "01_retail/outputs/monthly_sales_trends.csv",
-  "01_retail/outputs/kpi_revenue_by_age_group.csv",
-  "01_retail/outputs/kpi_revenue_by_gender.csv",
-  "01_retail/outputs/customer_category_preferences_by_age_group.csv"
+  "outputs/category_ranking.csv",
+  "outputs/revenue_share_by_category.csv",
+  "outputs/monthly_sales_trends.csv",
+  "outputs/kpi_revenue_by_age_group.csv",
+  "outputs/kpi_revenue_by_gender.csv",
+  "outputs/customer_category_preferences_by_age_group.csv"
 )
 
 missing_outputs <- required_outputs[!file.exists(required_outputs)]
@@ -207,33 +207,54 @@ ggsave(
 # Business question:
 # Which months were strongest or weakest by revenue intensity?
 monthly_performance_heatmap <- monthly_sales_trends %>%
-  mutate(month_label = factor(year_month, levels = year_month)) %>%
-  ggplot(aes(x = month_label, y = "Revenue", fill = total_revenue)) +
+  mutate(
+    month_label = factor(year_month, levels = year_month),
+    label_color = if_else(total_revenue < 15000, "#333333", "white")
+  ) %>%
+  ggplot(aes(x = month_label, y = 1, fill = total_revenue)) +
   geom_tile(color = "white", linewidth = 1.2, height = 0.75) +
   geom_text(
-    aes(label = format_dollar(total_revenue)),
-    color = "white",
+    aes(label = format_dollar(total_revenue), color = label_color),
     fontface = "bold",
     size = 3
   ) +
-  scale_fill_gradient(low = "#D9EAF7", high = "#145DA0", labels = format_dollar) +
+  scale_color_identity() +
+  scale_fill_gradient(
+    low = "#D9EAF7",
+    high = "#145DA0",
+    labels = format_dollar,
+    breaks = scales::pretty_breaks(n = 4)
+  ) +
+  guides(
+    fill = guide_colorbar(
+      title = NULL,
+      barwidth = grid::unit(3.5, "in"),
+      barheight = grid::unit(0.18, "in")
+    )
+  ) +
   labs(
     title = "Monthly Revenue Heatmap",
     subtitle = "Darker months generated higher revenue",
+    x = NULL,
+    y = NULL,
     caption = "Source: monthly_sales_trends.csv"
   ) +
   dashboard_theme +
   theme(
-    axis.text.x = element_text(angle = 45, hjust = 1),
+    axis.text.x = element_text(angle = 45, hjust = 1, vjust = 1),
     axis.text.y = element_blank(),
-    legend.position = "bottom"
+    axis.ticks.y = element_blank(),
+    panel.grid = element_blank(),
+    legend.position = "bottom",
+    legend.margin = margin(t = 8),
+    plot.margin = margin(20, 30, 20, 30)
   )
 
 ggsave(
   file.path(out_dir, "04_monthly_performance_heatmap.png"),
   monthly_performance_heatmap,
-  width = 10,
-  height = 4.5,
+  width = 11,
+  height = 4.8,
   dpi = 300
 )
 
