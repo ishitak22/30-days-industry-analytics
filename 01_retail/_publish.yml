@@ -1,0 +1,4 @@
+- source: project.qmd
+  netlify:
+    - id: fc0ba545-24aa-4ebf-9977-944824b225cd
+      url: https://gentle-sunburst-a6b532.netlify.app
