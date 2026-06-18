@@ -1,0 +1,4 @@
+product_category,total_revenue,total_transactions,units_sold,average_order_value,revenue_share,revenue_rank,transaction_rank,units_rank,aov_rank
+Electronics,156905,342,849,458.7865497076023,0.34408991228070174,1,2,2,2
+Clothing,155580,351,894,443.2478632478632,0.3411842105263158,2,1,1,3
+Beauty,143515,307,771,467.4755700325733,0.31472587719298245,3,3,3,1
