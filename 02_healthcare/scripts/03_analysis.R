@@ -119,3 +119,26 @@ overall_average_wait_time
 states_above_national_average
 states_below_national_average
 state_wait_time_ranking
+
+# Time-based wait-time analysis
+wait_time_trend_over_time <- elective_surgery_clean %>%
+  filter(
+    measure_name == "Median waiting time for elective surgery",
+    !is.na(value)
+  ) %>%
+  group_by(reporting_start) %>%
+  summarise(
+    average_waiting_time = mean(value, na.rm = TRUE),
+    reporting_units = n_distinct(reporting_unit_name),
+    min_waiting_time = min(value, na.rm = TRUE),
+    max_waiting_time = max(value, na.rm = TRUE),
+    .groups = "drop"
+  ) %>%
+  arrange(reporting_start)
+
+# Business interpretation:
+# This shows how elective surgery wait times change across reporting periods,
+# helping executives understand whether access pressure is improving,
+# worsening, or remaining stable over time.
+
+wait_time_trend_over_time
