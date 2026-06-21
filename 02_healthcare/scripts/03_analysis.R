@@ -70,3 +70,52 @@ states_lowest_average_wait <- wait_time_by_state %>%
 wait_time_by_state
 states_highest_average_wait
 states_lowest_average_wait
+
+# State-level disparity analysis
+highest_average_wait_state <- wait_time_by_state %>%
+  slice_max(average_median_wait_days, n = 1, with_ties = FALSE)
+
+lowest_average_wait_state <- wait_time_by_state %>%
+  slice_min(average_median_wait_days, n = 1, with_ties = FALSE)
+
+state_wait_time_difference <- highest_average_wait_state$average_median_wait_days -
+  lowest_average_wait_state$average_median_wait_days
+
+state_wait_time_inequality_ratio <- highest_average_wait_state$average_median_wait_days /
+  lowest_average_wait_state$average_median_wait_days
+
+overall_average_wait_time <- wait_time_by_state %>%
+  summarise(overall_average_median_wait_days = mean(average_median_wait_days, na.rm = TRUE))
+
+states_above_national_average <- wait_time_by_state %>%
+  filter(average_median_wait_days > overall_average_wait_time$overall_average_median_wait_days) %>%
+  summarise(states_above_national_average = n())
+
+states_below_national_average <- wait_time_by_state %>%
+  filter(average_median_wait_days < overall_average_wait_time$overall_average_median_wait_days) %>%
+  summarise(states_below_national_average = n())
+
+state_wait_time_ranking <- wait_time_by_state %>%
+  arrange(desc(average_median_wait_days)) %>%
+  mutate(wait_time_rank = row_number()) %>%
+  select(
+    wait_time_rank,
+    mapped_state,
+    average_median_wait_days,
+    maximum_median_wait_days,
+    reporting_hospitals
+  )
+
+# Business interpretation:
+# This quantifies inequality in elective surgery access across states by showing
+# the gap between the highest- and lowest-wait states, the relative worst-to-best
+# ratio, and how many states sit above or below the national average wait time.
+
+highest_average_wait_state
+lowest_average_wait_state
+state_wait_time_difference
+state_wait_time_inequality_ratio
+overall_average_wait_time
+states_above_national_average
+states_below_national_average
+state_wait_time_ranking
