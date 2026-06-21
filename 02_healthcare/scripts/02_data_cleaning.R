@@ -84,10 +84,9 @@ glimpse(healthcare_clean)
 
 summary(healthcare_clean)
 
-# Save cleaned dataset
-dir.create("outputs", showWarnings = FALSE)
+# Save cleaned dataset inside 02_healthcare/outputs
 
 readr::write_csv(
   healthcare_clean,
-  "outputs/elective_surgery_clean.csv"
+  "02_healthcare/Outputs/elective_surgery_clean.csv"
 )
