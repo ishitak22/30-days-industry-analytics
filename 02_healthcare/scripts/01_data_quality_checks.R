@@ -14,3 +14,13 @@ elective_surgery <- readr::read_csv(
 glimpse(elective_surgery)
 
 names(elective_surgery)
+
+# Missing Values
+missing_summary <- elective_surgery %>%
+  summarise(across(everything(), ~ sum(is.na(.))))
+
+missing_summary
+
+missing_summary_sorted <- sort(unlist(missing_summary), decreasing = TRUE)
+
+missing_summary_sorted
