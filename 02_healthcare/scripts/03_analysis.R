@@ -142,3 +142,39 @@ wait_time_trend_over_time <- elective_surgery_clean %>%
 # worsening, or remaining stable over time.
 
 wait_time_trend_over_time
+
+# Trend driver analysis
+wait_time_reporting_units_correlation <- wait_time_trend_over_time %>%
+  summarise(
+    correlation_average_wait_reporting_units = cor(
+      average_waiting_time,
+      reporting_units,
+      use = "complete.obs"
+    )
+  )
+
+periods_highest_average_wait <- wait_time_trend_over_time %>%
+  slice_max(average_waiting_time, n = 5, with_ties = FALSE)
+
+periods_lowest_average_wait <- wait_time_trend_over_time %>%
+  slice_min(average_waiting_time, n = 5, with_ties = FALSE)
+
+wait_time_trend_ranking <- wait_time_trend_over_time %>%
+  arrange(desc(average_waiting_time)) %>%
+  mutate(wait_time_rank = row_number()) %>%
+  select(
+    reporting_start,
+    average_wait_time = average_waiting_time,
+    reporting_units,
+    wait_time_rank
+  )
+
+# Business interpretation:
+# This checks whether changes in average waiting time move with the number of
+# reporting units, which helps separate possible reporting-volume effects from
+# broader performance changes in elective surgery access.
+
+wait_time_reporting_units_correlation
+periods_highest_average_wait
+periods_lowest_average_wait
+wait_time_trend_ranking
