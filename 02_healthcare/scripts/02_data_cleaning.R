@@ -88,5 +88,5 @@ summary(healthcare_clean)
 
 readr::write_csv(
   healthcare_clean,
-  "02_healthcare/Outputs/elective_surgery_clean.csv"
+  "02_healthcare/data/elective_surgery_clean.csv"
 )
