@@ -33,3 +33,8 @@ duplicate_count
 duplicate_rows <- janitor::get_dupes(elective_surgery)
 
 duplicate_rows
+
+# Dataset Profiling
+data_profile <- skimr::skim(elective_surgery)
+
+data_profile
