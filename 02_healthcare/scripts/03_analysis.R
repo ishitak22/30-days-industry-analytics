@@ -43,3 +43,30 @@ highest_wait_pressure_procedures <- wait_time_by_procedure %>%
 
 wait_time_by_procedure
 highest_wait_pressure_procedures
+
+# State-level wait-time analysis
+wait_time_by_state <- median_wait_records %>%
+  group_by(mapped_state) %>%
+  summarise(
+    average_median_wait_days = mean(value, na.rm = TRUE),
+    maximum_median_wait_days = max(value, na.rm = TRUE),
+    reporting_hospitals = n_distinct(reporting_unit_name),
+    .groups = "drop"
+  ) %>%
+  arrange(desc(average_median_wait_days))
+
+states_highest_average_wait <- wait_time_by_state %>%
+  slice_head(n = 5)
+
+states_lowest_average_wait <- wait_time_by_state %>%
+  arrange(average_median_wait_days) %>%
+  slice_head(n = 5)
+
+# Business interpretation:
+# This extends the wait-time story from specific procedures to geography.
+# It helps show whether access pressure is concentrated in particular states,
+# and whether those differences may need executive attention at a system level.
+
+wait_time_by_state
+states_highest_average_wait
+states_lowest_average_wait
