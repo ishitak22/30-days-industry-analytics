@@ -178,3 +178,61 @@ wait_time_reporting_units_correlation
 periods_highest_average_wait
 periods_lowest_average_wait
 wait_time_trend_ranking
+
+# Executive insight summary
+top_wait_time_procedures <- highest_wait_pressure_procedures %>%
+  slice_head(n = 5) %>%
+  transmute(
+    dimension = "procedure",
+    category_name = reported_measure_name,
+    average_wait_time = average_median_wait_days
+  )
+
+top_wait_time_states <- states_highest_average_wait %>%
+  slice_head(n = 5) %>%
+  transmute(
+    dimension = "state",
+    category_name = mapped_state,
+    average_wait_time = average_median_wait_days
+  )
+
+worst_wait_time_period <- periods_highest_average_wait %>%
+  slice_head(n = 1) %>%
+  transmute(
+    dimension = "time period",
+    category_name = as.character(reporting_start),
+    average_wait_time = average_waiting_time
+  )
+
+best_wait_time_period <- periods_lowest_average_wait %>%
+  slice_head(n = 1) %>%
+  transmute(
+    dimension = "time period",
+    category_name = as.character(reporting_start),
+    average_wait_time = average_waiting_time
+  )
+
+executive_insight_summary <- bind_rows(
+  top_wait_time_procedures,
+  top_wait_time_states,
+  worst_wait_time_period,
+  best_wait_time_period
+) %>%
+  arrange(desc(average_wait_time)) %>%
+  mutate(ranking = row_number()) %>%
+  select(
+    dimension,
+    category_name,
+    average_wait_time,
+    ranking
+  )
+
+# Business interpretation:
+# The main system pressure points are the procedures, states, and reporting
+# periods with the highest average elective surgery wait times. These areas
+# indicate where access delays are most concentrated and where executives may
+# need to focus waitlist management, theatre capacity, and workforce planning.
+# Bottlenecks are concentrated where high-wait procedures overlap with
+# high-wait geographies or historically poor reporting periods.
+
+executive_insight_summary
