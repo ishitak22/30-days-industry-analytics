@@ -10,6 +10,12 @@ elective_surgery_clean <- readr::read_csv(
   show_col_types = FALSE
 )
 
+elective_surgery_wait_times_national <- readr::read_csv(
+  "data/elective_surgery_wait_times_national.csv",
+  show_col_types = FALSE
+) %>%
+  janitor::clean_names()
+
 total_elective_surgeries <- elective_surgery_clean %>%
   filter(measure_name == "Number of elective surgeries") %>%
   summarise(value = sum(value, na.rm = TRUE)) %>%
@@ -42,7 +48,7 @@ top_wait_time_procedures <- elective_surgery_clean %>%
   arrange(desc(average_median_wait_days)) %>%
   slice_head(n = 10)
 
-state_wait_time_summary <- elective_surgery_clean %>%
+state_wait_time_summary <- elective_surgery_wait_times_national %>%
   filter(
     measure_name == "Median waiting time for elective surgery",
     !is.na(value)
@@ -172,6 +178,11 @@ server <- function(input, output, session) {
           "Highest wait" = "#b2182b",
           "Lowest wait" = "#1a9850",
           "Other states" = "#9ecae1"
+        ),
+        labels = c(
+          "Highest wait" = "Highest wait pressure",
+          "Lowest wait" = "Lowest wait pressure",
+          "Other states" = "Other states"
         )
       ) +
       labs(
