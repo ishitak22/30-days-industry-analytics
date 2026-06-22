@@ -186,6 +186,60 @@ business_questions <- tibble::tribble(
   "Turns analysis into decisions about backlog reduction, resource allocation, and service planning."
 )
 
+executive_evidence_summary <- tibble::tribble(
+  ~Finding, ~Evidence,
+  "High-pressure procedures identified",
+  paste0(
+    highest_wait_procedure$reported_measure_name,
+    " has the longest average median wait at ",
+    round(highest_wait_procedure$average_median_wait_days, 1),
+    " days."
+  ),
+  "Highest state wait-time pressure",
+  paste0(
+    highest_wait_state$mapped_state,
+    " has the highest average median wait at ",
+    round(highest_wait_state$average_median_wait_days, 1),
+    " days."
+  ),
+  "Trend direction",
+  paste0(
+    "Average median waiting time is ",
+    trend_direction_reporting_end,
+    " across the available reporting periods."
+  ),
+  "Access inequality",
+  paste0(
+    "The gap between the highest- and lowest-wait states is ",
+    round(state_wait_gap, 1),
+    " days."
+  )
+)
+
+executive_action_plan <- tibble::tribble(
+  ~Priority, ~Action, ~Reason, ~`Expected Impact`,
+  "High",
+  "Increase capacity for high-pressure procedures",
+  "The longest-wait procedure is creating concentrated access pressure.",
+  "Reduce patient wait times in the most constrained surgical pathway.",
+  "High",
+  "Target high-wait states for intervention",
+  "State-level variation shows access pressure is not evenly distributed.",
+  "Direct funding, workforce, and backlog programs to the areas with greatest need.",
+  "Medium",
+  "Monitor deterioration periods",
+  "Trend analysis shows whether access pressure is improving or worsening over time.",
+  "Create early warning signals before waitlists become harder to manage.",
+  "Medium",
+  "Benchmark low-wait states for best practice",
+  "Lower-wait states may reveal better scheduling, referral, or theatre utilisation practices.",
+  "Transfer effective operational practices to higher-wait areas.",
+  "Low",
+  "Review peer benchmark gaps",
+  "Peer comparisons support fairer performance review across different hospital contexts.",
+  "Focus governance conversations on realistic and comparable performance expectations."
+)
+
 ui <- page_navbar(
   title = "Healthcare Elective Surgery Performance Dashboard",
   theme = bs_theme(
@@ -531,80 +585,107 @@ ui <- page_navbar(
   ),
   nav_panel(
     "Executive Insights",
-    layout_column_wrap(
-      width = "380px",
+    layout_columns(
+      col_widths = 12,
       card(
-        class = "insight-card",
-        card_header("Prioritise the highest-pressure procedure"),
-        h4(highest_wait_procedure$reported_measure_name),
-        p(
-          paste0(
-            "This procedure has the longest average median wait at ",
-            round(highest_wait_procedure$average_median_wait_days, 1),
-            " days, so theatre time, specialist availability, and waitlist triage should be reviewed first."
-          )
+        card_header("Business Question"),
+        h4("What actions should healthcare leaders prioritise based on elective surgery performance insights?"),
+        p("This section converts the dashboard findings into practical decisions for capacity planning, backlog reduction, and access improvement.")
+      ),
+      card(
+        card_header("Evidence Summary"),
+        tableOutput("executive_evidence_table")
+      ),
+      layout_column_wrap(
+        width = "340px",
+        card(
+          card_header("Procedure bottlenecks"),
+          h4("What the data shows"),
+          p(
+            paste0(
+              highest_wait_procedure$reported_measure_name,
+              " has the longest average median wait at ",
+              round(highest_wait_procedure$average_median_wait_days, 1),
+              " days."
+            )
+          ),
+          h4("Why it matters"),
+          p("A small group of procedures can create a large share of access pressure, making targeted capacity planning more effective than broad system-wide action.")
+        ),
+        card(
+          card_header("Geographic inequality"),
+          h4("What the data shows"),
+          p(
+            paste0(
+              highest_wait_state$mapped_state,
+              " has the highest average median wait, while ",
+              lowest_wait_state$mapped_state,
+              " has the lowest."
+            )
+          ),
+          h4("Why it matters"),
+          p("Patients may experience different access to elective surgery depending on where they live, raising equity and service planning concerns.")
+        ),
+        card(
+          card_header("Peak pressure periods"),
+          h4("What the data shows"),
+          p(
+            paste0(
+              "The worst reporting period reached ",
+              round(worst_trend_period$average_median_wait_days, 1),
+              " days on average."
+            )
+          ),
+          h4("Why it matters"),
+          p("Peak periods can reveal when backlog growth, demand shocks, or capacity constraints become most visible.")
+        ),
+        card(
+          card_header("System direction"),
+          h4("What the data shows"),
+          p(
+            paste0(
+              "The trend is currently ",
+              trend_direction_reporting_end,
+              " across the available reporting periods."
+            )
+          ),
+          h4("Why it matters"),
+          p("Trend direction helps leaders assess whether current access initiatives are improving performance or whether stronger intervention is needed.")
         )
       ),
       card(
-        class = "insight-card",
-        card_header("Target support to the highest-wait state"),
-        h4(highest_wait_state$mapped_state),
-        p(
-          paste0(
-            "This state records the highest average median wait at ",
-            round(highest_wait_state$average_median_wait_days, 1),
-            " days, suggesting a need for focused capacity planning and backlog reduction."
+        card_header("Recommended Actions"),
+        tableOutput("executive_action_table")
+      ),
+      card(
+        card_header("Executive Summary"),
+        tags$ul(
+          tags$li(
+            paste0(
+              "Overall system performance shows ",
+              trend_direction_reporting_end,
+              " wait-time pressure across reporting periods."
+            )
+          ),
+          tags$li(
+            paste0(
+              "The biggest procedure-level pressure point is ",
+              highest_wait_procedure$reported_measure_name,
+              "."
+            )
+          ),
+          tags$li(
+            paste0(
+              "Intervention is most needed where high-wait procedures overlap with high-wait geographies such as ",
+              highest_wait_state$mapped_state,
+              "."
+            )
+          ),
+          tags$li(
+            "Leadership should focus next on targeted capacity, backlog reduction, peer benchmarking, and early monitoring of deterioration signals."
           )
         )
       ),
-      card(
-        class = "insight-card",
-        card_header("Use the lowest-wait state as a benchmark"),
-        h4(lowest_wait_state$mapped_state),
-        p(
-          paste0(
-            "This state records the lowest average median wait at ",
-            round(lowest_wait_state$average_median_wait_days, 1),
-            " days, making it useful for comparing referral pathways, scheduling practices, and theatre utilisation."
-          )
-        )
-      ),
-      card(
-        class = "insight-card",
-        card_header("Reduce the access inequality gap"),
-        h4(paste0(round(state_wait_gap, 1), " days")),
-        p(
-          "This gap between the highest- and lowest-wait states shows unequal access and can guide where additional funding or workforce support may have the largest impact."
-        )
-      ),
-      card(
-        class = "insight-card",
-        card_header("Watch the direction of system performance"),
-        h4(str_to_sentence(trend_direction)),
-        p(
-          paste0(
-            "Average median waiting time has ",
-            trend_direction,
-            " from ",
-            round(earliest_wait_period$average_median_wait_days, 1),
-            " days to ",
-            round(latest_wait_period$average_median_wait_days, 1),
-            " days, helping leaders judge whether current access initiatives are working."
-          )
-        )
-      ),
-      card(
-        class = "insight-card",
-        card_header("Learn from the worst pressure period"),
-        h4(format(worst_wait_time_period$reporting_start, "%Y-%m-%d")),
-        p(
-          paste0(
-            "The worst period recorded an average median wait of ",
-            round(worst_wait_time_period$average_median_wait_days, 1),
-            " days, so leaders should examine what operational constraints or demand shocks were present then."
-          )
-        )
-      )
     )
   )
 )
@@ -612,6 +693,22 @@ ui <- page_navbar(
 server <- function(input, output, session) {
   output$business_questions_table <- renderTable(
     business_questions,
+    striped = TRUE,
+    bordered = FALSE,
+    spacing = "m",
+    width = "100%"
+  )
+
+  output$executive_evidence_table <- renderTable(
+    executive_evidence_summary,
+    striped = TRUE,
+    bordered = FALSE,
+    spacing = "m",
+    width = "100%"
+  )
+
+  output$executive_action_table <- renderTable(
+    executive_action_plan,
     striped = TRUE,
     bordered = FALSE,
     spacing = "m",
