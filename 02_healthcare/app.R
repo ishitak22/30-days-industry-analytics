@@ -3,6 +3,31 @@
 
 library(shiny)
 library(bslib)
+library(tidyverse)
+
+elective_surgery_clean <- readr::read_csv(
+  "data/elective_surgery_clean.csv",
+  show_col_types = FALSE
+)
+
+total_elective_surgeries <- elective_surgery_clean %>%
+  filter(measure_name == "Number of elective surgeries") %>%
+  summarise(value = sum(value, na.rm = TRUE)) %>%
+  pull(value)
+
+reporting_hospitals <- elective_surgery_clean %>%
+  summarise(value = n_distinct(reporting_unit_name)) %>%
+  pull(value)
+
+median_waiting_time <- elective_surgery_clean %>%
+  filter(str_detect(measure_name, regex("median waiting time", ignore_case = TRUE))) %>%
+  summarise(value = mean(value, na.rm = TRUE)) %>%
+  pull(value)
+
+treated_within_recommended_time <- elective_surgery_clean %>%
+  filter(str_detect(measure_name, regex("clinically recommended times", ignore_case = TRUE))) %>%
+  summarise(value = mean(value, na.rm = TRUE)) %>%
+  pull(value)
 
 ui <- page_navbar(
   title = "Healthcare Elective Surgery Performance Dashboard",
@@ -13,9 +38,26 @@ ui <- page_navbar(
   nav_panel(
     "Executive Overview",
     layout_columns(
+      col_widths = c(3, 3, 3, 3),
       card(
-        card_header("Executive Overview"),
-        "Placeholder for executive summary KPIs and high-level performance context."
+        card_header("Total Elective Surgeries"),
+        h2(format(round(total_elective_surgeries), big.mark = ",")),
+        p("Reported elective surgery activity")
+      ),
+      card(
+        card_header("Reporting Hospitals"),
+        h2(format(reporting_hospitals, big.mark = ",")),
+        p("Hospitals included in the dataset")
+      ),
+      card(
+        card_header("Median Waiting Time"),
+        h2(paste0(round(median_waiting_time, 1), " days")),
+        p("Average of reported median wait times")
+      ),
+      card(
+        card_header("Treated Within Recommended Time"),
+        h2(paste0(round(treated_within_recommended_time, 1), "%")),
+        p("Average reported performance")
       )
     )
   ),
