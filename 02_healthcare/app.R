@@ -92,6 +92,18 @@ best_wait_time_period <- wait_time_trend_over_time %>%
 highest_wait_procedure <- top_wait_time_procedures %>%
   slice_max(average_median_wait_days, n = 1, with_ties = FALSE)
 
+average_procedure_wait_time <- top_wait_time_procedures %>%
+  summarise(value = mean(average_median_wait_days, na.rm = TRUE)) %>%
+  pull(value)
+
+procedure_wait_gap <- highest_wait_procedure$average_median_wait_days -
+  average_procedure_wait_time
+
+top_three_procedures <- top_wait_time_procedures %>%
+  slice_head(n = 3) %>%
+  pull(reported_measure_name) %>%
+  paste(collapse = ", ")
+
 highest_wait_state <- state_wait_time_summary %>%
   slice_max(average_median_wait_days, n = 1, with_ties = FALSE)
 
@@ -239,9 +251,70 @@ ui <- page_navbar(
   nav_panel(
     "Procedure Performance",
     layout_columns(
+      col_widths = 12,
+      card(
+        card_header("Business Question"),
+        h4("Which elective surgery procedures create the greatest access pressure?"),
+        p("This section identifies the procedures where patients face the longest typical waits for elective surgery.")
+      ),
+      card(
+        card_header("Analysis Approach"),
+        tags$ul(
+          tags$li("Filtered the dataset to median waiting time records."),
+          tags$li("Grouped records by procedure using reported_measure_name."),
+          tags$li("Calculated the average median waiting time for each procedure."),
+          tags$li("Ranked procedures from highest to lowest wait-time pressure.")
+        )
+      ),
       card(
         card_header("Top 10 Procedures by Average Median Waiting Time"),
         plotOutput("procedure_wait_time_chart", height = "520px")
+      ),
+      layout_column_wrap(
+        width = "340px",
+        card(
+          card_header("Key Findings"),
+          tags$ul(
+            tags$li(
+              paste0(
+                "Highest pressure procedure: ",
+                highest_wait_procedure$reported_measure_name,
+                " at ",
+                round(highest_wait_procedure$average_median_wait_days, 1),
+                " days."
+              )
+            ),
+            tags$li(
+              paste0(
+                "The top procedure is ",
+                round(procedure_wait_gap, 1),
+                " days above the average of the top 10 pressure procedures."
+              )
+            ),
+            tags$li(
+              paste0(
+                "The wait-time burden is concentrated in a small group of procedures, led by ",
+                top_three_procedures,
+                "."
+              )
+            )
+          )
+        ),
+        card(
+          card_header("Healthcare Implications"),
+          p(
+            "High procedure-level wait times suggest that access pressure is not uniform across elective surgery. These bottlenecks may reflect constrained theatre time, specialist availability, referral demand, or recovery capacity for specific surgical pathways."
+          )
+        ),
+        card(
+          card_header("Recommended Actions"),
+          tags$ul(
+            tags$li("Increase theatre capacity or session allocation for the highest-pressure procedures."),
+            tags$li("Review scheduling, referral, and triage pathways for procedures with sustained long waits."),
+            tags$li("Target backlog reduction programs toward the procedures with the greatest patient access pressure."),
+            tags$li("Monitor whether added capacity reduces average median waits in future reporting periods.")
+          )
+        )
       )
     )
   ),
