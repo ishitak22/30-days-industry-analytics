@@ -282,24 +282,98 @@ ui <- page_navbar(
   title = "Healthcare Elective Surgery Performance Dashboard",
   theme = bs_theme(
     version = 5,
-    bootswatch = "flatly"
+    bg = "#f5f7fb",
+    fg = "#263442",
+    primary = "#1f6fb2",
+    secondary = "#64748b",
+    base_font = font_collection(
+      "Inter",
+      "Segoe UI",
+      "Arial",
+      "sans-serif"
+    )
   ),
   header = tags$style(
     HTML("
+      body {
+        background: #f5f7fb;
+        color: #263442;
+      }
+
+      .navbar {
+        box-shadow: 0 2px 10px rgba(15, 23, 42, 0.08);
+      }
+
+      .navbar-brand {
+        font-weight: 700;
+        letter-spacing: 0;
+      }
+
+      .nav-link {
+        font-weight: 600;
+      }
+
+      .bslib-page-navbar > .container-fluid,
+      .bslib-page-navbar > .container {
+        padding-top: 1rem;
+        padding-bottom: 1.25rem;
+      }
+
+      .card {
+        border: 1px solid #d8e0ea;
+        border-radius: 10px;
+        box-shadow: 0 8px 22px rgba(15, 23, 42, 0.06);
+        margin-bottom: 1rem;
+        overflow: hidden;
+        background: #ffffff;
+      }
+
+      .card-header {
+        background: #f8fafc;
+        border-bottom: 1px solid #d8e0ea;
+        color: #1f2d3d;
+        font-size: 0.95rem;
+        font-weight: 700;
+        padding: 0.75rem 1rem;
+      }
+
+      .card-body {
+        padding: 1.1rem;
+      }
+
+      h3 {
+        color: #1f2d3d;
+        font-weight: 700;
+        margin-bottom: 0.65rem;
+      }
+
+      h4 {
+        color: #1f2d3d;
+        font-weight: 700;
+        margin-bottom: 0.5rem;
+      }
+
+      p,
+      li {
+        color: #3f4d5a;
+        line-height: 1.45;
+      }
+
       .kpi-card .card-body {
         min-height: 170px;
-        padding: 1.25rem;
+        padding: 1.35rem;
         display: flex;
         flex-direction: column;
         justify-content: center;
+        background: linear-gradient(180deg, #ffffff 0%, #f9fbfd 100%);
       }
 
       .kpi-value {
-        font-size: 2.8rem;
+        font-size: 3rem;
         font-weight: 700;
         line-height: 1;
         margin-bottom: 0.75rem;
-        color: #20384f;
+        color: #174b7a;
       }
 
       .kpi-card p {
@@ -313,7 +387,7 @@ ui <- page_navbar(
         font-size: 1.35rem;
         font-weight: 700;
         margin-bottom: 0.75rem;
-        color: #20384f;
+        color: #174b7a;
       }
 
       .insight-card p {
@@ -341,8 +415,23 @@ ui <- page_navbar(
         min-width: 620px;
       }
 
-      .card {
-        margin-bottom: 0.75rem;
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 0.94rem;
+      }
+
+      table th {
+        color: #1f2d3d;
+        font-weight: 700;
+        background: #eef4fa;
+        white-space: nowrap;
+      }
+
+      table td,
+      table th {
+        padding: 0.72rem 0.8rem;
+        vertical-align: top;
       }
 
       .compact-card .card-body {
@@ -378,7 +467,7 @@ ui <- page_navbar(
       .tab-stack {
         display: flex;
         flex-direction: column;
-        gap: 0.75rem;
+        gap: 1rem;
       }
 
       .compact-card ul {
@@ -390,13 +479,34 @@ ui <- page_navbar(
       }
 
       @media (max-width: 576px) {
+        .bslib-page-navbar > .container-fluid,
+        .bslib-page-navbar > .container {
+          padding: 0.75rem;
+        }
+
+        .card-header {
+          font-size: 0.9rem;
+        }
+
+        .card-body {
+          padding: 0.9rem;
+        }
+
         .kpi-card .card-body,
         .insight-card .card-body {
           min-height: auto;
         }
 
         .kpi-value {
-          font-size: 2.1rem;
+          font-size: 2.2rem;
+        }
+
+        h3 {
+          font-size: 1.25rem;
+        }
+
+        h4 {
+          font-size: 1.05rem;
         }
       }
     ")
