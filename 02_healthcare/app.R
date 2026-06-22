@@ -321,9 +321,79 @@ ui <- page_navbar(
   nav_panel(
     "State Comparison",
     layout_columns(
+      col_widths = 12,
+      card(
+        card_header("Business Question"),
+        h4("Where is elective surgery access most unequal across states?"),
+        p("This section compares average median waiting times across states and territories to identify geographic access pressure.")
+      ),
+      card(
+        card_header("Analysis Approach"),
+        tags$ul(
+          tags$li("Filtered the dataset to median waiting time records."),
+          tags$li("Grouped records by state using mapped_state."),
+          tags$li("Calculated average median waiting time for each state."),
+          tags$li("Compared states to identify variation in elective surgery access pressure.")
+        )
+      ),
       card(
         card_header("State Variation in Average Median Waiting Time"),
         plotOutput("state_wait_time_chart", height = "420px")
+      ),
+      layout_column_wrap(
+        width = "340px",
+        card(
+          card_header("Key Findings"),
+          tags$ul(
+            tags$li(
+              paste0(
+                "Highest wait state: ",
+                highest_wait_state$mapped_state,
+                " at ",
+                round(highest_wait_state$average_median_wait_days, 1),
+                " days."
+              )
+            ),
+            tags$li(
+              paste0(
+                "Lowest wait state: ",
+                lowest_wait_state$mapped_state,
+                " at ",
+                round(lowest_wait_state$average_median_wait_days, 1),
+                " days."
+              )
+            ),
+            tags$li(
+              paste0(
+                "The access gap between highest and lowest states is ",
+                round(state_wait_gap, 1),
+                " days."
+              )
+            ),
+            tags$li(
+              if (state_wait_gap >= 50) {
+                "Variation appears large and may indicate meaningful geographic inequality in elective surgery access."
+              } else {
+                "Variation appears moderate, but still points to measurable differences in access between states."
+              }
+            )
+          )
+        ),
+        card(
+          card_header("Healthcare Implications"),
+          p(
+            "Geographic differences in waiting times suggest that patients may experience different access to elective surgery depending on where they live. Persistent gaps can affect patient outcomes, system fairness, and pressure on hospitals in high-wait regions."
+          )
+        ),
+        card(
+          card_header("Recommended Actions"),
+          tags$ul(
+            tags$li("Investigate high-wait states for theatre capacity, workforce, referral, and backlog constraints."),
+            tags$li("Use low-wait states as benchmarks to understand scheduling, pathway, and capacity practices."),
+            tags$li("Consider targeted funding, workforce support, or backlog programs where access pressure is highest."),
+            tags$li("Monitor state-level wait gaps over time to assess whether inequality is widening or narrowing.")
+          )
+        )
       )
     )
   ),
