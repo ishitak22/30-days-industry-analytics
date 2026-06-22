@@ -438,30 +438,62 @@ ui <- page_navbar(
         padding: 0.9rem 1rem;
       }
 
-      .trend-approach-card .card-body {
-        padding: 0.7rem 1rem;
-        overflow: visible;
+      .analysis-approach-card,
+      .trend-approach-card {
+        height: 145px !important;
+        min-height: 145px !important;
+        max-height: 145px !important;
       }
 
+      .analysis-approach-card .card-body,
+      .trend-approach-card .card-body {
+        height: 103px !important;
+        min-height: 103px !important;
+        max-height: 103px !important;
+        padding: 0.7rem 1rem;
+        overflow: hidden;
+      }
+
+      .analysis-approach-card li,
       .trend-approach-card li {
         line-height: 1.2;
         margin-bottom: 0;
       }
 
       .trend-plot-card {
-        min-height: 570px;
+        min-height: 560px;
         overflow: hidden;
       }
 
       .trend-plot-card .card-body {
-        min-height: 520px;
+        min-height: 510px;
         padding: 0.75rem;
       }
 
       .plot-container {
-        height: 500px;
+        height: 365px;
         width: 100%;
         overflow: hidden;
+      }
+
+      .visual-card {
+        height: 430px !important;
+        min-height: 430px !important;
+        max-height: 430px !important;
+        overflow: hidden;
+      }
+
+      .visual-card .card-body {
+        height: 375px !important;
+        min-height: 375px !important;
+        max-height: 375px !important;
+        padding: 0.75rem;
+        overflow: hidden;
+      }
+
+      .visual-card .shiny-plot-output,
+      .visual-card .html-widget {
+        width: 100% !important;
       }
 
       .tab-stack {
@@ -571,14 +603,16 @@ ui <- page_navbar(
   ),
   nav_panel(
     "Procedure Performance",
-    layout_column_wrap(
-      width = "100%",
+    div(
+      class = "tab-stack",
       card(
         card_header("Business Question"),
         h4("Which elective surgery procedures create the greatest access pressure?"),
         p("This section identifies the procedures where patients face the longest typical waits for elective surgery.")
       ),
       card(
+        class = "compact-card analysis-approach-card",
+        height = "145px",
         card_header("Analysis Approach"),
         tags$ul(
           tags$li("Filtered the dataset to median waiting time records."),
@@ -588,8 +622,12 @@ ui <- page_navbar(
         )
       ),
       card(
+        class = "visual-card",
         card_header("Top 10 Procedures by Average Median Waiting Time"),
-        plotOutput("procedure_wait_time_chart", height = "420px")
+        div(
+          class = "plot-container",
+          plotOutput("procedure_wait_time_chart", height = "365px")
+        )
       ),
       layout_column_wrap(
         width = "300px",
@@ -641,14 +679,16 @@ ui <- page_navbar(
   ),
   nav_panel(
     "State Comparison",
-    layout_column_wrap(
-      width = "100%",
+    div(
+      class = "tab-stack",
       card(
         card_header("Business Question"),
         h4("Where is elective surgery access most unequal across states?"),
         p("This section compares average median waiting times across states and territories to identify geographic access pressure.")
       ),
       card(
+        class = "compact-card analysis-approach-card",
+        height = "145px",
         card_header("Analysis Approach"),
         tags$ul(
           tags$li("Filtered the dataset to median waiting time records."),
@@ -658,8 +698,12 @@ ui <- page_navbar(
         )
       ),
       card(
+        class = "visual-card",
         card_header("State Variation in Average Median Waiting Time"),
-        plotOutput("state_wait_time_chart", height = "400px")
+        div(
+          class = "plot-container",
+          plotOutput("state_wait_time_chart", height = "365px")
+        )
       ),
       layout_column_wrap(
         width = "300px",
@@ -728,7 +772,7 @@ ui <- page_navbar(
         p("This section monitors whether average median waiting times are moving in a positive or negative direction across reporting periods.")
       ),
       card(
-        class = "compact-card trend-approach-card",
+        class = "compact-card analysis-approach-card trend-approach-card",
         height = "145px",
         card_header("Analysis Approach"),
         tags$ul(
@@ -739,11 +783,11 @@ ui <- page_navbar(
         )
       ),
       card(
-        class = "trend-plot-card",
+        class = "visual-card trend-plot-card",
         card_header("Average Median Waiting Time Over Time"),
         div(
           class = "plot-container",
-          plotlyOutput("wait_time_trend_chart", height = "500px")
+          plotlyOutput("wait_time_trend_chart", height = "365px")
         )
       ),
       layout_column_wrap(
@@ -1061,7 +1105,7 @@ server <- function(input, output, session) {
           )
         ),
         hoverlabel = list(align = "left"),
-        margin = list(l = 115, r = 20, t = 70, b = 45)
+        margin = list(l = 105, r = 20, t = 45, b = 40)
       ) %>%
       config(displayModeBar = FALSE, responsive = TRUE)
   })
