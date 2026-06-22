@@ -4,6 +4,7 @@
 library(shiny)
 library(bslib)
 library(tidyverse)
+library(plotly)
 
 elective_surgery_clean <- readr::read_csv(
   "data/elective_surgery_clean.csv",
@@ -587,7 +588,7 @@ ui <- page_navbar(
       ),
       card(
         card_header("Average Median Waiting Time Over Time"),
-        plotOutput("wait_time_trend_chart", height = "420px")
+        plotlyOutput("wait_time_trend_chart", height = "420px")
       ),
       layout_column_wrap(
         width = "300px",
@@ -824,57 +825,87 @@ server <- function(input, output, session) {
       )
   })
 
-  output$wait_time_trend_chart <- renderPlot({
-    ggplot(
-      wait_time_trend_reporting_end,
-      aes(
-        x = reporting_end,
-        y = average_median_wait_days
-      )
-    ) +
-      geom_line(color = "#2c7fb8", linewidth = 1.1) +
-      geom_point(color = "#2c7fb8", size = 2.8) +
-      geom_point(
+  output$wait_time_trend_chart <- renderPlotly({
+    plot_ly(
+      data = wait_time_trend_reporting_end,
+      x = ~reporting_end,
+      y = ~average_median_wait_days,
+      type = "scatter",
+      mode = "lines+markers",
+      line = list(color = "#2c7fb8", width = 3),
+      marker = list(color = "#2c7fb8", size = 8),
+      text = ~paste0(
+        "Reporting period end: ", format(reporting_end, "%Y-%m-%d"),
+        "<br>Average median wait: ", round(average_median_wait_days, 1), " days"
+      ),
+      hoverinfo = "text",
+      showlegend = FALSE
+    ) %>%
+      add_markers(
         data = worst_trend_period,
-        color = "#b2182b",
-        size = 4
-      ) +
-      geom_point(
+        x = ~reporting_end,
+        y = ~average_median_wait_days,
+        marker = list(color = "#b2182b", size = 12),
+        text = ~paste0(
+          "Worst period: ", format(reporting_end, "%Y-%m-%d"),
+          "<br>Average median wait: ", round(average_median_wait_days, 1), " days"
+        ),
+        hoverinfo = "text",
+        showlegend = FALSE
+      ) %>%
+      add_markers(
         data = best_trend_period,
-        color = "#1a9850",
-        size = 4
-      ) +
-      geom_label(
-        data = worst_trend_period,
-        aes(label = period_label),
-        nudge_y = 5,
-        fill = "#b2182b",
-        color = "white",
-        label.size = 0,
-        size = 3.6
-      ) +
-      geom_label(
-        data = best_trend_period,
-        aes(label = period_label),
-        nudge_y = -5,
-        fill = "#1a9850",
-        color = "white",
-        label.size = 0,
-        size = 3.6
-      ) +
-      labs(
-        x = NULL,
-        y = "Average median waiting time (days)"
-      ) +
-      scale_x_date(date_breaks = "2 years", date_labels = "%Y") +
-      scale_y_continuous(expand = expansion(mult = c(0.08, 0.14))) +
-      theme_minimal(base_size = 13) +
-      theme(
-        panel.grid.minor = element_blank(),
-        axis.text.x = element_text(size = 11),
-        axis.text.y = element_text(size = 11),
-        plot.margin = margin(10, 20, 10, 10)
-      )
+        x = ~reporting_end,
+        y = ~average_median_wait_days,
+        marker = list(color = "#1a9850", size = 12),
+        text = ~paste0(
+          "Best period: ", format(reporting_end, "%Y-%m-%d"),
+          "<br>Average median wait: ", round(average_median_wait_days, 1), " days"
+        ),
+        hoverinfo = "text",
+        showlegend = FALSE
+      ) %>%
+      layout(
+        xaxis = list(title = "", tickformat = "%Y"),
+        yaxis = list(
+          title = list(
+            text = "Average median waiting time (days)",
+            standoff = 18
+          ),
+          range = c(
+            floor(min(wait_time_trend_reporting_end$average_median_wait_days, na.rm = TRUE) / 10) * 10 - 5,
+            ceiling(max(wait_time_trend_reporting_end$average_median_wait_days, na.rm = TRUE) / 10) * 10 + 5
+          ),
+          dtick = 10
+        ),
+        annotations = list(
+          list(
+            x = worst_trend_period$reporting_end,
+            y = worst_trend_period$average_median_wait_days,
+            text = worst_trend_period$period_label,
+            showarrow = TRUE,
+            arrowhead = 2,
+            ax = 25,
+            ay = -35,
+            bgcolor = "#b2182b",
+            font = list(color = "white")
+          ),
+          list(
+            x = best_trend_period$reporting_end,
+            y = best_trend_period$average_median_wait_days,
+            text = best_trend_period$period_label,
+            showarrow = TRUE,
+            arrowhead = 2,
+            ax = 25,
+            ay = 35,
+            bgcolor = "#1a9850",
+            font = list(color = "white")
+          )
+        ),
+        hoverlabel = list(align = "left"),
+        margin = list(l = 95, r = 20, t = 20, b = 50)
+      ) %>%
+      config(displayModeBar = FALSE, responsive = TRUE)
   })
 }
 
