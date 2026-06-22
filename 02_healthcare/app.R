@@ -113,6 +113,20 @@ trend_direction <- case_when(
   TRUE ~ "remained stable"
 )
 
+business_questions <- tibble::tribble(
+  ~`Business Question`, ~`Why It Matters`,
+  "Which procedures have the longest waiting times?",
+  "Identifies clinical areas where capacity, staffing, or theatre time may need attention.",
+  "Which states experience the highest access pressure?",
+  "Shows where elective surgery access is most constrained and where support may be needed.",
+  "Are waiting times improving or worsening over time?",
+  "Helps leaders judge whether access initiatives are reducing waitlist pressure.",
+  "How do hospitals perform against peer benchmarks?",
+  "Supports fairer performance review by comparing hospitals with similar peers.",
+  "What actions should healthcare leaders prioritise?",
+  "Turns analysis into decisions about backlog reduction, resource allocation, and service planning."
+)
+
 ui <- page_navbar(
   title = "Healthcare Elective Surgery Performance Dashboard",
   theme = bs_theme(
@@ -122,51 +136,103 @@ ui <- page_navbar(
   header = tags$style(
     HTML("
       .kpi-card .card-body {
-        padding: 1rem;
+        min-height: 170px;
+        padding: 1.25rem;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
       }
 
-      .kpi-card h2,
+      .kpi-value {
+        font-size: 2.8rem;
+        font-weight: 700;
+        line-height: 1;
+        margin-bottom: 0.75rem;
+        color: #20384f;
+      }
+
+      .kpi-card p {
+        font-size: 1rem;
+        font-weight: 500;
+        color: #52616f;
+        margin-bottom: 0;
+      }
+
       .insight-card h4 {
-        margin-bottom: 0.25rem;
+        font-size: 1.35rem;
+        font-weight: 700;
+        margin-bottom: 0.75rem;
+        color: #20384f;
       }
 
-      .kpi-card p,
       .insight-card p {
+        font-size: 1rem;
+        line-height: 1.45;
+        color: #3f4d5a;
         margin-bottom: 0;
       }
 
       .insight-card .card-body {
-        padding: 1rem;
+        min-height: 210px;
+        padding: 1.25rem;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
       }
     ")
   ),
   nav_panel(
     "Executive Overview",
-    layout_column_wrap(
-      width = "260px",
-      card(
-        class = "kpi-card",
-        card_header("Total Elective Surgeries"),
-        h2(format(round(total_elective_surgeries), big.mark = ",")),
-        p("Reported elective surgery activity")
+    layout_columns(
+      col_widths = 12,
+      layout_column_wrap(
+        width = "260px",
+        card(
+          class = "kpi-card",
+          card_header("Total Elective Surgeries"),
+          div(class = "kpi-value", format(round(total_elective_surgeries), big.mark = ",")),
+          p("Reported elective surgery activity")
+        ),
+        card(
+          class = "kpi-card",
+          card_header("Reporting Hospitals"),
+          div(class = "kpi-value", format(reporting_hospitals, big.mark = ",")),
+          p("Hospitals included in the dataset")
+        ),
+        card(
+          class = "kpi-card",
+          card_header("Average Median Waiting Time"),
+          div(class = "kpi-value", paste0(round(average_median_waiting_time, 1), " days")),
+          p("Average of reported median wait times")
+        ),
+        card(
+          class = "kpi-card",
+          card_header("Treated Within Recommended Time"),
+          div(class = "kpi-value", paste0(round(treated_within_recommended_time, 1), "%")),
+          p("Average reported performance")
+        )
       ),
       card(
-        class = "kpi-card",
-        card_header("Reporting Hospitals"),
-        h2(format(reporting_hospitals, big.mark = ",")),
-        p("Hospitals included in the dataset")
+        card_header("Business Questions This Dashboard Answers"),
+        tableOutput("business_questions_table")
       ),
       card(
-        class = "kpi-card",
-        card_header("Average Median Waiting Time"),
-        h2(paste0(round(average_median_waiting_time, 1), " days")),
-        p("Average of reported median wait times")
-      ),
-      card(
-        class = "kpi-card",
-        card_header("Treated Within Recommended Time"),
-        h2(paste0(round(treated_within_recommended_time, 1), "%")),
-        p("Average reported performance")
+        card_header("About the Analysis"),
+        layout_column_wrap(
+          width = "300px",
+          value_box(
+            title = "Datasets Used",
+            value = "AIHW MyHospitals elective surgery data"
+          ),
+          value_box(
+            title = "What Was Analysed",
+            value = "Surgery volumes, wait times, state variation, trends, and peer benchmarks"
+          ),
+          value_box(
+            title = "Decisions Supported",
+            value = "Capacity planning, backlog reduction, access improvement, and performance review"
+          )
+        )
       )
     )
   ),
@@ -200,7 +266,7 @@ ui <- page_navbar(
   nav_panel(
     "Executive Insights",
     layout_column_wrap(
-      width = "320px",
+      width = "380px",
       card(
         class = "insight-card",
         card_header("Prioritise the highest-pressure procedure"),
@@ -278,6 +344,14 @@ ui <- page_navbar(
 )
 
 server <- function(input, output, session) {
+  output$business_questions_table <- renderTable(
+    business_questions,
+    striped = TRUE,
+    bordered = FALSE,
+    spacing = "m",
+    width = "100%"
+  )
+
   output$procedure_wait_time_chart <- renderPlot({
     ggplot(
       top_wait_time_procedures,
