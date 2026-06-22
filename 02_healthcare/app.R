@@ -125,6 +125,53 @@ trend_direction <- case_when(
   TRUE ~ "remained stable"
 )
 
+wait_time_trend_reporting_end <- elective_surgery_clean %>%
+  filter(
+    measure_name == "Median waiting time for elective surgery",
+    !is.na(value)
+  ) %>%
+  mutate(reporting_end = as.Date(reporting_end)) %>%
+  group_by(reporting_end) %>%
+  summarise(
+    average_median_wait_days = mean(value, na.rm = TRUE),
+    reporting_units = n_distinct(reporting_unit_name),
+    .groups = "drop"
+  ) %>%
+  arrange(reporting_end)
+
+worst_trend_period <- wait_time_trend_reporting_end %>%
+  slice_max(average_median_wait_days, n = 1, with_ties = FALSE) %>%
+  mutate(period_label = paste0("Highest: ", round(average_median_wait_days, 1), " days"))
+
+best_trend_period <- wait_time_trend_reporting_end %>%
+  slice_min(average_median_wait_days, n = 1, with_ties = FALSE) %>%
+  mutate(period_label = paste0("Lowest: ", round(average_median_wait_days, 1), " days"))
+
+first_trend_period <- wait_time_trend_reporting_end %>%
+  slice_min(reporting_end, n = 1, with_ties = FALSE)
+
+latest_trend_period <- wait_time_trend_reporting_end %>%
+  slice_max(reporting_end, n = 1, with_ties = FALSE)
+
+trend_direction_reporting_end <- case_when(
+  latest_trend_period$average_median_wait_days > first_trend_period$average_median_wait_days ~ "worsening",
+  latest_trend_period$average_median_wait_days < first_trend_period$average_median_wait_days ~ "improving",
+  TRUE ~ "stable"
+)
+
+trend_variability <- wait_time_trend_reporting_end %>%
+  summarise(
+    variability = sd(average_median_wait_days, na.rm = TRUE),
+    wait_range = max(average_median_wait_days, na.rm = TRUE) -
+      min(average_median_wait_days, na.rm = TRUE)
+  )
+
+trend_variability_label <- if_else(
+  trend_variability$wait_range >= 50,
+  "volatile",
+  "relatively stable"
+)
+
 business_questions <- tibble::tribble(
   ~`Business Question`, ~`Why It Matters`,
   "Which procedures have the longest waiting times?",
@@ -400,9 +447,85 @@ ui <- page_navbar(
   nav_panel(
     "Trends Over Time",
     layout_columns(
+      col_widths = 12,
+      card(
+        card_header("Business Question"),
+        h4("Are elective surgery waiting times improving or worsening over time?"),
+        p("This section monitors whether average median waiting times are moving in a positive or negative direction across reporting periods.")
+      ),
+      card(
+        card_header("Analysis Approach"),
+        tags$ul(
+          tags$li("Used time-based elective surgery median waiting time records."),
+          tags$li("Grouped records by reporting_end to represent each reporting period."),
+          tags$li("Calculated average median waiting time over time."),
+          tags$li("Identified the best and worst performance periods.")
+        )
+      ),
       card(
         card_header("Average Median Waiting Time Over Time"),
         plotOutput("wait_time_trend_chart", height = "460px")
+      ),
+      layout_column_wrap(
+        width = "340px",
+        card(
+          card_header("Key Findings"),
+          tags$ul(
+            tags$li(
+              paste0(
+                "Highest waiting time period: ",
+                format(worst_trend_period$reporting_end, "%Y-%m-%d"),
+                " at ",
+                round(worst_trend_period$average_median_wait_days, 1),
+                " days."
+              )
+            ),
+            tags$li(
+              paste0(
+                "Lowest waiting time period: ",
+                format(best_trend_period$reporting_end, "%Y-%m-%d"),
+                " at ",
+                round(best_trend_period$average_median_wait_days, 1),
+                " days."
+              )
+            ),
+            tags$li(
+              paste0(
+                "Overall trend direction is ",
+                trend_direction_reporting_end,
+                "."
+              )
+            ),
+            tags$li(
+              paste0(
+                "The system appears ",
+                trend_variability_label,
+                ", with a ",
+                round(trend_variability$wait_range, 1),
+                "-day range across reporting periods."
+              )
+            )
+          )
+        ),
+        card(
+          card_header("Healthcare Implications"),
+          p(
+            paste0(
+              "A ",
+              trend_direction_reporting_end,
+              " trend indicates whether elective surgery access pressure is easing or building over time. Sustained increases may signal backlog growth, capacity constraints, or delays in patient access, while improvement suggests that operational interventions may be having an effect."
+            )
+          )
+        ),
+        card(
+          card_header("Recommended Actions"),
+          tags$ul(
+            tags$li("Investigate peak pressure periods to understand demand, capacity, and workforce constraints."),
+            tags$li("If the trend worsens, identify whether deterioration is linked to backlog growth or reduced theatre availability."),
+            tags$li("If improvement is observed, sustain the policies or operational changes linked to better performance."),
+            tags$li("Monitor reporting-period trends as an early warning signal for future access pressure.")
+          )
+        )
       )
     )
   ),
@@ -560,26 +683,26 @@ server <- function(input, output, session) {
 
   output$wait_time_trend_chart <- renderPlot({
     ggplot(
-      wait_time_trend_over_time,
+      wait_time_trend_reporting_end,
       aes(
-        x = reporting_start,
+        x = reporting_end,
         y = average_median_wait_days
       )
     ) +
       geom_line(color = "#2c7fb8", linewidth = 1.1) +
       geom_point(color = "#2c7fb8", size = 2.8) +
       geom_point(
-        data = worst_wait_time_period,
+        data = worst_trend_period,
         color = "#b2182b",
         size = 4
       ) +
       geom_point(
-        data = best_wait_time_period,
+        data = best_trend_period,
         color = "#1a9850",
         size = 4
       ) +
       geom_label(
-        data = worst_wait_time_period,
+        data = worst_trend_period,
         aes(label = period_label),
         nudge_y = 5,
         fill = "#b2182b",
@@ -588,7 +711,7 @@ server <- function(input, output, session) {
         size = 3.6
       ) +
       geom_label(
-        data = best_wait_time_period,
+        data = best_trend_period,
         aes(label = period_label),
         nudge_y = -5,
         fill = "#1a9850",
