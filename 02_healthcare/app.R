@@ -265,7 +265,7 @@ executive_snapshot <- tibble::tribble(
 )
 
 executive_priority_actions <- tibble::tribble(
-  ~Priority, ~Decision, ~Why Now,
+  ~Priority, ~Decision, ~`Why Now`,
   "High",
   "Add capacity to the highest-wait procedures",
   "Procedure bottlenecks are the clearest pressure point.",
@@ -329,14 +329,43 @@ ui <- page_navbar(
         flex-direction: column;
         justify-content: center;
       }
+
+      .table-scroll {
+        width: 100%;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+      }
+
+      .table-scroll table {
+        min-width: 620px;
+      }
+
+      .card {
+        margin-bottom: 0.75rem;
+      }
+
+      .shiny-plot-output {
+        width: 100% !important;
+      }
+
+      @media (max-width: 576px) {
+        .kpi-card .card-body,
+        .insight-card .card-body {
+          min-height: auto;
+        }
+
+        .kpi-value {
+          font-size: 2.1rem;
+        }
+      }
     ")
   ),
   nav_panel(
     "Executive Overview",
-    layout_columns(
-      col_widths = 12,
+    layout_column_wrap(
+      width = "100%",
       layout_column_wrap(
-        width = "260px",
+        width = "220px",
         card(
           class = "kpi-card",
           card_header("Total Elective Surgeries"),
@@ -364,12 +393,15 @@ ui <- page_navbar(
       ),
       card(
         card_header("Business Questions This Dashboard Answers"),
-        tableOutput("business_questions_table")
+        div(
+          class = "table-scroll",
+          tableOutput("business_questions_table")
+        )
       ),
       card(
         card_header("About the Analysis"),
         layout_column_wrap(
-          width = "300px",
+          width = "260px",
           value_box(
             title = "Datasets Used",
             value = "AIHW MyHospitals elective surgery data"
@@ -388,8 +420,8 @@ ui <- page_navbar(
   ),
   nav_panel(
     "Procedure Performance",
-    layout_columns(
-      col_widths = 12,
+    layout_column_wrap(
+      width = "100%",
       card(
         card_header("Business Question"),
         h4("Which elective surgery procedures create the greatest access pressure?"),
@@ -406,10 +438,10 @@ ui <- page_navbar(
       ),
       card(
         card_header("Top 10 Procedures by Average Median Waiting Time"),
-        plotOutput("procedure_wait_time_chart", height = "520px")
+        plotOutput("procedure_wait_time_chart", height = "420px")
       ),
       layout_column_wrap(
-        width = "340px",
+        width = "300px",
         card(
           card_header("Key Findings"),
           tags$ul(
@@ -458,8 +490,8 @@ ui <- page_navbar(
   ),
   nav_panel(
     "State Comparison",
-    layout_columns(
-      col_widths = 12,
+    layout_column_wrap(
+      width = "100%",
       card(
         card_header("Business Question"),
         h4("Where is elective surgery access most unequal across states?"),
@@ -476,10 +508,10 @@ ui <- page_navbar(
       ),
       card(
         card_header("State Variation in Average Median Waiting Time"),
-        plotOutput("state_wait_time_chart", height = "420px")
+        plotOutput("state_wait_time_chart", height = "400px")
       ),
       layout_column_wrap(
-        width = "340px",
+        width = "300px",
         card(
           card_header("Key Findings"),
           tags$ul(
@@ -537,8 +569,8 @@ ui <- page_navbar(
   ),
   nav_panel(
     "Trends Over Time",
-    layout_columns(
-      col_widths = 12,
+    layout_column_wrap(
+      width = "100%",
       card(
         card_header("Business Question"),
         h4("Are elective surgery waiting times improving or worsening over time?"),
@@ -555,10 +587,10 @@ ui <- page_navbar(
       ),
       card(
         card_header("Average Median Waiting Time Over Time"),
-        plotOutput("wait_time_trend_chart", height = "460px")
+        plotOutput("wait_time_trend_chart", height = "420px")
       ),
       layout_column_wrap(
-        width = "340px",
+        width = "300px",
         card(
           card_header("Key Findings"),
           tags$ul(
@@ -622,15 +654,15 @@ ui <- page_navbar(
   ),
   nav_panel(
     "Executive Insights",
-    layout_columns(
-      col_widths = 12,
+    layout_column_wrap(
+      width = "100%",
       card(
         card_header("Executive Question"),
         h3("What should leaders act on first?"),
         p("The dashboard points to three immediate priorities: procedure bottlenecks, geographic access pressure, and worsening wait-time performance.")
       ),
       layout_column_wrap(
-        width = "300px",
+        width = "280px",
         card(
           class = "insight-card",
           card_header("1. Procedure bottleneck"),
@@ -663,7 +695,10 @@ ui <- page_navbar(
       ),
       card(
         card_header("Priority Actions"),
-        tableOutput("executive_priority_action_table")
+        div(
+          class = "table-scroll",
+          tableOutput("executive_priority_action_table")
+        )
       ),
       card(
         card_header("Executive Takeaway"),
@@ -688,7 +723,7 @@ ui <- page_navbar(
             )
           )
         )
-      ),
+      )
     )
   )
 )
