@@ -19,7 +19,7 @@ reporting_hospitals <- elective_surgery_clean %>%
   summarise(value = n_distinct(reporting_unit_name)) %>%
   pull(value)
 
-median_waiting_time <- elective_surgery_clean %>%
+average_median_waiting_time <- elective_surgery_clean %>%
   filter(str_detect(measure_name, regex("median waiting time", ignore_case = TRUE))) %>%
   summarise(value = mean(value, na.rm = TRUE)) %>%
   pull(value)
@@ -50,8 +50,8 @@ ui <- page_navbar(
         p("Hospitals included in the dataset")
       ),
       card(
-        card_header("Median Waiting Time"),
-        h2(paste0(round(median_waiting_time, 1), " days")),
+        card_header("Average Median Waiting Time"),
+        h2(paste0(round(average_median_waiting_time, 1), " days")),
         p("Average of reported median wait times")
       ),
       card(
