@@ -210,7 +210,7 @@ executive_evidence_summary <- tibble::tribble(
   ),
   "Access inequality",
   paste0(
-    "The gap between the highest- and lowest-wait states is ",
+    "The gap between the highest and lowest-wait states is ",
     round(state_wait_gap, 1),
     " days."
   )
@@ -238,6 +238,43 @@ executive_action_plan <- tibble::tribble(
   "Review peer benchmark gaps",
   "Peer comparisons support fairer performance review across different hospital contexts.",
   "Focus governance conversations on realistic and comparable performance expectations."
+)
+
+executive_snapshot <- tibble::tribble(
+  ~Area, ~KeyMessage,
+  "Procedure pressure",
+  paste0(
+    highest_wait_procedure$reported_measure_name,
+    " has the longest average median wait at ",
+    round(highest_wait_procedure$average_median_wait_days, 1),
+    " days."
+  ),
+  "Geographic pressure",
+  paste0(
+    highest_wait_state$mapped_state,
+    " has the highest state-level wait pressure; the state gap is ",
+    round(state_wait_gap, 1),
+    " days."
+  ),
+  "System direction",
+  paste0(
+    "Waiting time performance is ",
+    trend_direction_reporting_end,
+    " across the available reporting periods."
+  )
+)
+
+executive_priority_actions <- tibble::tribble(
+  ~Priority, ~Decision, ~Why Now,
+  "High",
+  "Add capacity to the highest-wait procedures",
+  "Procedure bottlenecks are the clearest pressure point.",
+  "High",
+  "Target support to the highest-wait state",
+  "Access pressure is geographically uneven.",
+  "Medium",
+  "Monitor trend deterioration",
+  "Earlier intervention can prevent backlog pressure from becoming harder to manage."
 )
 
 ui <- page_navbar(
@@ -588,101 +625,67 @@ ui <- page_navbar(
     layout_columns(
       col_widths = 12,
       card(
-        card_header("Business Question"),
-        h4("What actions should healthcare leaders prioritise based on elective surgery performance insights?"),
-        p("This section converts the dashboard findings into practical decisions for capacity planning, backlog reduction, and access improvement.")
-      ),
-      card(
-        card_header("Evidence Summary"),
-        tableOutput("executive_evidence_table")
+        card_header("Executive Question"),
+        h3("What should leaders act on first?"),
+        p("The dashboard points to three immediate priorities: procedure bottlenecks, geographic access pressure, and worsening wait-time performance.")
       ),
       layout_column_wrap(
-        width = "340px",
+        width = "300px",
         card(
-          card_header("Procedure bottlenecks"),
-          h4("What the data shows"),
-          p(
-            paste0(
-              highest_wait_procedure$reported_measure_name,
-              " has the longest average median wait at ",
-              round(highest_wait_procedure$average_median_wait_days, 1),
-              " days."
-            )
-          ),
-          h4("Why it matters"),
-          p("A small group of procedures can create a large share of access pressure, making targeted capacity planning more effective than broad system-wide action.")
+          class = "insight-card",
+          card_header("1. Procedure bottleneck"),
+          h4(highest_wait_procedure$reported_measure_name),
+          p(paste0(
+            round(highest_wait_procedure$average_median_wait_days, 1),
+            " days average median wait. Prioritise theatre time and specialist capacity here."
+          ))
         ),
         card(
-          card_header("Geographic inequality"),
-          h4("What the data shows"),
-          p(
-            paste0(
-              highest_wait_state$mapped_state,
-              " has the highest average median wait, while ",
-              lowest_wait_state$mapped_state,
-              " has the lowest."
-            )
-          ),
-          h4("Why it matters"),
-          p("Patients may experience different access to elective surgery depending on where they live, raising equity and service planning concerns.")
+          class = "insight-card",
+          card_header("2. Access inequality"),
+          h4(highest_wait_state$mapped_state),
+          p(paste0(
+            "Highest state wait pressure, with a ",
+            round(state_wait_gap, 1),
+            "-day gap to the lowest-wait state. Target support geographically."
+          ))
         ),
         card(
-          card_header("Peak pressure periods"),
-          h4("What the data shows"),
-          p(
-            paste0(
-              "The worst reporting period reached ",
-              round(worst_trend_period$average_median_wait_days, 1),
-              " days on average."
-            )
-          ),
-          h4("Why it matters"),
-          p("Peak periods can reveal when backlog growth, demand shocks, or capacity constraints become most visible.")
-        ),
-        card(
-          card_header("System direction"),
-          h4("What the data shows"),
-          p(
-            paste0(
-              "The trend is currently ",
-              trend_direction_reporting_end,
-              " across the available reporting periods."
-            )
-          ),
-          h4("Why it matters"),
-          p("Trend direction helps leaders assess whether current access initiatives are improving performance or whether stronger intervention is needed.")
+          class = "insight-card",
+          card_header("3. System direction"),
+          h4(str_to_sentence(trend_direction_reporting_end)),
+          p(paste0(
+            "Wait-time performance is ",
+            trend_direction_reporting_end,
+            ". Monitor deterioration early and investigate peak pressure periods."
+          ))
         )
       ),
       card(
-        card_header("Recommended Actions"),
-        tableOutput("executive_action_table")
+        card_header("Priority Actions"),
+        tableOutput("executive_priority_action_table")
       ),
       card(
-        card_header("Executive Summary"),
+        card_header("Executive Takeaway"),
         tags$ul(
           tags$li(
             paste0(
-              "Overall system performance shows ",
-              trend_direction_reporting_end,
-              " wait-time pressure across reporting periods."
-            )
-          ),
-          tags$li(
-            paste0(
-              "The biggest procedure-level pressure point is ",
+              "Biggest operational pressure: ",
               highest_wait_procedure$reported_measure_name,
               "."
             )
           ),
           tags$li(
             paste0(
-              "Intervention is most needed where high-wait procedures overlap with high-wait geographies such as ",
+              "Most urgent geographic focus: ",
               highest_wait_state$mapped_state,
               "."
             )
           ),
           tags$li(
-            "Leadership should focus next on targeted capacity, backlog reduction, peer benchmarking, and early monitoring of deterioration signals."
+            paste0(
+              "Leadership focus: targeted capacity, backlog reduction, and early trend monitoring."
+            )
           )
         )
       ),
@@ -709,6 +712,14 @@ server <- function(input, output, session) {
 
   output$executive_action_table <- renderTable(
     executive_action_plan,
+    striped = TRUE,
+    bordered = FALSE,
+    spacing = "m",
+    width = "100%"
+  )
+
+  output$executive_priority_action_table <- renderTable(
+    executive_priority_actions,
     striped = TRUE,
     bordered = FALSE,
     spacing = "m",
