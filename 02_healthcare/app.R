@@ -345,6 +345,46 @@ ui <- page_navbar(
         margin-bottom: 0.75rem;
       }
 
+      .compact-card .card-body {
+        padding: 0.9rem 1rem;
+      }
+
+      .trend-approach-card .card-body {
+        padding: 0.7rem 1rem;
+        overflow: visible;
+      }
+
+      .trend-approach-card li {
+        line-height: 1.2;
+        margin-bottom: 0;
+      }
+
+      .trend-plot-card {
+        min-height: 570px;
+        overflow: hidden;
+      }
+
+      .trend-plot-card .card-body {
+        min-height: 520px;
+        padding: 0.75rem;
+      }
+
+      .plot-container {
+        height: 500px;
+        width: 100%;
+        overflow: hidden;
+      }
+
+      .tab-stack {
+        display: flex;
+        flex-direction: column;
+        gap: 0.75rem;
+      }
+
+      .compact-card ul {
+        margin-bottom: 0;
+      }
+
       .shiny-plot-output {
         width: 100% !important;
       }
@@ -570,14 +610,16 @@ ui <- page_navbar(
   ),
   nav_panel(
     "Trends Over Time",
-    layout_column_wrap(
-      width = "100%",
+    div(
+      class = "tab-stack",
       card(
         card_header("Business Question"),
         h4("Are elective surgery waiting times improving or worsening over time?"),
         p("This section monitors whether average median waiting times are moving in a positive or negative direction across reporting periods.")
       ),
       card(
+        class = "compact-card trend-approach-card",
+        height = "145px",
         card_header("Analysis Approach"),
         tags$ul(
           tags$li("Used time-based elective surgery median waiting time records."),
@@ -587,8 +629,12 @@ ui <- page_navbar(
         )
       ),
       card(
+        class = "trend-plot-card",
         card_header("Average Median Waiting Time Over Time"),
-        plotlyOutput("wait_time_trend_chart", height = "420px")
+        div(
+          class = "plot-container",
+          plotlyOutput("wait_time_trend_chart", height = "500px")
+        )
       ),
       layout_column_wrap(
         width = "300px",
@@ -869,12 +915,14 @@ server <- function(input, output, session) {
         xaxis = list(title = "", tickformat = "%Y"),
         yaxis = list(
           title = list(
-            text = "Average median waiting time (days)",
-            standoff = 18
+            text = "Average wait (days)",
+            standoff = 28,
+            font = list(size = 14)
           ),
+          automargin = TRUE,
           range = c(
             floor(min(wait_time_trend_reporting_end$average_median_wait_days, na.rm = TRUE) / 10) * 10 - 5,
-            ceiling(max(wait_time_trend_reporting_end$average_median_wait_days, na.rm = TRUE) / 10) * 10 + 5
+            ceiling(max(wait_time_trend_reporting_end$average_median_wait_days, na.rm = TRUE) / 10) * 10 + 30
           ),
           dtick = 10
         ),
@@ -885,8 +933,8 @@ server <- function(input, output, session) {
             text = worst_trend_period$period_label,
             showarrow = TRUE,
             arrowhead = 2,
-            ax = 25,
-            ay = -35,
+            ax = 35,
+            ay = -38,
             bgcolor = "#b2182b",
             font = list(color = "white")
           ),
@@ -903,7 +951,7 @@ server <- function(input, output, session) {
           )
         ),
         hoverlabel = list(align = "left"),
-        margin = list(l = 95, r = 20, t = 20, b = 50)
+        margin = list(l = 115, r = 20, t = 70, b = 45)
       ) %>%
       config(displayModeBar = FALSE, responsive = TRUE)
   })
