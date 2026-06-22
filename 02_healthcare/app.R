@@ -29,6 +29,19 @@ treated_within_recommended_time <- elective_surgery_clean %>%
   summarise(value = mean(value, na.rm = TRUE)) %>%
   pull(value)
 
+top_wait_time_procedures <- elective_surgery_clean %>%
+  filter(
+    measure_name == "Median waiting time for elective surgery",
+    !is.na(value)
+  ) %>%
+  group_by(reported_measure_name) %>%
+  summarise(
+    average_median_wait_days = mean(value, na.rm = TRUE),
+    .groups = "drop"
+  ) %>%
+  arrange(desc(average_median_wait_days)) %>%
+  slice_head(n = 10)
+
 ui <- page_navbar(
   title = "Healthcare Elective Surgery Performance Dashboard",
   theme = bs_theme(
@@ -37,8 +50,8 @@ ui <- page_navbar(
   ),
   nav_panel(
     "Executive Overview",
-    layout_columns(
-      col_widths = c(3, 3, 3, 3),
+    layout_column_wrap(
+      width = "260px",
       card(
         card_header("Total Elective Surgeries"),
         h2(format(round(total_elective_surgeries), big.mark = ",")),
@@ -65,8 +78,8 @@ ui <- page_navbar(
     "Procedure Performance",
     layout_columns(
       card(
-        card_header("Procedure Performance"),
-        "Placeholder for procedure-level elective surgery performance analysis."
+        card_header("Top 10 Procedures by Average Median Waiting Time"),
+        plotOutput("procedure_wait_time_chart", height = "520px")
       )
     )
   ),
@@ -100,6 +113,29 @@ ui <- page_navbar(
 )
 
 server <- function(input, output, session) {
+  output$procedure_wait_time_chart <- renderPlot({
+    ggplot(
+      top_wait_time_procedures,
+      aes(
+        x = reorder(reported_measure_name, average_median_wait_days),
+        y = average_median_wait_days
+      )
+    ) +
+      geom_col(fill = "#2c7fb8", width = 0.72) +
+      coord_flip() +
+      labs(
+        x = NULL,
+        y = "Average median waiting time (days)"
+      ) +
+      scale_y_continuous(expand = expansion(mult = c(0, 0.08))) +
+      theme_minimal(base_size = 13) +
+      theme(
+        panel.grid.major.y = element_blank(),
+        panel.grid.minor = element_blank(),
+        axis.text.y = element_text(size = 11),
+        plot.margin = margin(10, 20, 10, 10)
+      )
+  })
 }
 
 shinyApp(ui = ui, server = server)
