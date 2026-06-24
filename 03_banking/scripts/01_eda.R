@@ -3,6 +3,7 @@
 library(tidyverse)
 library(janitor)
 library(tibble)
+library(scales)
 
 banking_transactions <- read_csv(
   "03_banking/data/banking_transactions.csv",
@@ -262,3 +263,113 @@ business_questions <- tibble(
     "avg_monthly_balance, transaction_amount, fraud_flag, anomaly_score, device_risk_score"
   )
 )
+
+# Analysis 1: Transaction Value Distribution ------------------------------
+
+transaction_value_column <- "transaction_amount"
+
+transaction_value_summary <- banking_transactions %>%
+  summarise(
+    minimum_transaction_value = min(.data[[transaction_value_column]], na.rm = TRUE),
+    average_transaction_value = mean(.data[[transaction_value_column]], na.rm = TRUE),
+    median_transaction_value = median(.data[[transaction_value_column]], na.rm = TRUE),
+    maximum_transaction_value = max(.data[[transaction_value_column]], na.rm = TRUE),
+    standard_deviation = sd(.data[[transaction_value_column]], na.rm = TRUE)
+  )
+
+transaction_value_quantiles <- banking_transactions %>%
+  summarise(
+    q0 = quantile(.data[[transaction_value_column]], 0, na.rm = TRUE),
+    q25 = quantile(.data[[transaction_value_column]], 0.25, na.rm = TRUE),
+    q50 = quantile(.data[[transaction_value_column]], 0.50, na.rm = TRUE),
+    q75 = quantile(.data[[transaction_value_column]], 0.75, na.rm = TRUE),
+    q100 = quantile(.data[[transaction_value_column]], 1, na.rm = TRUE)
+  )
+
+transaction_value_iqr <- IQR(
+  banking_transactions[[transaction_value_column]],
+  na.rm = TRUE
+)
+
+transaction_value_extreme_thresholds <- banking_transactions %>%
+  summarise(
+    q1 = quantile(.data[[transaction_value_column]], 0.25, na.rm = TRUE),
+    q3 = quantile(.data[[transaction_value_column]], 0.75, na.rm = TRUE),
+    iqr = transaction_value_iqr,
+    lower_extreme_threshold = q1 - 1.5 * iqr,
+    upper_extreme_threshold = q3 + 1.5 * iqr
+  )
+
+transaction_value_extreme_values <- banking_transactions %>%
+  filter(
+    .data[[transaction_value_column]] <
+      transaction_value_extreme_thresholds$lower_extreme_threshold |
+      .data[[transaction_value_column]] >
+      transaction_value_extreme_thresholds$upper_extreme_threshold
+  ) %>%
+  select(transaction_id, transaction_amount, payment_channel, fraud_flag)
+
+transaction_value_boxplot <- banking_transactions %>%
+  ggplot(aes(y = .data[[transaction_value_column]])) +
+  geom_boxplot(
+    fill = "#3B82F6",
+    color = "#1F2937",
+    outlier.color = "#DC2626",
+    outlier.fill = "#FEE2E2",
+    outlier.shape = 21,
+    outlier.size = 2.4,
+    width = 0.28,
+    alpha = 0.82
+  ) +
+  scale_y_continuous(labels = scales::label_dollar()) +
+  labs(
+    title = "Transaction Value Distribution",
+    subtitle = "Outliers highlight unusually high or low transaction values",
+    x = NULL,
+    y = "Transaction value"
+  ) +
+  theme_minimal(base_size = 12) +
+  theme(
+    plot.title = element_text(face = "bold", size = 15),
+    plot.subtitle = element_text(color = "#4B5563"),
+    panel.grid.minor = element_blank(),
+    axis.text.x = element_blank()
+  )
+
+transaction_value_density_plot <- banking_transactions %>%
+  ggplot(aes(x = .data[[transaction_value_column]])) +
+  geom_density(
+    fill = "#14B8A6",
+    color = "#0F766E",
+    linewidth = 1,
+    alpha = 0.35
+  ) +
+  geom_vline(
+    xintercept = transaction_value_summary$median_transaction_value,
+    color = "#7C2D12",
+    linewidth = 0.9,
+    linetype = "dashed"
+  ) +
+  scale_x_continuous(labels = scales::label_dollar()) +
+  labs(
+    title = "Transaction Value Concentration",
+    subtitle = "Density curve shows where transaction values cluster across the portfolio",
+    x = "Transaction value",
+    y = "Density"
+  ) +
+  theme_minimal(base_size = 12) +
+  theme(
+    plot.title = element_text(face = "bold", size = 15),
+    plot.subtitle = element_text(color = "#4B5563"),
+    panel.grid.minor = element_blank()
+  )
+
+transaction_value_insight <- tibble(
+  insight_title = "Transaction values show portfolio concentration and high-value behaviour",
+  insight_description = "The distribution of transaction amounts helps identify whether most activity is concentrated in routine transaction bands while a smaller set of high-value transactions sits in the upper tail.",
+  business_implication = "Banking teams should review high-value transaction behaviour separately from everyday activity because it may carry different operational, service, and risk considerations."
+)
+
+# Business meaning: transaction value distribution shows whether everyday
+# banking activity is broadly balanced or whether a smaller group of large
+# transactions contributes a disproportionate share of value.
