@@ -264,7 +264,7 @@ business_questions <- tibble(
   )
 )
 
-# Analysis 1: Transaction Value Distribution ------------------------------
+# Analysis 1: Transaction Value Distribution
 
 transaction_value_column <- "transaction_amount"
 
@@ -374,7 +374,7 @@ transaction_value_insight <- tibble(
 # banking activity is broadly balanced or whether a smaller group of large
 # transactions contributes a disproportionate share of value.
 
-# Analysis 2: Transaction Channel Usage Patterns --------------------------
+# Analysis 2: Transaction Channel Usage Patterns
 
 transaction_channel_column <- "payment_channel"
 
@@ -457,3 +457,270 @@ channel_usage_insight <- tibble(
   insight_description = "Channel usage patterns show which customer interaction points carry the highest transaction load and whether activity is spread evenly or concentrated in a smaller number of channels.",
   business_implication = "Retail banking and operations teams can use channel concentration to prioritise capacity planning, service support, and digital channel strategy."
 )
+
+# Analysis 3: Transaction Risk and Behaviour Patterns
+
+transaction_value_risk_column <- if ("transaction_amount" %in% names(banking_transactions)) {
+  "transaction_amount"
+} else {
+  NA_character_
+}
+
+risk_indicator_column <- case_when(
+  "device_risk_score" %in% names(banking_transactions) ~ "device_risk_score",
+  "anomaly_score" %in% names(banking_transactions) ~ "anomaly_score",
+  "transaction_velocity_score" %in% names(banking_transactions) ~ "transaction_velocity_score",
+  TRUE ~ NA_character_
+)
+
+fraud_indicator_column <- if ("fraud_flag" %in% names(banking_transactions)) {
+  "fraud_flag"
+} else {
+  NA_character_
+}
+
+authentication_type_column <- if ("authentication_type" %in% names(banking_transactions)) {
+  "authentication_type"
+} else {
+  NA_character_
+}
+
+international_indicator_column <- if ("international_transaction_flag" %in% names(banking_transactions)) {
+  "international_transaction_flag"
+} else {
+  NA_character_
+}
+
+risk_analysis_available <- !is.na(transaction_value_risk_column) &&
+  !is.na(risk_indicator_column)
+
+if (risk_analysis_available) {
+  risk_lower_threshold <- quantile(
+    banking_transactions[[risk_indicator_column]],
+    0.33,
+    na.rm = TRUE
+  )
+
+  risk_upper_threshold <- quantile(
+    banking_transactions[[risk_indicator_column]],
+    0.67,
+    na.rm = TRUE
+  )
+
+  transaction_risk_behaviour_data <- banking_transactions %>%
+    mutate(
+      risk_category = case_when(
+        .data[[risk_indicator_column]] <= risk_lower_threshold ~ "Low risk",
+        .data[[risk_indicator_column]] <= risk_upper_threshold ~ "Medium risk",
+        TRUE ~ "High risk"
+      ),
+      fraud_indicator = if (!is.na(fraud_indicator_column)) {
+        case_when(
+          is.na(.data[[fraud_indicator_column]]) ~ NA_integer_,
+          as.character(.data[[fraud_indicator_column]]) %in%
+            c("TRUE", "True", "true", "1") ~ 1L,
+          TRUE ~ 0L
+        )
+      } else {
+        NA_integer_
+      },
+      transaction_scope = if (!is.na(international_indicator_column)) {
+        if_else(
+          as.character(.data[[international_indicator_column]]) %in%
+            c("TRUE", "True", "true", "1"),
+          "International",
+          "Domestic"
+        )
+      } else {
+        NA_character_
+      }
+    )
+
+  risk_transaction_value_summary <- transaction_risk_behaviour_data %>%
+    group_by(risk_category) %>%
+    summarise(
+      total_transactions = n(),
+      average_transaction_value = mean(
+        .data[[transaction_value_risk_column]],
+        na.rm = TRUE
+      ),
+      median_transaction_value = median(
+        .data[[transaction_value_risk_column]],
+        na.rm = TRUE
+      ),
+      average_risk_score = mean(.data[[risk_indicator_column]], na.rm = TRUE),
+      fraud_rate = mean(fraud_indicator, na.rm = TRUE) * 100,
+      .groups = "drop"
+    ) %>%
+    arrange(desc(average_risk_score))
+
+  authentication_risk_summary <- if (!is.na(authentication_type_column)) {
+    transaction_risk_behaviour_data %>%
+      group_by(
+        authentication_type = .data[[authentication_type_column]],
+        risk_category
+      ) %>%
+      summarise(
+        total_transactions = n(),
+        average_risk_score = mean(.data[[risk_indicator_column]], na.rm = TRUE),
+        fraud_rate = mean(fraud_indicator, na.rm = TRUE) * 100,
+        .groups = "drop"
+      ) %>%
+      group_by(authentication_type) %>%
+      mutate(
+        risk_distribution_share =
+          total_transactions / sum(total_transactions) * 100
+      ) %>%
+      ungroup()
+  } else {
+    tibble(
+      authentication_type = character(),
+      risk_category = character(),
+      total_transactions = integer(),
+      average_risk_score = numeric(),
+      fraud_rate = numeric(),
+      risk_distribution_share = numeric()
+    )
+  }
+
+  domestic_international_risk_summary <- if (!is.na(international_indicator_column)) {
+    transaction_risk_behaviour_data %>%
+      group_by(transaction_scope) %>%
+      summarise(
+        total_transactions = n(),
+        average_transaction_value = mean(
+          .data[[transaction_value_risk_column]],
+          na.rm = TRUE
+        ),
+        median_transaction_value = median(
+          .data[[transaction_value_risk_column]],
+          na.rm = TRUE
+        ),
+        average_risk_score = mean(.data[[risk_indicator_column]], na.rm = TRUE),
+        fraud_rate = mean(fraud_indicator, na.rm = TRUE) * 100,
+        .groups = "drop"
+      ) %>%
+      arrange(desc(average_risk_score))
+  } else {
+    tibble(
+      transaction_scope = character(),
+      total_transactions = integer(),
+      average_transaction_value = numeric(),
+      median_transaction_value = numeric(),
+      average_risk_score = numeric(),
+      fraud_rate = numeric()
+    )
+  }
+
+  risk_value_boxplot <- transaction_risk_behaviour_data %>%
+    mutate(
+      risk_category = factor(
+        risk_category,
+        levels = c("Low risk", "Medium risk", "High risk")
+      )
+    ) %>%
+    ggplot(aes(
+      x = risk_category,
+      y = .data[[transaction_value_risk_column]],
+      fill = risk_category
+    )) +
+    geom_boxplot(
+      color = "#1F2937",
+      outlier.color = "#DC2626",
+      outlier.fill = "#FEE2E2",
+      outlier.shape = 21,
+      outlier.size = 2,
+      alpha = 0.82
+    ) +
+    scale_y_continuous(labels = label_dollar()) +
+    scale_fill_manual(
+      values = c(
+        "Low risk" = "#60A5FA",
+        "Medium risk" = "#FBBF24",
+        "High risk" = "#EF4444"
+      )
+    ) +
+    labs(
+      title = "Transaction Value by Risk Category",
+      subtitle = "Distribution of transaction values across device risk bands",
+      x = NULL,
+      y = "Transaction value",
+      fill = "Risk category"
+    ) +
+    theme_minimal(base_size = 12) +
+    theme(
+      plot.title = element_text(face = "bold", size = 15),
+      plot.subtitle = element_text(color = "#4B5563"),
+      panel.grid.minor = element_blank(),
+      legend.position = "none"
+    )
+
+  authentication_risk_heatmap <- if (!is.na(authentication_type_column)) {
+    authentication_risk_summary %>%
+      mutate(
+        risk_category = factor(
+          risk_category,
+          levels = c("Low risk", "Medium risk", "High risk")
+        )
+      ) %>%
+      ggplot(aes(
+        x = authentication_type,
+        y = risk_category,
+        fill = risk_distribution_share
+      )) +
+      geom_tile(color = "white", linewidth = 0.7) +
+      geom_text(
+        aes(label = label_percent(scale = 1, accuracy = 0.1)(risk_distribution_share)),
+        size = 3.4,
+        color = "#111827"
+      ) +
+      scale_fill_gradient(
+        low = "#DBEAFE",
+        high = "#1D4ED8",
+        labels = label_percent(scale = 1)
+      ) +
+      labs(
+        title = "Authentication Type and Risk Distribution",
+        subtitle = "Share of each authentication type by risk category",
+        x = "Authentication type",
+        y = "Risk category",
+        fill = "Share"
+      ) +
+      theme_minimal(base_size = 12) +
+      theme(
+        plot.title = element_text(face = "bold", size = 15),
+        plot.subtitle = element_text(color = "#4B5563"),
+        panel.grid = element_blank()
+      )
+  } else {
+    NULL
+  }
+
+  highest_risk_segment <- risk_transaction_value_summary %>%
+    slice_max(average_risk_score, n = 1, with_ties = FALSE)
+
+  lowest_risk_segment <- risk_transaction_value_summary %>%
+    slice_min(average_risk_score, n = 1, with_ties = FALSE)
+
+  transaction_risk_insight <- tibble(
+    insight_title = "Risk patterns can be linked to transaction behaviour",
+    insight_description = "Transaction value, authentication type, fraud flags, and international activity provide a practical view of where risk indicators concentrate across the transaction base.",
+    business_implication = "Risk and operations teams can use these patterns to focus monitoring on higher-risk transaction behaviours while protecting lower-risk customer journeys from unnecessary friction."
+  )
+} else {
+  transaction_risk_behaviour_data <- tibble()
+  risk_transaction_value_summary <- tibble()
+  authentication_risk_summary <- tibble()
+  domestic_international_risk_summary <- tibble()
+  risk_value_boxplot <- NULL
+  authentication_risk_heatmap <- NULL
+  highest_risk_segment <- tibble()
+  lowest_risk_segment <- tibble()
+
+  transaction_risk_insight <- tibble(
+    insight_title = "Transaction risk analysis requires value and risk fields",
+    insight_description = "The dataset does not contain both a transaction value field and a usable risk indicator field for this analysis.",
+    business_implication = "Risk behaviour analysis should wait until core transaction value and risk indicator fields are available."
+  )
+}
+
