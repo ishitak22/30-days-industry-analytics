@@ -373,3 +373,87 @@ transaction_value_insight <- tibble(
 # Business meaning: transaction value distribution shows whether everyday
 # banking activity is broadly balanced or whether a smaller group of large
 # transactions contributes a disproportionate share of value.
+
+# Analysis 2: Transaction Channel Usage Patterns --------------------------
+
+transaction_channel_column <- "payment_channel"
+
+channel_usage_summary <- banking_transactions %>%
+  count(
+    channel = .data[[transaction_channel_column]],
+    name = "total_transactions",
+    sort = TRUE
+  ) %>%
+  mutate(
+    percentage_share = total_transactions / sum(total_transactions) * 100,
+    usage_rank = row_number()
+  )
+
+channel_usage_bar_chart <- channel_usage_summary %>%
+  ggplot(aes(
+    x = reorder(channel, total_transactions),
+    y = total_transactions
+  )) +
+  geom_col(
+    fill = "#2563EB",
+    width = 0.68
+  ) +
+  geom_text(
+    aes(label = comma(total_transactions)),
+    hjust = -0.15,
+    size = 3.7,
+    color = "#1F2937"
+  ) +
+  coord_flip() +
+  scale_y_continuous(
+    labels = comma,
+    expand = expansion(mult = c(0, 0.12))
+  ) +
+  labs(
+    title = "Transaction Channel Usage",
+    subtitle = "Channels ranked by total transaction volume",
+    x = NULL,
+    y = "Total transactions"
+  ) +
+  theme_minimal(base_size = 12) +
+  theme(
+    plot.title = element_text(face = "bold", size = 15),
+    plot.subtitle = element_text(color = "#4B5563"),
+    panel.grid.major.y = element_blank(),
+    panel.grid.minor = element_blank()
+  )
+
+channel_usage_composition_chart <- channel_usage_summary %>%
+  mutate(channel = fct_reorder(channel, percentage_share)) %>%
+  ggplot(aes(
+    x = "All transactions",
+    y = percentage_share,
+    fill = channel
+  )) +
+  geom_col(width = 0.48, color = "white", linewidth = 0.6) +
+  coord_flip() +
+  scale_y_continuous(
+    labels = label_percent(scale = 1),
+    expand = c(0, 0)
+  ) +
+  scale_fill_brewer(palette = "Set2") +
+  labs(
+    title = "Share of Transaction Activity by Channel",
+    subtitle = "Composition view of total transaction volume",
+    x = NULL,
+    y = "Share of transactions",
+    fill = "Channel"
+  ) +
+  theme_minimal(base_size = 12) +
+  theme(
+    plot.title = element_text(face = "bold", size = 15),
+    plot.subtitle = element_text(color = "#4B5563"),
+    panel.grid = element_blank(),
+    legend.position = "bottom"
+  )
+
+channel_usage_insight <- tibble(
+  insight_title = "Transaction activity is concentrated across customer access channels",
+  insight_description = "Channel usage patterns show which customer interaction points carry the highest transaction load and whether activity is spread evenly or concentrated in a smaller number of channels.",
+  business_implication = "Retail banking and operations teams can use channel concentration to prioritise capacity planning, service support, and digital channel strategy."
+)
