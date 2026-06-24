@@ -724,3 +724,154 @@ if (risk_analysis_available) {
   )
 }
 
+# Analysis 4: Transaction Activity Over Time ------------------------------
+
+transaction_time_column <- case_when(
+  "transaction_date" %in% names(banking_transactions) ~ "transaction_date",
+  "transaction_timestamp" %in% names(banking_transactions) ~ "transaction_timestamp",
+  "transaction_time" %in% names(banking_transactions) ~ "transaction_time",
+  "transaction_time_hour" %in% names(banking_transactions) ~ "transaction_time_hour",
+  TRUE ~ NA_character_
+)
+
+time_trend_value_column <- if ("transaction_amount" %in% names(banking_transactions)) {
+  "transaction_amount"
+} else {
+  NA_character_
+}
+
+time_trend_analysis_available <- !is.na(transaction_time_column) &&
+  !is.na(time_trend_value_column)
+
+if (time_trend_analysis_available) {
+  time_trend_granularity <- if (transaction_time_column == "transaction_time_hour") {
+    "hourly"
+  } else {
+    "daily"
+  }
+
+  time_trend_data <- banking_transactions %>%
+    mutate(
+      transaction_period = if (time_trend_granularity == "hourly") {
+        .data[[transaction_time_column]]
+      } else {
+        as.Date(.data[[transaction_time_column]])
+      }
+    )
+
+  time_trend_summary <- time_trend_data %>%
+    group_by(transaction_period) %>%
+    summarise(
+      transaction_count = n(),
+      total_transaction_value = sum(
+        .data[[time_trend_value_column]],
+        na.rm = TRUE
+      ),
+      average_transaction_value = mean(
+        .data[[time_trend_value_column]],
+        na.rm = TRUE
+      ),
+      .groups = "drop"
+    ) %>%
+    arrange(transaction_period)
+
+  peak_activity_period <- time_trend_summary %>%
+    slice_max(transaction_count, n = 1, with_ties = FALSE)
+
+  lowest_activity_period <- time_trend_summary %>%
+    slice_min(transaction_count, n = 1, with_ties = FALSE)
+
+  transaction_volume_time_chart <- time_trend_summary %>%
+    ggplot(aes(
+      x = transaction_period,
+      y = transaction_count
+    )) +
+    geom_line(color = "#1D4ED8", linewidth = 1) +
+    geom_point(color = "#1D4ED8", size = 2, alpha = 0.8) +
+    geom_smooth(
+      method = "loess",
+      se = FALSE,
+      color = "#F97316",
+      linewidth = 0.9,
+      linetype = "dashed"
+    ) +
+    geom_point(
+      data = peak_activity_period,
+      aes(x = transaction_period, y = transaction_count),
+      color = "#DC2626",
+      size = 3.2
+    ) +
+    scale_y_continuous(labels = comma) +
+    labs(
+      title = "Transaction Volume Over Time",
+      subtitle = "Hourly activity pattern with peak period highlighted",
+      x = "Transaction hour",
+      y = "Transaction count"
+    ) +
+    theme_minimal(base_size = 12) +
+    theme(
+      plot.title = element_text(face = "bold", size = 15),
+      plot.subtitle = element_text(color = "#4B5563"),
+      panel.grid.minor = element_blank()
+    )
+
+  transaction_value_time_chart <- time_trend_summary %>%
+    ggplot(aes(
+      x = transaction_period,
+      y = total_transaction_value
+    )) +
+    geom_line(color = "#0F766E", linewidth = 1) +
+    geom_point(color = "#0F766E", size = 2, alpha = 0.8) +
+    geom_point(
+      data = time_trend_summary %>%
+        slice_max(total_transaction_value, n = 1, with_ties = FALSE),
+      aes(x = transaction_period, y = total_transaction_value),
+      color = "#DC2626",
+      size = 3.2
+    ) +
+    geom_point(
+      data = time_trend_summary %>%
+        slice_min(total_transaction_value, n = 1, with_ties = FALSE),
+      aes(x = transaction_period, y = total_transaction_value),
+      color = "#7C3AED",
+      size = 3.2
+    ) +
+    scale_y_continuous(labels = label_dollar()) +
+    labs(
+      title = "Transaction Value Over Time",
+      subtitle = "Total transaction value by hour, with spikes and troughs highlighted",
+      x = "Transaction hour",
+      y = "Total transaction value"
+    ) +
+    theme_minimal(base_size = 12) +
+    theme(
+      plot.title = element_text(face = "bold", size = 15),
+      plot.subtitle = element_text(color = "#4B5563"),
+      panel.grid.minor = element_blank()
+    )
+
+  transaction_time_insight <- tibble(
+    insight_title = "Transaction activity varies across time periods",
+    insight_description = "Hourly transaction patterns show when banking activity and transaction value are most concentrated, highlighting operational peaks and quieter periods.",
+    business_implication = "Operations teams can use time-based transaction patterns to align staffing, monitoring, and fraud review coverage with periods of heavier transaction workload."
+  )
+} else {
+  time_trend_summary <- tibble(
+    transaction_period = numeric(),
+    transaction_count = integer(),
+    total_transaction_value = numeric(),
+    average_transaction_value = numeric()
+  )
+
+  peak_activity_period <- tibble()
+  lowest_activity_period <- tibble()
+  transaction_volume_time_chart <- NULL
+  transaction_value_time_chart <- NULL
+
+  transaction_time_insight <- tibble(
+    insight_title = "Transaction activity over time cannot be assessed from current fields",
+    insight_description = "The dataset does not include both a usable transaction time field and transaction value field for time trend analysis.",
+    business_implication = "A reliable transaction timestamp is required before the bank can assess temporal workload patterns, spikes, or cyclical transaction behaviour."
+  )
+}
+
