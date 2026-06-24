@@ -2,6 +2,7 @@
 
 library(tidyverse)
 library(janitor)
+library(tibble)
 
 banking_transactions <- read_csv(
   "03_banking/data/banking_transactions.csv",
@@ -208,3 +209,56 @@ business_data_inventory <- tibble(
     field_names = map_chr(field_names, ~ paste(.x, collapse = ", "))
   ) %>%
   select(category, number_of_fields, field_names)
+
+# Business Question Discovery ---------------------------------------------
+
+business_questions <- tibble(
+  business_question = c(
+    "Which payment channels are used most often for banking transactions?",
+    "How does transaction value differ across payment channels?",
+    "Are higher-value transactions associated with stronger fraud or risk indicators?",
+    "Which authentication types are most common across transactions?",
+    "Do international transactions show different fraud or risk patterns than domestic transactions?",
+    "Are card-present and card-not-present transactions associated with different risk profiles?",
+    "How does transaction activity vary by hour of day?",
+    "Are transactions from greater geographic distances associated with higher risk scores?",
+    "Do accounts with different account ages show different transaction or risk patterns?",
+    "Are customers with higher average monthly balances associated with different transaction values or risk indicators?"
+  ),
+  business_objective = c(
+    "Understand customer channel usage across the transaction base.",
+    "Identify whether transaction value differs by banking access channel.",
+    "Assess whether transaction size aligns with known fraud and risk signals.",
+    "Understand authentication usage across the transaction base.",
+    "Compare risk patterns between international and domestic transaction activity.",
+    "Review risk exposure across card-present and card-not-present activity.",
+    "Understand operational activity patterns across transaction hours.",
+    "Assess whether location distance is a useful signal for transaction risk.",
+    "Explore whether account tenure relates to transaction behaviour or risk.",
+    "Understand whether balance levels relate to transaction size or risk exposure."
+  ),
+  potential_business_value = c(
+    "Support channel planning, service design, and operational staffing decisions.",
+    "Help retail banking teams understand where higher-value activity occurs.",
+    "Support risk teams in prioritising risk indicators for monitoring.",
+    "Inform authentication policy and customer experience review.",
+    "Help risk and operations teams focus controls on higher-risk transaction contexts.",
+    "Support card risk monitoring and control design.",
+    "Help operations teams understand peak activity windows.",
+    "Support fraud monitoring rules that consider geographic transaction behaviour.",
+    "Help customer strategy and risk teams understand account lifecycle patterns.",
+    "Support customer strategy by linking balance profile to activity and risk."
+  ),
+  likely_fields_used = c(
+    "payment_channel",
+    "transaction_amount, payment_channel",
+    "transaction_amount, fraud_flag, anomaly_score, device_risk_score, transaction_velocity_score",
+    "authentication_type",
+    "international_transaction_flag, fraud_flag, anomaly_score, device_risk_score, transaction_velocity_score",
+    "card_present_flag, fraud_flag, anomaly_score, device_risk_score, transaction_velocity_score",
+    "transaction_time_hour, daily_transaction_count, transfer_frequency",
+    "geo_distance_km, fraud_flag, anomaly_score, device_risk_score, suspicious_ip_flag",
+    "account_age_days, transaction_amount, transfer_frequency, fraud_flag, anomaly_score",
+    "avg_monthly_balance, transaction_amount, fraud_flag, anomaly_score, device_risk_score"
+  )
+)
