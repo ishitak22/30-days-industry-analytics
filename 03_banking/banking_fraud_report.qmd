@@ -1,0 +1,56 @@
+---
+title: "Banking Fraud Analysis Report"
+format: html
+---
+
+# Project Title + Executive Summary
+
+[To be filled in next step]
+
+# Dataset Overview
+
+[To be filled in next step]
+
+# Business Questions
+
+[To be filled in next step]
+
+# Analysis 1: Transaction Value Behaviour
+
+[To be filled in next step]
+
+# Analysis 2: Payment Channel Usage
+
+[To be filled in next step]
+
+# Analysis 3: Transaction Risk Behaviour
+
+[To be filled in next step]
+
+# Analysis 4: Transaction Activity Over Time
+
+[To be filled in next step]
+
+# Analysis 5: International vs Domestic Risk
+
+[To be filled in next step]
+
+# Analysis 6: Authentication Behaviour
+
+[To be filled in next step]
+
+# Analysis 7: Account Age & Lifecycle Risk
+
+[To be filled in next step]
+
+# Analysis 8: Fraud Interaction Patterns
+
+[To be filled in next step]
+
+# Final Recommendations
+
+[To be filled in next step]
+
+# Conclusion
+
+[To be filled in next step]
