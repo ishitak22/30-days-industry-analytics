@@ -1284,3 +1284,239 @@ if (authentication_security_fields_available) {
   )
 }
 
+# Analysis 7: Account Age vs Risk and Transaction Behaviour ---------------
+
+account_age_risk_fields <- c(
+  "account_age_days",
+  "fraud_flag",
+  "device_risk_score",
+  "anomaly_score",
+  "transaction_amount",
+  "transaction_velocity_score"
+)
+
+account_age_risk_fields_available <- all(
+  account_age_risk_fields %in% names(banking_transactions)
+)
+
+if (account_age_risk_fields_available) {
+  account_age_risk_data <- banking_transactions %>%
+    mutate(
+      account_age_group = case_when(
+        account_age_days <= 30 ~ "0-30 days",
+        account_age_days <= 180 ~ "31-180 days",
+        account_age_days <= 365 ~ "181-365 days",
+        TRUE ~ "365+ days"
+      ),
+      account_age_group = factor(
+        account_age_group,
+        levels = c("0-30 days", "31-180 days", "181-365 days", "365+ days")
+      ),
+      fraud_status = if_else(
+        as.logical(fraud_flag),
+        "Fraud",
+        "Not fraud"
+      ),
+      fraud_indicator = as.integer(as.logical(fraud_flag))
+    )
+
+  account_age_risk_summary <- account_age_risk_data %>%
+    group_by(account_age_group) %>%
+    summarise(
+      transaction_count = n(),
+      fraud_rate = mean(fraud_indicator, na.rm = TRUE) * 100,
+      average_device_risk_score = mean(device_risk_score, na.rm = TRUE),
+      average_transaction_amount = mean(transaction_amount, na.rm = TRUE),
+      average_transaction_velocity_score = mean(
+        transaction_velocity_score,
+        na.rm = TRUE
+      ),
+      .groups = "drop"
+    )
+
+  account_age_fraud_lollipop_plot <- account_age_risk_summary %>%
+    ggplot(aes(
+      x = account_age_group,
+      y = fraud_rate
+    )) +
+    geom_segment(
+      aes(
+        x = account_age_group,
+        xend = account_age_group,
+        y = 0,
+        yend = fraud_rate
+      ),
+      color = "#93C5FD",
+      linewidth = 1.1
+    ) +
+    geom_point(
+      color = "#1D4ED8",
+      fill = "#DBEAFE",
+      shape = 21,
+      size = 5,
+      stroke = 1.1
+    ) +
+    geom_text(
+      aes(label = label_percent(scale = 1, accuracy = 0.1)(fraud_rate)),
+      vjust = -0.9,
+      size = 3.6,
+      color = "#1F2937"
+    ) +
+    scale_y_continuous(
+      labels = label_percent(scale = 1),
+      expand = expansion(mult = c(0, 0.18))
+    ) +
+    labs(
+      title = "Fraud Rate by Account Age Group",
+      subtitle = "Lollipop view of fraud exposure across account maturity bands",
+      x = "Account age group",
+      y = "Fraud rate"
+    ) +
+    theme_minimal(base_size = 12) +
+    theme(
+      plot.title = element_text(face = "bold", size = 15),
+      plot.subtitle = element_text(color = "#4B5563"),
+      panel.grid.major.x = element_blank(),
+      panel.grid.minor = element_blank()
+    )
+
+  account_age_device_risk_scatter_plot <- account_age_risk_data %>%
+    ggplot(aes(
+      x = account_age_days,
+      y = device_risk_score,
+      color = fraud_status
+    )) +
+    geom_point(alpha = 0.45, size = 1.7) +
+    geom_smooth(
+      method = "loess",
+      se = FALSE,
+      color = "#111827",
+      linewidth = 0.9,
+      linetype = "dashed"
+    ) +
+    scale_color_manual(
+      values = c(
+        "Not fraud" = "#2563EB",
+        "Fraud" = "#DC2626"
+      )
+    ) +
+    labs(
+      title = "Account Age and Device Risk Score",
+      subtitle = "Scatter view of risk score by account maturity and fraud status",
+      x = "Account age in days",
+      y = "Device risk score",
+      color = "Fraud status"
+    ) +
+    theme_minimal(base_size = 12) +
+    theme(
+      plot.title = element_text(face = "bold", size = 15),
+      plot.subtitle = element_text(color = "#4B5563"),
+      panel.grid.minor = element_blank(),
+      legend.position = "bottom"
+    )
+
+  account_age_device_risk_density_plot <- account_age_risk_data %>%
+    ggplot(aes(
+      x = device_risk_score,
+      fill = account_age_group,
+      color = account_age_group
+    )) +
+    geom_density(alpha = 0.28, linewidth = 0.9) +
+    scale_fill_brewer(palette = "Set2") +
+    scale_color_brewer(palette = "Dark2") +
+    labs(
+      title = "Device Risk Score Distribution by Account Age",
+      subtitle = "Density comparison of risk concentration across account maturity bands",
+      x = "Device risk score",
+      y = "Density",
+      fill = "Account age group",
+      color = "Account age group"
+    ) +
+    theme_minimal(base_size = 12) +
+    theme(
+      plot.title = element_text(face = "bold", size = 15),
+      plot.subtitle = element_text(color = "#4B5563"),
+      panel.grid.minor = element_blank(),
+      legend.position = "bottom"
+    )
+
+  highest_risk_account_age_group <- account_age_risk_summary %>%
+    arrange(desc(fraud_rate), desc(average_device_risk_score)) %>%
+    slice_head(n = 1)
+
+  account_age_risk_trend <- account_age_risk_summary %>%
+    mutate(account_age_group_order = as.integer(account_age_group)) %>%
+    summarise(
+      fraud_rate_slope = coef(
+        lm(fraud_rate ~ account_age_group_order)
+      )[["account_age_group_order"]],
+      device_risk_score_slope = coef(
+        lm(average_device_risk_score ~ account_age_group_order)
+      )[["account_age_group_order"]],
+      risk_decreases_with_age = fraud_rate_slope < 0 &&
+        device_risk_score_slope < 0
+    )
+
+  account_age_risk_signal_comparison <- account_age_risk_data %>%
+    group_by(fraud_status) %>%
+    summarise(
+      average_device_risk_score = mean(device_risk_score, na.rm = TRUE),
+      average_anomaly_score = mean(anomaly_score, na.rm = TRUE),
+      average_transaction_amount = mean(transaction_amount, na.rm = TRUE),
+      average_transaction_velocity_score = mean(
+        transaction_velocity_score,
+        na.rm = TRUE
+      ),
+      .groups = "drop"
+    ) %>%
+    pivot_longer(
+      cols = c(
+        average_device_risk_score,
+        average_anomaly_score,
+        average_transaction_amount,
+        average_transaction_velocity_score
+      ),
+      names_to = "risk_signal",
+      values_to = "average_value"
+    ) %>%
+    pivot_wider(
+      names_from = fraud_status,
+      values_from = average_value
+    ) %>%
+    mutate(
+      fraud_gap = abs(Fraud - `Not fraud`),
+      risk_signal = recode(
+        risk_signal,
+        average_device_risk_score = "Device risk score",
+        average_anomaly_score = "Anomaly score",
+        average_transaction_amount = "Transaction amount",
+        average_transaction_velocity_score = "Transaction velocity score"
+      )
+    ) %>%
+    arrange(desc(fraud_gap))
+
+  strongest_account_age_risk_signal <- account_age_risk_signal_comparison %>%
+    slice_max(fraud_gap, n = 1, with_ties = FALSE)
+
+  account_age_risk_insight <- tibble(
+    insight_title = "Account maturity can reveal lifecycle fraud risk patterns",
+    insight_description = "Account age bands show whether newer accounts carry higher fraud rates, risk scores, and transaction velocity than more mature accounts.",
+    business_implication = "Fraud and onboarding teams can use account maturity signals to strengthen early-life monitoring, calibrate controls for new accounts, and reduce unnecessary friction for established accounts."
+  )
+} else {
+  account_age_risk_summary <- tibble()
+  account_age_fraud_lollipop_plot <- NULL
+  account_age_device_risk_scatter_plot <- NULL
+  account_age_device_risk_density_plot <- NULL
+  highest_risk_account_age_group <- tibble()
+  account_age_risk_trend <- tibble()
+  account_age_risk_signal_comparison <- tibble()
+  strongest_account_age_risk_signal <- tibble()
+
+  account_age_risk_insight <- tibble(
+    insight_title = "Account age risk analysis requires lifecycle and risk fields",
+    insight_description = "The dataset does not include every account age, fraud, transaction value, and risk score field needed for this lifecycle risk analysis.",
+    business_implication = "Fraud teams should confirm account age and risk behaviour fields are available before using this analysis to inform onboarding or lifecycle controls."
+  )
+}
+
