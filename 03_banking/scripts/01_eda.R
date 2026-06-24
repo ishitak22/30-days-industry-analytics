@@ -875,3 +875,229 @@ if (time_trend_analysis_available) {
   )
 }
 
+# Analysis 5: International vs Domestic Transaction Risk
+
+international_risk_required_fields <- c(
+  "international_transaction_flag",
+  "transaction_amount",
+  "device_risk_score",
+  "anomaly_score",
+  "geo_distance_km",
+  "fraud_flag",
+  "suspicious_ip_flag"
+)
+
+international_risk_fields_available <- all(
+  international_risk_required_fields %in% names(banking_transactions)
+)
+
+if (international_risk_fields_available) {
+  international_transaction_risk_data <- banking_transactions %>%
+    mutate(
+      transaction_scope = if_else(
+        international_transaction_flag == 1,
+        "International transactions",
+        "Domestic transactions"
+      ),
+      fraud_indicator = as.integer(fraud_flag),
+      suspicious_ip_indicator = as.integer(suspicious_ip_flag)
+    )
+
+  international_transaction_summary <- international_transaction_risk_data %>%
+    group_by(transaction_scope) %>%
+    summarise(
+      transaction_count = n(),
+      average_transaction_amount = mean(transaction_amount, na.rm = TRUE),
+      median_transaction_amount = median(transaction_amount, na.rm = TRUE),
+      average_device_risk_score = mean(device_risk_score, na.rm = TRUE),
+      average_anomaly_score = mean(anomaly_score, na.rm = TRUE),
+      average_geo_distance_km = mean(geo_distance_km, na.rm = TRUE),
+      fraud_rate = mean(fraud_indicator, na.rm = TRUE) * 100,
+      suspicious_ip_rate = mean(suspicious_ip_indicator, na.rm = TRUE) * 100,
+      .groups = "drop"
+    ) %>%
+    mutate(
+      overall_risk_index = rowMeans(
+        across(
+          c(
+            average_device_risk_score,
+            average_anomaly_score,
+            fraud_rate,
+            suspicious_ip_rate
+          )
+        ),
+        na.rm = TRUE
+      )
+    ) %>%
+    arrange(desc(overall_risk_index))
+
+  international_fraud_rate_chart <- international_transaction_summary %>%
+    ggplot(aes(
+      x = fraud_rate,
+      y = reorder(transaction_scope, fraud_rate),
+      color = transaction_scope
+    )) +
+    geom_segment(
+      aes(
+        x = 0,
+        xend = fraud_rate,
+        yend = reorder(transaction_scope, fraud_rate)
+      ),
+      linewidth = 1.1,
+      alpha = 0.65
+    ) +
+    geom_point(size = 5) +
+    geom_text(
+      aes(label = label_percent(scale = 1, accuracy = 0.1)(fraud_rate)),
+      hjust = -0.35,
+      size = 3.8,
+      color = "#1F2937"
+    ) +
+    scale_x_continuous(
+      labels = label_percent(scale = 1),
+      expand = expansion(mult = c(0, 0.16))
+    ) +
+    scale_color_manual(
+      values = c(
+        "Domestic transactions" = "#2563EB",
+        "International transactions" = "#DC2626"
+      )
+    ) +
+    labs(
+      title = "Fraud Rate: Domestic vs International Transactions",
+      subtitle = "Lollipop comparison of fraud occurrence by transaction scope",
+      x = "Fraud rate",
+      y = NULL,
+      color = NULL
+    ) +
+    theme_minimal(base_size = 12) +
+    theme(
+      plot.title = element_text(face = "bold", size = 15),
+      plot.subtitle = element_text(color = "#4B5563"),
+      panel.grid.major.y = element_blank(),
+      panel.grid.minor = element_blank(),
+      legend.position = "none"
+    )
+
+  international_transaction_value_boxplot <- international_transaction_risk_data %>%
+    ggplot(aes(
+      x = transaction_scope,
+      y = transaction_amount,
+      fill = transaction_scope
+    )) +
+    geom_boxplot(
+      color = "#1F2937",
+      outlier.color = "#DC2626",
+      outlier.fill = "#FEE2E2",
+      outlier.shape = 21,
+      outlier.size = 2,
+      alpha = 0.82
+    ) +
+    scale_y_continuous(labels = label_dollar()) +
+    scale_fill_manual(
+      values = c(
+        "Domestic transactions" = "#60A5FA",
+        "International transactions" = "#F97316"
+      )
+    ) +
+    labs(
+      title = "Transaction Value Distribution by Scope",
+      subtitle = "Boxplot comparison of domestic and international transaction values",
+      x = NULL,
+      y = "Transaction amount",
+      fill = NULL
+    ) +
+    theme_minimal(base_size = 12) +
+    theme(
+      plot.title = element_text(face = "bold", size = 15),
+      plot.subtitle = element_text(color = "#4B5563"),
+      panel.grid.minor = element_blank(),
+      legend.position = "none"
+    )
+
+  international_risk_profile_data <- international_transaction_summary %>%
+    select(
+      transaction_scope,
+      average_device_risk_score,
+      average_anomaly_score
+    ) %>%
+    pivot_longer(
+      cols = c(average_device_risk_score, average_anomaly_score),
+      names_to = "risk_metric",
+      values_to = "average_score"
+    ) %>%
+    mutate(
+      risk_metric = recode(
+        risk_metric,
+        average_device_risk_score = "Device risk score",
+        average_anomaly_score = "Anomaly score"
+      )
+    )
+
+  international_risk_profile_chart <- international_risk_profile_data %>%
+    ggplot(aes(
+      x = transaction_scope,
+      y = risk_metric,
+      fill = average_score
+    )) +
+    geom_tile(color = "white", linewidth = 0.8) +
+    geom_text(
+      aes(label = round(average_score, 2)),
+      size = 3.6,
+      color = "#1F2937"
+    ) +
+    scale_fill_gradient(
+      low = "#DBEAFE",
+      high = "#7C3AED"
+    ) +
+    labs(
+      title = "Risk Profile by Transaction Scope",
+      subtitle = "Heatmap of average device risk and anomaly scores",
+      x = NULL,
+      y = NULL,
+      fill = "Average score"
+    ) +
+    theme_minimal(base_size = 12) +
+    theme(
+      plot.title = element_text(face = "bold", size = 15),
+      plot.subtitle = element_text(color = "#4B5563"),
+      panel.grid = element_blank(),
+      legend.position = "bottom"
+    )
+
+  highest_risk_transaction_group <- international_transaction_summary %>%
+    slice_max(overall_risk_index, n = 1, with_ties = FALSE)
+
+  international_transaction_insight <- tibble(
+    insight_title = "International and domestic transactions can carry different risk profiles",
+    insight_description = "Comparing fraud rate, suspicious IP rate, geo distance, transaction value, and risk scores shows whether international activity exhibits stronger risk signals than domestic activity.",
+    business_implication = "Fraud, risk, and operations teams can use this evidence to decide whether international transactions require tighter monitoring, additional authentication, or differentiated operational controls."
+  )
+} else {
+  international_transaction_summary <- tibble()
+  international_fraud_rate_chart <- NULL
+  international_transaction_value_boxplot <- NULL
+  international_risk_profile_chart <- NULL
+  highest_risk_transaction_group <- tibble()
+
+  international_transaction_insight <- tibble(
+    insight_title = "International transaction risk comparison requires additional fields",
+    insight_description = "The current dataset does not contain every field needed to compare domestic and international fraud, value, distance, suspicious IP, and risk score patterns.",
+    business_implication = "Risk teams should confirm that international flags, fraud indicators, risk scores, and suspicious IP fields are available before using this analysis for control decisions."
+  )
+}
+
+# Business interpretation:
+# This analysis answers whether international transactions behave differently
+# from domestic transactions across fraud exposure, value distribution, risk
+# scores, suspicious IP activity, and geographic distance.
+
+# Banking institutions care about this comparison because international
+# transactions often carry different operational, compliance, and fraud
+# monitoring requirements than domestic transaction activity.
+
+# Fraud, risk, and operations teams could use the findings to decide whether
+# international transactions need stronger authentication, closer queue
+# monitoring, adjusted alert thresholds, or differentiated customer support
+# processes.
+
