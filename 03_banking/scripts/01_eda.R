@@ -1520,3 +1520,286 @@ if (account_age_risk_fields_available) {
   )
 }
 
+# Analysis 8: Fraud Behaviour Interaction and Risk Combinations -----------
+
+fraud_interaction_fields <- c(
+  "fraud_flag",
+  "authentication_type",
+  "card_present_flag",
+  "international_transaction_flag",
+  "device_risk_score",
+  "anomaly_score",
+  "transaction_velocity_score",
+  "geo_distance_km"
+)
+
+fraud_interaction_fields_available <- all(
+  fraud_interaction_fields %in% names(banking_transactions)
+)
+
+fraud_interaction_value_column <- if ("transaction_amount" %in% names(banking_transactions)) {
+  "transaction_amount"
+} else {
+  "anomaly_score"
+}
+
+if (fraud_interaction_fields_available) {
+  fraud_interaction_data <- banking_transactions %>%
+    mutate(
+      fraud_status = if_else(
+        as.logical(fraud_flag),
+        "Fraud",
+        "Not fraud"
+      ),
+      fraud_indicator = as.integer(as.logical(fraud_flag)),
+      card_present_status = if_else(
+        card_present_flag == 1,
+        "Card present",
+        "Card not present"
+      ),
+      transaction_scope = if_else(
+        international_transaction_flag == 1,
+        "International",
+        "Domestic"
+      ),
+      authentication_card_segment = paste(
+        authentication_type,
+        card_present_status,
+        sep = " | "
+      ),
+      scope_card_segment = paste(
+        transaction_scope,
+        card_present_status,
+        sep = " | "
+      )
+    )
+
+  authentication_card_interaction_summary <- fraud_interaction_data %>%
+    group_by(authentication_type, card_present_status) %>%
+    summarise(
+      transaction_count = n(),
+      fraud_rate = mean(fraud_indicator, na.rm = TRUE) * 100,
+      average_device_risk_score = mean(device_risk_score, na.rm = TRUE),
+      average_anomaly_score = mean(anomaly_score, na.rm = TRUE),
+      average_transaction_velocity_score = mean(
+        transaction_velocity_score,
+        na.rm = TRUE
+      ),
+      average_geo_distance_km = mean(geo_distance_km, na.rm = TRUE),
+      .groups = "drop"
+    ) %>%
+    arrange(desc(fraud_rate))
+
+  scope_card_interaction_summary <- fraud_interaction_data %>%
+    group_by(transaction_scope, card_present_status) %>%
+    summarise(
+      transaction_count = n(),
+      fraud_rate = mean(fraud_indicator, na.rm = TRUE) * 100,
+      average_device_risk_score = mean(device_risk_score, na.rm = TRUE),
+      average_anomaly_score = mean(anomaly_score, na.rm = TRUE),
+      average_transaction_velocity_score = mean(
+        transaction_velocity_score,
+        na.rm = TRUE
+      ),
+      average_geo_distance_km = mean(geo_distance_km, na.rm = TRUE),
+      .groups = "drop"
+    ) %>%
+    arrange(desc(fraud_rate))
+
+  fraud_interaction_heatmap <- authentication_card_interaction_summary %>%
+    ggplot(aes(
+      x = authentication_type,
+      y = card_present_status,
+      fill = fraud_rate
+    )) +
+    geom_tile(color = "white", linewidth = 0.8) +
+    geom_text(
+      aes(label = label_percent(scale = 1, accuracy = 0.1)(fraud_rate)),
+      size = 3.5,
+      color = "#111827"
+    ) +
+    scale_fill_gradient(
+      low = "#DBEAFE",
+      high = "#DC2626",
+      labels = label_percent(scale = 1)
+    ) +
+    labs(
+      title = "Fraud Rate by Authentication and Card Presence",
+      subtitle = "Interaction heatmap showing behavioural combinations with elevated fraud exposure",
+      x = "Authentication type",
+      y = NULL,
+      fill = "Fraud rate"
+    ) +
+    theme_minimal(base_size = 12) +
+    theme(
+      plot.title = element_text(face = "bold", size = 15),
+      plot.subtitle = element_text(color = "#4B5563"),
+      panel.grid = element_blank(),
+      legend.position = "bottom"
+    )
+
+  fraud_risk_scatter_plot <- fraud_interaction_data %>%
+    ggplot(aes(
+      x = device_risk_score,
+      y = anomaly_score,
+      color = fraud_status,
+      size = transaction_velocity_score
+    )) +
+    geom_point(alpha = 0.42) +
+    scale_color_manual(
+      values = c(
+        "Not fraud" = "#2563EB",
+        "Fraud" = "#DC2626"
+      )
+    ) +
+    scale_size_continuous(range = c(1.2, 5.5)) +
+    labs(
+      title = "Fraud Clustering Across Risk Scores",
+      subtitle = "Device risk and anomaly score interaction, scaled by transaction velocity",
+      x = "Device risk score",
+      y = "Anomaly score",
+      color = "Fraud status",
+      size = "Velocity score"
+    ) +
+    theme_minimal(base_size = 12) +
+    theme(
+      plot.title = element_text(face = "bold", size = 15),
+      plot.subtitle = element_text(color = "#4B5563"),
+      panel.grid.minor = element_blank(),
+      legend.position = "bottom"
+    )
+
+  fraud_geo_facet_scatter_plot <- fraud_interaction_data %>%
+    ggplot(aes(
+      x = geo_distance_km,
+      y = .data[[fraud_interaction_value_column]],
+      color = fraud_status
+    )) +
+    geom_point(alpha = 0.42, size = 1.7) +
+    facet_wrap(~ transaction_scope) +
+    scale_color_manual(
+      values = c(
+        "Not fraud" = "#2563EB",
+        "Fraud" = "#DC2626"
+      )
+    ) +
+    labs(
+      title = "Geographic Distance and Transaction Behaviour",
+      subtitle = "Faceted view by domestic and international transaction scope",
+      x = "Geographic distance (km)",
+      y = if_else(
+        fraud_interaction_value_column == "transaction_amount",
+        "Transaction amount",
+        "Anomaly score"
+      ),
+      color = "Fraud status"
+    ) +
+    theme_minimal(base_size = 12) +
+    theme(
+      plot.title = element_text(face = "bold", size = 15),
+      plot.subtitle = element_text(color = "#4B5563"),
+      panel.grid.minor = element_blank(),
+      legend.position = "bottom",
+      strip.text = element_text(face = "bold")
+    )
+
+  highest_risk_behavioural_combination <- authentication_card_interaction_summary %>%
+    slice_max(fraud_rate, n = 1, with_ties = FALSE)
+
+  fraud_predictor_interaction_comparison <- bind_rows(
+    authentication_card_interaction_summary %>%
+      transmute(
+        interaction_type = "Authentication type + card presence",
+        interaction_segment = paste(
+          authentication_type,
+          card_present_status,
+          sep = " | "
+        ),
+        transaction_count,
+        fraud_rate,
+        average_risk_score = rowMeans(
+          across(
+            c(
+              average_device_risk_score,
+              average_anomaly_score,
+              average_transaction_velocity_score
+            )
+          ),
+          na.rm = TRUE
+        )
+      ),
+    scope_card_interaction_summary %>%
+      transmute(
+        interaction_type = "International flag + card presence",
+        interaction_segment = paste(
+          transaction_scope,
+          card_present_status,
+          sep = " | "
+        ),
+        transaction_count,
+        fraud_rate,
+        average_risk_score = rowMeans(
+          across(
+            c(
+              average_device_risk_score,
+              average_anomaly_score,
+              average_transaction_velocity_score
+            )
+          ),
+          na.rm = TRUE
+        )
+      )
+  ) %>%
+    mutate(
+      interaction_risk_score = fraud_rate + average_risk_score
+    ) %>%
+    arrange(desc(interaction_risk_score))
+
+  strongest_fraud_predictor_interaction <- fraud_predictor_interaction_comparison %>%
+    slice_max(interaction_risk_score, n = 1, with_ties = FALSE)
+
+  most_dangerous_transaction_profile <- fraud_interaction_data %>%
+    mutate(
+      transaction_risk_profile_score =
+        device_risk_score +
+        anomaly_score +
+        transaction_velocity_score +
+        fraud_indicator * 100
+    ) %>%
+    arrange(desc(transaction_risk_profile_score)) %>%
+    select(
+      authentication_type,
+      card_present_status,
+      transaction_scope,
+      fraud_status,
+      device_risk_score,
+      anomaly_score,
+      transaction_velocity_score,
+      geo_distance_km,
+      transaction_risk_profile_score
+    ) %>%
+    slice_head(n = 1)
+
+  fraud_interaction_insight <- tibble(
+    insight_title = "Fraud risk is shaped by combinations of transaction behaviours",
+    insight_description = "Authentication method, card presence, international activity, device risk, anomaly score, velocity, and geographic distance create interaction patterns that reveal where fraud risk clusters most strongly.",
+    business_implication = "Banking fraud teams can use these behavioural combinations to design sharper detection rules, prioritise review queues, and apply targeted controls to the riskiest transaction profiles."
+  )
+} else {
+  authentication_card_interaction_summary <- tibble()
+  scope_card_interaction_summary <- tibble()
+  fraud_interaction_heatmap <- NULL
+  fraud_risk_scatter_plot <- NULL
+  fraud_geo_facet_scatter_plot <- NULL
+  highest_risk_behavioural_combination <- tibble()
+  fraud_predictor_interaction_comparison <- tibble()
+  strongest_fraud_predictor_interaction <- tibble()
+  most_dangerous_transaction_profile <- tibble()
+
+  fraud_interaction_insight <- tibble(
+    insight_title = "Fraud interaction analysis requires behavioural risk fields",
+    insight_description = "The dataset does not include every fraud, authentication, card presence, international, risk score, velocity, and geographic field needed for consolidated interaction analysis.",
+    business_implication = "Fraud analytics teams should confirm interaction-level behavioural fields are available before using this analysis to guide detection rules or risk controls."
+  )
+}
+
