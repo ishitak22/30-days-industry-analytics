@@ -1101,3 +1101,186 @@ if (international_risk_fields_available) {
 # monitoring, adjusted alert thresholds, or differentiated customer support
 # processes.
 
+# Analysis 6: Authentication Behaviour and Security Risk Patterns ---------
+
+authentication_security_fields <- c(
+  "authentication_type",
+  "fraud_flag",
+  "login_attempts",
+  "failed_transactions_last_30d",
+  "device_risk_score",
+  "anomaly_score"
+)
+
+authentication_security_fields_available <- all(
+  authentication_security_fields %in% names(banking_transactions)
+)
+
+if (authentication_security_fields_available) {
+  authentication_security_data <- banking_transactions %>%
+    mutate(
+      fraud_status = if_else(
+        as.logical(fraud_flag),
+        "Fraud",
+        "Not fraud"
+      ),
+      fraud_indicator = as.integer(as.logical(fraud_flag))
+    )
+
+  authentication_security_summary <- authentication_security_data %>%
+    group_by(authentication_type) %>%
+    summarise(
+      transaction_count = n(),
+      fraud_rate = mean(fraud_indicator, na.rm = TRUE) * 100,
+      average_login_attempts = mean(login_attempts, na.rm = TRUE),
+      average_failed_transactions_last_30d = mean(
+        failed_transactions_last_30d,
+        na.rm = TRUE
+      ),
+      average_device_risk_score = mean(device_risk_score, na.rm = TRUE),
+      average_anomaly_score = mean(anomaly_score, na.rm = TRUE),
+      .groups = "drop"
+    ) %>%
+    arrange(desc(fraud_rate))
+
+  login_attempts_fraud_violin_plot <- authentication_security_data %>%
+    ggplot(aes(
+      x = fraud_status,
+      y = login_attempts,
+      fill = fraud_status
+    )) +
+    geom_violin(
+      alpha = 0.6,
+      color = "#1F2937",
+      trim = FALSE
+    ) +
+    geom_jitter(
+      aes(color = fraud_status),
+      width = 0.14,
+      height = 0,
+      alpha = 0.35,
+      size = 1.4,
+      show.legend = FALSE
+    ) +
+    scale_fill_manual(
+      values = c(
+        "Not fraud" = "#60A5FA",
+        "Fraud" = "#EF4444"
+      )
+    ) +
+    scale_color_manual(
+      values = c(
+        "Not fraud" = "#1D4ED8",
+        "Fraud" = "#B91C1C"
+      )
+    ) +
+    labs(
+      title = "Login Attempts by Fraud Status",
+      subtitle = "Violin and jitter view of authentication pressure across fraud outcomes",
+      x = NULL,
+      y = "Login attempts",
+      fill = "Fraud status"
+    ) +
+    theme_minimal(base_size = 12) +
+    theme(
+      plot.title = element_text(face = "bold", size = 15),
+      plot.subtitle = element_text(color = "#4B5563"),
+      panel.grid.minor = element_blank(),
+      legend.position = "none"
+    )
+
+  failed_transactions_authentication_boxplot <- authentication_security_data %>%
+    ggplot(aes(
+      x = authentication_type,
+      y = failed_transactions_last_30d,
+      fill = authentication_type
+    )) +
+    geom_boxplot(
+      color = "#1F2937",
+      outlier.shape = NA,
+      alpha = 0.68
+    ) +
+    geom_jitter(
+      aes(color = authentication_type),
+      width = 0.16,
+      height = 0,
+      alpha = 0.35,
+      size = 1.3,
+      show.legend = FALSE
+    ) +
+    scale_fill_brewer(palette = "Set2") +
+    scale_color_brewer(palette = "Dark2") +
+    labs(
+      title = "Failed Transactions by Authentication Type",
+      subtitle = "Box and jitter comparison of recent failed transaction behaviour",
+      x = NULL,
+      y = "Failed transactions in last 30 days",
+      fill = "Authentication type"
+    ) +
+    theme_minimal(base_size = 12) +
+    theme(
+      plot.title = element_text(face = "bold", size = 15),
+      plot.subtitle = element_text(color = "#4B5563"),
+      panel.grid.minor = element_blank(),
+      legend.position = "bottom"
+    )
+
+  highest_fraud_authentication_type <- authentication_security_summary %>%
+    slice_max(fraud_rate, n = 1, with_ties = FALSE)
+
+  lowest_fraud_authentication_type <- authentication_security_summary %>%
+    slice_min(fraud_rate, n = 1, with_ties = FALSE)
+
+  behavioural_risk_signal_comparison <- authentication_security_data %>%
+    group_by(fraud_status) %>%
+    summarise(
+      average_login_attempts = mean(login_attempts, na.rm = TRUE),
+      average_failed_transactions_last_30d = mean(
+        failed_transactions_last_30d,
+        na.rm = TRUE
+      ),
+      .groups = "drop"
+    ) %>%
+    pivot_longer(
+      cols = c(average_login_attempts, average_failed_transactions_last_30d),
+      names_to = "behavioural_signal",
+      values_to = "average_value"
+    ) %>%
+    pivot_wider(
+      names_from = fraud_status,
+      values_from = average_value
+    ) %>%
+    mutate(
+      fraud_gap = abs(Fraud - `Not fraud`),
+      behavioural_signal = recode(
+        behavioural_signal,
+        average_login_attempts = "Login attempts",
+        average_failed_transactions_last_30d = "Failed transactions last 30 days"
+      )
+    ) %>%
+    arrange(desc(fraud_gap))
+
+  strongest_behavioural_risk_signal <- behavioural_risk_signal_comparison %>%
+    slice_max(fraud_gap, n = 1, with_ties = FALSE)
+
+  authentication_security_insight <- tibble(
+    insight_title = "Authentication behaviour reveals fraud risk signals",
+    insight_description = "Authentication method, login attempts, failed transactions, device risk, and anomaly scores can indicate whether fraud is associated with behavioural stress or weaker security patterns.",
+    business_implication = "Fraud teams can use authentication behaviour to refine monitoring rules, identify higher-risk authentication journeys, and reduce friction for lower-risk customer activity."
+  )
+} else {
+  authentication_security_summary <- tibble()
+  login_attempts_fraud_violin_plot <- NULL
+  failed_transactions_authentication_boxplot <- NULL
+  highest_fraud_authentication_type <- tibble()
+  lowest_fraud_authentication_type <- tibble()
+  behavioural_risk_signal_comparison <- tibble()
+  strongest_behavioural_risk_signal <- tibble()
+
+  authentication_security_insight <- tibble(
+    insight_title = "Authentication behaviour risk analysis requires security fields",
+    insight_description = "The dataset does not include every authentication, fraud, login, failed transaction, and risk field needed for this analysis.",
+    business_implication = "Fraud teams should confirm authentication and behavioural security fields are available before using this analysis for risk detection decisions."
+  )
+}
+
