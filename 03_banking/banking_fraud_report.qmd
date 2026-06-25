@@ -265,11 +265,11 @@ Payment channel usage reveals where customer activity is concentrated across the
 
 For fraud monitoring, channel behaviour should be interpreted as a context signal. A transaction's channel can influence how suspicious activity is assessed, because digital, card-based, and in-person contexts may involve different customer behaviours, authentication expectations, and fraud exposure patterns.
 
-## Analysis 3: Transaction Risk Behaviour
+## Analysis 3: Transaction Risk Behaviour by Authentication
 
 ### Business Question
 
-How do transaction values and customer behaviours vary across different levels of transaction risk?
+How does authentication behaviour influence transaction risk?
 
 ```{r}
 #| label: analysis-3-risk-behaviour-heatmap
@@ -372,6 +372,8 @@ When does transaction activity occur, and are there periods of elevated operatio
 #| label: analysis-4-transaction-volume-time
 #| fig-width: 12
 #| fig-height: 6
+#| #| warning: false
+#| message: false
 
 time_trend_summary <- banking_transactions %>%
   group_by(transaction_period = transaction_time_hour) %>%
