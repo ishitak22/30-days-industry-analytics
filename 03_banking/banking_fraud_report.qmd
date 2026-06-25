@@ -458,7 +458,110 @@ In banking terms, timing is an important operational risk signal. Fraud monitori
 
 ## Analysis 5: International vs Domestic Risk
 
-[To be filled in next step]
+### Business Question
+
+Do international transactions exhibit different behavioural and fraud patterns compared with domestic transactions?
+
+### Why This Matters
+
+Distinguishing international and domestic transactions is important because cross-border activity can introduce additional fraud and operational risk factors. International activity may involve greater geographic distance, different authentication expectations, unusual access patterns, or higher anomaly signals compared with domestic behaviour.
+
+Understanding these differences helps banking teams interpret fraud signals more accurately. If domestic and international transactions show meaningfully different risk profiles, monitoring logic can be evaluated through a more contextual lens rather than treating all transaction types as equivalent.
+
+```{r}
+#| label: analysis-5-international-domestic-risk
+#| fig-width: 9
+#| fig-height: 5
+
+international_transaction_summary <- banking_transactions %>%
+  mutate(
+    transaction_scope = if_else(
+      international_transaction_flag == 1,
+      "International transactions",
+      "Domestic transactions"
+    ),
+    fraud_indicator = as.integer(as.logical(fraud_flag)),
+    suspicious_ip_indicator = as.integer(suspicious_ip_flag)
+  ) %>%
+  group_by(transaction_scope) %>%
+  summarise(
+    fraud_rate = mean(fraud_indicator, na.rm = TRUE) * 100,
+    average_transaction_amount = mean(transaction_amount, na.rm = TRUE),
+    average_device_risk_score = mean(device_risk_score, na.rm = TRUE),
+    average_anomaly_score = mean(anomaly_score, na.rm = TRUE),
+    suspicious_ip_rate = mean(suspicious_ip_indicator, na.rm = TRUE) * 100,
+    .groups = "drop"
+  ) %>%
+  pivot_longer(
+    cols = -transaction_scope,
+    names_to = "risk_metric",
+    values_to = "metric_value"
+  ) %>%
+  group_by(risk_metric) %>%
+  mutate(
+    indexed_value = metric_value / max(metric_value, na.rm = TRUE)
+  ) %>%
+  ungroup() %>%
+  mutate(
+    risk_metric = recode(
+      risk_metric,
+      fraud_rate = "Fraud rate",
+      average_transaction_amount = "Average transaction value",
+      average_device_risk_score = "Device risk score",
+      average_anomaly_score = "Anomaly score",
+      suspicious_ip_rate = "Suspicious IP rate"
+    )
+  )
+
+international_transaction_summary %>%
+  ggplot(aes(
+    x = transaction_scope,
+    y = risk_metric,
+    fill = indexed_value
+  )) +
+  geom_tile(color = "white", linewidth = 0.8) +
+  geom_text(
+    aes(label = round(metric_value, 1)),
+    size = 3.5,
+    color = "#111827"
+  ) +
+  scale_fill_gradient(
+    low = "#DBEAFE",
+    high = "#7C3AED"
+  ) +
+  labs(
+    title = "International vs Domestic Risk Profile",
+    subtitle = "Indexed comparison of fraud, transaction value, and behavioural risk signals",
+    x = NULL,
+    y = NULL,
+    fill = "Relative intensity"
+  ) +
+  theme_minimal(base_size = 12) +
+  theme(
+    plot.title = element_text(face = "bold", size = 15),
+    plot.subtitle = element_text(color = "#4B5563"),
+    panel.grid = element_blank(),
+    legend.position = "bottom"
+  )
+```
+
+### Key Findings
+
+- The heatmap clearly separates domestic and international transaction profiles across fraud, value, and behavioural risk measures.
+
+- Stronger colour intensity indicates where one transaction type carries higher relative exposure for a given risk measure.
+
+- Differences across fraud rate, anomaly behaviour, suspicious access, and transaction value reveal whether cross-border activity behaves differently from domestic activity.
+
+- If international transactions show consistently stronger intensity across risk measures, cross-border activity represents a distinct risk context.
+
+- If the intensity is mixed, transaction type alone is not enough to explain fraud exposure and must be interpreted alongside other behavioural signals.
+
+### Insights
+
+The comparison shows whether international activity has a meaningfully different risk profile from domestic activity. In banking terms, stronger international intensity across fraud and behavioural risk measures would indicate that geography and cross-border context are important fraud risk signals.
+
+This section does not imply that all international activity is suspicious. Rather, it shows whether transaction type changes the risk context and whether fraud detection logic benefits from considering geographic and behavioural differences together.
 
 ## Analysis 6: Authentication Behaviour
 
