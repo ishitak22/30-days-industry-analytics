@@ -924,4 +924,30 @@ Aligning monitoring coverage with channel and time-based activity patterns can i
 
 ## Conclusion
 
-[To be filled in next step]
+### Summary
+
+This report shows that banking fraud risk is best understood through the combined view of transaction behaviour, customer interaction patterns, authentication signals, account maturity, and contextual risk factors. Transaction values provide a baseline for identifying normal and unusual activity, while payment channel usage and time-based behaviour help explain where operational pressure and monitoring needs may be concentrated.
+
+Across the analysis, risk appears most meaningful when behavioural indicators are assessed together. International context, authentication behaviour, account age, device risk, anomaly signals, and transaction velocity each contribute part of the risk picture. When combined, these signals provide a more complete understanding of how fraud exposure may develop across the transaction portfolio.
+
+### Overall Takeaway
+
+The central business message is that fraud detection should be behaviour-driven rather than dependent on single indicators. No one measure is sufficient on its own to explain fraud exposure. A stronger fraud monitoring strategy comes from combining transaction value patterns, customer behaviour, authentication context, account lifecycle stage, and risk indicators into a broader view of suspicious activity.
+
+This integrated approach helps distinguish routine customer behaviour from transactions that may require closer attention. It also supports a better balance between fraud prevention, operational efficiency, and customer experience.
+
+### Next Steps
+
+- Develop predictive fraud modelling to estimate the likelihood of fraud using multiple behavioural and risk indicators together.
+
+- Build customer and transaction segmentation to identify distinct groups of normal, unusual, and high-risk behaviour.
+
+- Explore real-time risk scoring to support faster alert prioritisation and more responsive fraud monitoring.
+
+- Expand behavioural anomaly detection to identify transactions that deviate from expected customer or account-level patterns.
+
+- Optimise transaction monitoring rules using insights from channel usage, activity timing, account lifecycle, and fraud interaction patterns.
+
+### Closing Statement
+
+Data-driven fraud analytics provides banks with a clearer understanding of where risk is concentrated and how suspicious behaviour develops. By combining transaction monitoring with behavioural, authentication, lifecycle, and contextual risk signals, financial institutions can improve fraud detection, strengthen operational effectiveness, and protect customer trust.
