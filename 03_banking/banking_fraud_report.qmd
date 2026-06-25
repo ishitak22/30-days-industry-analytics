@@ -12,7 +12,7 @@ execute:
 #quarto-content,
 main.content,
 .content {
-  max-width: 1300px !important;
+  max-width: 1000px !important;
   margin-left: auto !important;
   margin-right: auto !important;
 }
@@ -183,13 +183,11 @@ banking_transactions %>%
 
 ### Key Findings
 
--   Transaction amounts are concentrated within a visible central range, indicating a typical band of customer transaction behaviour.
+- Transaction amounts are spread across the observed value range, with a visible central concentration of routine activity.
 
--   The distribution shows a tail of higher-value transactions, suggesting that a smaller group of transactions carries greater financial exposure.
+- Higher-value transactions are present, but the distribution does not suggest an extreme long-tail pattern.
 
--   The median marker provides a clear reference point for separating routine transaction values from higher-value activity.
-
--   High-value transactions appear less common than routine transactions, making them important candidates for risk-sensitive monitoring logic.
+- The median marker provides a useful reference point for distinguishing below-median and above-median transaction behaviour.
 
 ### Insights
 
@@ -251,13 +249,13 @@ channel_usage_summary %>%
 
 ### Key Findings
 
--   Transaction activity is distributed across multiple payment channels, showing that customers use a mix of banking access points.
+- Transaction activity is distributed across multiple payment channels, showing that customers use a mix of banking access points.
 
--   The composition view makes it clear whether a small number of channels account for a larger share of overall activity.
+- The composition view makes it clear whether a small number of channels account for a larger share of overall activity.
 
--   Channel concentration has operational significance because higher-share channels are likely to carry more service demand and monitoring volume.
+- Channel concentration has operational significance because higher-share channels are likely to carry more service demand and monitoring volume.
 
--   The spread across channels provides a useful lens for understanding digital versus traditional banking behaviour.
+- The spread across channels provides a useful lens for understanding digital versus traditional banking behaviour.
 
 ### Insights
 
