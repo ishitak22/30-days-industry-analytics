@@ -1,11 +1,8 @@
 ---
-title: "Banking Fraud Analysis Report"
 format: html
 ---
 
-# Project Title and Executive Summary
-
-## Banking Fraud Behaviour and Risk Analysis
+## Banking Fraud Behaviour and Risk Analysis Report
 
 ### Project Objective
 
@@ -41,7 +38,42 @@ Overall, this work provides a practical analytical foundation for future fraud d
 
 # Dataset Overview
 
-[To be filled in next step]
+## About the Dataset
+
+The dataset represents individual banking transactions and the surrounding behavioural signals that may help explain transaction risk. Each record reflects a transaction event, including the value of the transaction, how the transaction was initiated, the security context around the activity, and whether fraud-related indicators were present.
+
+The information available supports a broad view of banking behaviour. It includes transaction activity such as transaction value, payment channel, transaction timing, and transaction frequency. It also includes customer behaviour and account context, such as account maturity, login activity, recent failed transactions, and transaction velocity. From a fraud and security perspective, the dataset includes authentication method, card presence, international transaction activity, device risk, anomaly behaviour, suspicious IP activity, and fraud status.
+
+This combination of transaction, behavioural, authentication, and risk information makes the dataset suitable for analysing how fraud risk emerges across different customer journeys. Rather than treating fraud as a single outcome, the dataset allows the analysis to explore patterns across transaction value, channel usage, account lifecycle stage, authentication behaviour, geographic context, and interacting risk signals.
+
+## Business Context
+
+Transaction monitoring is a core capability in modern banking because fraud risk can emerge quickly, across multiple channels, and through increasingly complex customer behaviours. Banks must identify suspicious activity early enough to prevent financial loss, protect customers, and meet risk management expectations, while still allowing legitimate transactions to move through the system with minimal friction.
+
+One of the key challenges for banks is balancing control with customer experience. Overly strict monitoring can increase false positives, delay legitimate transactions, and create frustration for customers. Weak monitoring, however, can expose the institution and its customers to avoidable fraud losses. Effective transaction analytics helps banks identify where stronger intervention is justified and where routine activity can remain efficient.
+
+By analysing transaction behaviour, authentication patterns, risk indicators, and lifecycle signals together, banking teams can make more informed operational decisions. These insights can support fraud prevention, monitoring prioritisation, customer protection, authentication policy design, and resource allocation across fraud operations, digital banking, and risk management teams.
+
+## Dataset Scope
+
+| Area | Summary |
+|---|---|
+| Industry | Retail banking and digital transaction monitoring |
+| Analytical focus | Fraud risk, transaction behaviour, authentication patterns, and operational monitoring signals |
+| Unit of analysis | Individual banking transaction |
+| Observational level | Transaction-level activity with associated behavioural, security, and risk attributes |
+| Type of data available | Transaction values, payment channels, account maturity, authentication behaviour, risk scores, fraud indicators, geographic context, and activity timing |
+
+## Key Information Available
+
+| Category | Information available | Contribution to fraud analysis and decision-making |
+|---|---|---|
+| Transaction Behaviour | Transaction values, transaction frequency, transaction velocity, and activity timing are available to describe how banking activity occurs across the transaction base. | Helps identify unusual transaction patterns, high-value exposure, operational workload peaks, and behaviours that may require closer monitoring. |
+| Payment Activity | Payment channel and card presence information show how customers interact with banking services across digital, physical, and card-based transaction contexts. | Supports channel-level risk assessment, operational planning, and understanding whether certain transaction routes carry different fraud exposure. |
+| Risk Indicators | Device risk, anomaly behaviour, fraud status, and suspicious IP signals provide direct evidence of transaction risk conditions. | Enables fraud teams to compare risk patterns across transaction types, identify elevated-risk segments, and prioritise monitoring attention. |
+| Authentication & Security | Authentication method, login attempts, and recent failed transaction activity provide insight into security behaviour surrounding transactions. | Helps assess whether certain authentication journeys or behavioural stress signals are associated with higher fraud risk. |
+| Customer Lifecycle | Account age provides a view of account maturity and supports comparison between newer and more established accounts. | Supports onboarding risk assessment and helps determine whether early account stages require stronger monitoring or controls. |
+| Geographic & Contextual Factors | Geographic distance and international transaction indicators provide context on where and how transactions occur. | Helps identify whether international or geographically unusual activity shows different fraud, risk, or monitoring requirements. |
 
 # Business Questions
 
