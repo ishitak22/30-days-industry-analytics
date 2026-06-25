@@ -378,17 +378,15 @@ The visual supports a multi-factor view of fraud detection: risk indicators are 
 
 ## Analysis 4: Transaction Activity Over Time
 
-## Business Question
+### Business Question
 
 When does transaction activity occur, and are there periods of elevated operational or fraud risk?
 
-## Why This Matters
+### Why This Matters
 
 Time-based transaction behaviour is important because banking operations and fraud monitoring teams need to understand when activity is most concentrated. Periods of higher transaction volume can create operational pressure, increase alert review workload, and make unusual spikes harder to identify without a clear baseline.
 
 Understanding transaction timing also supports real-time monitoring because fraud exposure may be more difficult to manage during peak activity windows. A clear view of high and low activity periods helps interpret whether transaction patterns reflect normal customer behaviour or potential operational stress.
-
-## Visual Analysis
 
 ```{r}
 #| label: analysis-4-transaction-volume-time
@@ -442,7 +440,7 @@ time_trend_summary %>%
   )
 ```
 
-## Key Findings
+### Key Findings
 
 - Transaction activity varies across the day, indicating that operational workload is not evenly distributed.
 
@@ -452,7 +450,7 @@ time_trend_summary %>%
 
 - The smoothed trend helps distinguish broader activity patterns from individual hourly fluctuations.
 
-## Insight (Business Interpretation)
+### Insights
 
 Temporal transaction patterns show when banking systems and monitoring teams are most likely to experience higher workload. During peak transaction periods, fraud alerts may be more difficult to review quickly because legitimate transaction volume is also higher.
 
