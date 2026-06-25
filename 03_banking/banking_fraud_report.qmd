@@ -665,17 +665,15 @@ The business interpretation is not that one authentication method is automatical
 
 ## Analysis 7: Account Age & Lifecycle Risk
 
-## Business Question
+### Business Question
 
 How does account maturity influence customer behaviour and fraud risk?
 
-## Why This Matters
+### Why This Matters
 
 Account lifecycle analysis is important because new and mature accounts can behave differently from a fraud risk perspective. Early-stage accounts may not yet have established behavioural history, which can make unusual activity harder to distinguish from normal onboarding behaviour.
 
 Fraudsters may also exploit newer accounts before stable patterns are established. Understanding how risk changes as accounts mature helps banks interpret customer behaviour across the lifecycle and assess whether account age provides useful context for fraud monitoring.
-
-## Visual Analysis
 
 ```{r}
 #| label: analysis-7-account-age-risk
@@ -749,7 +747,7 @@ account_age_risk_summary %>%
   )
 ```
 
-## Key Findings
+### Key Findings
 
 - Fraud exposure can be compared across clear lifecycle stages, from early account tenure through mature accounts.
 
@@ -761,7 +759,7 @@ account_age_risk_summary %>%
 
 - If risk remains elevated across multiple stages, account age alone may not be sufficient to separate lower-risk and higher-risk activity.
 
-## Insight (Business Interpretation)
+### Insights
 
 Account maturity provides important context for understanding customer behaviour and fraud risk. In banking terms, early account stages may carry greater uncertainty because there is less behavioural history available to validate whether activity is normal.
 
@@ -769,7 +767,98 @@ The pattern across account age groups helps explain whether trust appears to str
 
 ## Analysis 8: Fraud Interaction Patterns
 
-[To be filled in next step]
+### Business Question
+
+Which combinations of customer behaviours and risk indicators are most strongly associated with fraudulent transactions?
+
+### Why This Matters
+
+Fraud in banking is rarely driven by a single indicator. Modern fraud detection relies on combinations of behavioural and risk signals, including anomaly behaviour, device risk, transaction velocity, suspicious activity, and authentication patterns.
+
+Understanding how these signals interact helps reveal whether fraud risk is concentrated in specific behavioural zones. This matters because combined risk patterns can provide stronger evidence for investigation prioritisation than isolated transaction characteristics.
+
+```{r}
+#| label: fraud-risk-scatter-plot
+
+fraud_interaction_data <- banking_transactions %>%
+  mutate(
+    fraud_status = if_else(
+      as.logical(fraud_flag),
+      "Fraud",
+      "Not fraud"
+    ),
+    fraud_indicator = as.integer(as.logical(fraud_flag)),
+    card_present_status = if_else(
+      card_present_flag == 1,
+      "Card present",
+      "Card not present"
+    ),
+    transaction_scope = if_else(
+      international_transaction_flag == 1,
+      "International",
+      "Domestic"
+    ),
+    authentication_card_segment = paste(
+      authentication_type,
+      card_present_status,
+      sep = " | "
+    ),
+    scope_card_segment = paste(
+      transaction_scope,
+      card_present_status,
+      sep = " | "
+    )
+  )
+
+ fraud_interaction_data %>%
+  ggplot(aes(
+    x = device_risk_score,
+    y = anomaly_score,
+    color = fraud_status,
+    size = transaction_velocity_score
+  )) +
+  geom_point(alpha = 0.42) +
+  scale_color_manual(
+    values = c(
+      "Not fraud" = "#2563EB",
+      "Fraud" = "#DC2626"
+    )
+  ) +
+  scale_size_continuous(range = c(1.2, 5.5)) +
+  labs(
+    title = "Fraud Clustering Across Risk Scores",
+    subtitle = "Device risk and anomaly score interaction, scaled by transaction velocity",
+    x = "Device risk score",
+    y = "Anomaly score",
+    color = "Fraud status",
+    size = "Velocity score"
+  ) +
+  theme_minimal(base_size = 12) +
+  theme(
+    plot.title = element_text(face = "bold", size = 15),
+    plot.subtitle = element_text(color = "#4B5563"),
+    panel.grid.minor = element_blank(),
+    legend.position = "bottom"
+  )
+```
+
+### Key Findings
+
+- The scatter plot shows how fraudulent and non-fraudulent transactions are distributed across multiple risk dimensions.
+
+- Fraudulent activity can be assessed by whether it clusters in higher-risk areas rather than appearing randomly across the portfolio.
+
+- Separation between fraud and non-fraud observations indicates whether combined risk indicators provide a meaningful fraud signal.
+
+- Concentration in high-risk regions suggests that elevated fraud exposure is associated with interaction effects between behavioural indicators.
+
+- Overlap between fraudulent and non-fraudulent observations shows where fraud detection remains more challenging and where risk signals may be less definitive.
+
+### Insight (Business Interpretation)
+
+The scatter plot helps show whether fraud accumulates in specific risk regions rather than being evenly distributed across all transaction behaviour. In banking terms, this means the most meaningful fraud signals often emerge when several indicators are viewed together.
+
+A typical high-risk transaction profile appears where fraud observations cluster alongside elevated behavioural and risk signals. This interaction-based view is valuable because it reflects how modern fraud monitoring works in practice: suspicious activity is often identified through combinations of unusual behaviour, rather than one standalone metric.
 
 ## Final Recommendations
 
