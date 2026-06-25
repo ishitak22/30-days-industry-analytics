@@ -271,34 +271,133 @@ Payment channel usage reveals where customer activity is concentrated across the
 
 For fraud monitoring, channel behaviour should be interpreted as a context signal. A transaction's channel can influence how suspicious activity is assessed, because digital, card-based, and in-person contexts may involve different customer behaviours, authentication expectations, and fraud exposure patterns.
 
-# Analysis 3: Transaction Risk Behaviour
+## Analysis 3: Transaction Risk Behaviour
+
+### Business Question
+
+How do transaction values and customer behaviours vary across different levels of transaction risk?
+
+### Why This Matters
+
+Understanding transaction risk behaviour is critical because fraud often emerges through combinations of behavioural signals before a transaction is confirmed as fraudulent. Banks need to understand whether risk indicators move consistently across customer behaviours, authentication journeys, and transaction contexts.
+
+This type of analysis supports more accurate fraud detection by showing whether multiple signals reinforce each other or create noisy, inconsistent patterns. It also helps banking teams understand where risk-based authentication and monitoring strategies may need to be more sensitive to behavioural context.
+
+```{r}
+#| label: analysis-3-risk-behaviour-heatmap
+#| fig-width: 9
+#| fig-height: 5
+
+risk_lower_threshold <- quantile(
+  banking_transactions$device_risk_score,
+  0.33,
+  na.rm = TRUE
+)
+
+risk_upper_threshold <- quantile(
+  banking_transactions$device_risk_score,
+  0.67,
+  na.rm = TRUE
+)
+
+authentication_risk_summary <- banking_transactions %>%
+  mutate(
+    risk_category = case_when(
+      device_risk_score <= risk_lower_threshold ~ "Low risk",
+      device_risk_score <= risk_upper_threshold ~ "Medium risk",
+      TRUE ~ "High risk"
+    ),
+    risk_category = factor(
+      risk_category,
+      levels = c("Low risk", "Medium risk", "High risk")
+    )
+  ) %>%
+  group_by(authentication_type, risk_category) %>%
+  summarise(
+    total_transactions = n(),
+    .groups = "drop"
+  ) %>%
+  group_by(authentication_type) %>%
+  mutate(
+    risk_distribution_share =
+      total_transactions / sum(total_transactions) * 100
+  ) %>%
+  ungroup()
+
+authentication_risk_summary %>%
+  ggplot(aes(
+    x = authentication_type,
+    y = risk_category,
+    fill = risk_distribution_share
+  )) +
+  geom_tile(color = "white", linewidth = 0.7) +
+  geom_text(
+    aes(label = label_percent(scale = 1, accuracy = 0.1)(risk_distribution_share)),
+    size = 3.4,
+    color = "#111827"
+  ) +
+  scale_fill_gradient(
+    low = "#DBEAFE",
+    high = "#1D4ED8",
+    labels = label_percent(scale = 1)
+  ) +
+  labs(
+    title = "Authentication Type and Risk Distribution",
+    subtitle = "Share of each authentication type by transaction risk category",
+    x = "Authentication type",
+    y = "Risk category",
+    fill = "Share"
+  ) +
+  theme_minimal(base_size = 12) +
+  theme(
+    plot.title = element_text(face = "bold", size = 15),
+    plot.subtitle = element_text(color = "#4B5563"),
+    panel.grid = element_blank()
+  )
+```
+
+### Key Findings
+
+- The heatmap shows whether risk is evenly distributed across authentication journeys or concentrated in specific combinations.
+
+- Higher-risk areas are visually distinguishable through stronger colour intensity, making risk concentration easier to identify.
+
+- Authentication behaviour provides a meaningful behavioural lens for interpreting transaction risk beyond transaction value alone.
+
+- If one authentication pathway shows a larger share of higher-risk activity, it indicates clearer separation between customer journeys.
+
+- If risk shares appear similar across authentication pathways, the risk signal may be less dependent on authentication behaviour alone.
+
+### Insights
+
+This analysis shows whether transaction risk is meaningfully associated with authentication behaviour or whether risk signals appear broadly distributed across customer journeys. In banking terms, strong clustering would suggest that certain authentication contexts carry more elevated risk, while a flatter pattern would indicate that risk is more diffuse and may require additional behavioural signals to interpret effectively.
+
+The visual supports a multi-factor view of fraud detection: risk indicators are most useful when assessed alongside customer behaviour and security context, rather than treated as isolated scores.
+
+## Analysis 4: Transaction Activity Over Time
 
 [To be filled in next step]
 
-# Analysis 4: Transaction Activity Over Time
+## Analysis 5: International vs Domestic Risk
 
 [To be filled in next step]
 
-# Analysis 5: International vs Domestic Risk
+## Analysis 6: Authentication Behaviour
 
 [To be filled in next step]
 
-# Analysis 6: Authentication Behaviour
+## Analysis 7: Account Age & Lifecycle Risk
 
 [To be filled in next step]
 
-# Analysis 7: Account Age & Lifecycle Risk
+## Analysis 8: Fraud Interaction Patterns
 
 [To be filled in next step]
 
-# Analysis 8: Fraud Interaction Patterns
+## Final Recommendations
 
 [To be filled in next step]
 
-# Final Recommendations
-
-[To be filled in next step]
-
-# Conclusion
+## Conclusion
 
 [To be filled in next step]
