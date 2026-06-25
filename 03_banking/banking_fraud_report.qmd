@@ -1,8 +1,48 @@
 ---
-format: html
+format:
+  html:
+    toc: false
+
 execute:
   echo: false
 ---
+
+<style>
+.quarto-container,
+#quarto-content,
+main.content,
+.content {
+  max-width: 1300px !important;
+  margin-left: auto !important;
+  margin-right: auto !important;
+}
+
+.page-columns {
+  display: block !important;
+}
+
+.cell-output-display,
+.figure,
+.quarto-figure {
+  display: flex;
+  justify-content: center;
+}
+
+h1 {
+  color: #111827;
+  font-weight: 800;
+}
+
+h2 {
+  color: #1E3A8A;
+  font-weight: 700;
+}
+
+h3 {
+  color: #374151;
+  font-weight: 700;
+}
+</style>
 
 # Banking Fraud Behaviour and Risk Analysis Report
 
@@ -104,8 +144,8 @@ How are transaction amounts distributed across the bank's transaction portfolio,
 
 ```{r}
 #| label: analysis-1-transaction-value-distribution
-#| fig-width: 9
-#| fig-height: 5
+#| fig-width: 12
+#| fig-height: 6
 
 transaction_value_summary <- banking_transactions %>%
   summarise(
@@ -165,8 +205,8 @@ Which payment channels are used most frequently, and how is transaction activity
 
 ```{r}
 #| label: analysis-2-payment-channel-composition
-#| fig-width: 9
-#| fig-height: 4.8
+#| fig-width: 12
+#| fig-height: 6
 
 channel_usage_summary <- banking_transactions %>%
   count(
@@ -233,8 +273,8 @@ How do transaction values and customer behaviours vary across different levels o
 
 ```{r}
 #| label: analysis-3-risk-behaviour-heatmap
-#| fig-width: 9
-#| fig-height: 5
+#| fig-width: 12
+#| fig-height: 6
 
 risk_lower_threshold <- quantile(
   banking_transactions$device_risk_score,
@@ -330,8 +370,8 @@ When does transaction activity occur, and are there periods of elevated operatio
 
 ```{r}
 #| label: analysis-4-transaction-volume-time
-#| fig-width: 9
-#| fig-height: 5
+#| fig-width: 12
+#| fig-height: 6
 
 time_trend_summary <- banking_transactions %>%
   group_by(transaction_period = transaction_time_hour) %>%
@@ -404,8 +444,8 @@ Do international transactions exhibit different behavioural and fraud patterns c
 
 ```{r}
 #| label: analysis-5-international-domestic-risk
-#| fig-width: 9
-#| fig-height: 5
+#| fig-width: 12
+#| fig-height: 6
 
 international_transaction_summary <- banking_transactions %>%
   mutate(
@@ -505,8 +545,8 @@ How does authentication behaviour influence fraud exposure and security risk?
 
 ```{r}
 #| label: analysis-6-authentication-security-risk
-#| fig-width: 9
-#| fig-height: 5
+#| fig-width: 12
+#| fig-height: 6
 
 authentication_security_summary <- banking_transactions %>%
   mutate(
@@ -599,8 +639,8 @@ How does account maturity influence customer behaviour and fraud risk?
 
 ```{r}
 #| label: analysis-7-account-age-risk
-#| fig-width: 9
-#| fig-height: 5
+#| fig-width: 12
+#| fig-height: 6
 
 account_age_risk_summary <- banking_transactions %>%
   mutate(
@@ -695,6 +735,8 @@ Which combinations of customer behaviours and risk indicators are most strongly 
 
 ```{r}
 #| label: fraud-risk-scatter-plot
+#| #| fig-width: 12
+#| fig-height: 6
 
 fraud_interaction_data <- banking_transactions %>%
   mutate(
