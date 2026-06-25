@@ -132,7 +132,72 @@ banking_transactions <- read_csv(
 
 # Analysis 1: Transaction Value Behaviour
 
-[To be filled in next step]
+## Business Question
+
+How are transaction amounts distributed across the bank's transaction portfolio, and what does normal customer spending behaviour look like?
+
+## Why This Matters
+
+Understanding transaction value distribution is essential for distinguishing normal customer behaviour from unusual activity that may require closer review. In banking, most transactions are expected to fall within a routine behavioural range, while unusually large or highly concentrated values may indicate elevated exposure or potential fraud risk.
+
+This analysis helps establish a practical view of customer spending behaviour, supports the identification of potential transaction outliers, and provides a foundation for setting risk-based monitoring thresholds that are sensitive to abnormal value patterns without over-escalating ordinary customer activity.
+
+## Visual Analysis
+
+```{r}
+#| label: analysis-1-transaction-value-distribution
+#| fig-width: 9
+#| fig-height: 5
+
+transaction_value_summary <- banking_transactions %>%
+  summarise(
+    median_transaction_value = median(transaction_amount, na.rm = TRUE)
+  )
+
+banking_transactions %>%
+  ggplot(aes(x = transaction_amount)) +
+  geom_density(
+    fill = "#14B8A6",
+    color = "#0F766E",
+    linewidth = 1,
+    alpha = 0.35
+  ) +
+  geom_vline(
+    xintercept = transaction_value_summary$median_transaction_value,
+    color = "#7C2D12",
+    linewidth = 0.9,
+    linetype = "dashed"
+  ) +
+  scale_x_continuous(labels = label_dollar()) +
+  labs(
+    title = "Transaction Value Concentration",
+    subtitle = "Density curve shows where transaction values cluster across the portfolio",
+    x = "Transaction value",
+    y = "Density"
+  ) +
+  theme_minimal(base_size = 12) +
+  theme(
+    plot.title = element_text(face = "bold", size = 15),
+    plot.subtitle = element_text(color = "#4B5563"),
+    panel.grid.minor = element_blank()
+  )
+```
+
+## Key Findings
+
+- Transaction amounts are concentrated within a visible central range, indicating a typical band of customer transaction behaviour.
+
+- The distribution shows a tail of higher-value transactions, suggesting that a smaller group of transactions carries greater financial exposure.
+
+- The median marker provides a clear reference point for separating routine transaction values from higher-value activity.
+
+- High-value transactions appear less common than routine transactions, making them important candidates for risk-sensitive monitoring logic.
+
+## Insight (Business Interpretation)
+
+Normal transaction behaviour is represented by the main concentration of transaction values, where most customer activity occurs. Unusual behaviour begins where transactions move away from this central range into the higher-value tail, especially when those transactions are combined with other risk signals.
+
+For fraud detection systems, this means transaction value should be used as a contextual risk signal rather than a standalone trigger. Higher-value activity may not be fraudulent on its own, but it can materially increase exposure when paired with suspicious behaviour, abnormal device signals, or unusual transaction context.
 
 # Analysis 2: Payment Channel Usage
 
