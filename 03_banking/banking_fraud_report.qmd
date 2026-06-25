@@ -665,7 +665,107 @@ The business interpretation is not that one authentication method is automatical
 
 ## Analysis 7: Account Age & Lifecycle Risk
 
-[To be filled in next step]
+## Business Question
+
+How does account maturity influence customer behaviour and fraud risk?
+
+## Why This Matters
+
+Account lifecycle analysis is important because new and mature accounts can behave differently from a fraud risk perspective. Early-stage accounts may not yet have established behavioural history, which can make unusual activity harder to distinguish from normal onboarding behaviour.
+
+Fraudsters may also exploit newer accounts before stable patterns are established. Understanding how risk changes as accounts mature helps banks interpret customer behaviour across the lifecycle and assess whether account age provides useful context for fraud monitoring.
+
+## Visual Analysis
+
+```{r}
+#| label: analysis-7-account-age-risk
+#| fig-width: 9
+#| fig-height: 5
+
+account_age_risk_summary <- banking_transactions %>%
+  mutate(
+    account_age_group = case_when(
+      account_age_days <= 30 ~ "0-30 days",
+      account_age_days <= 180 ~ "31-180 days",
+      account_age_days <= 365 ~ "181-365 days",
+      TRUE ~ "365+ days"
+    ),
+    account_age_group = factor(
+      account_age_group,
+      levels = c("0-30 days", "31-180 days", "181-365 days", "365+ days")
+    ),
+    fraud_indicator = as.integer(as.logical(fraud_flag))
+  ) %>%
+  group_by(account_age_group) %>%
+  summarise(
+    fraud_rate = mean(fraud_indicator, na.rm = TRUE) * 100,
+    .groups = "drop"
+  )
+
+account_age_risk_summary %>%
+  ggplot(aes(
+    x = account_age_group,
+    y = fraud_rate
+  )) +
+  geom_segment(
+    aes(
+      x = account_age_group,
+      xend = account_age_group,
+      y = 0,
+      yend = fraud_rate
+    ),
+    color = "#93C5FD",
+    linewidth = 1.1
+  ) +
+  geom_point(
+    color = "#1D4ED8",
+    fill = "#DBEAFE",
+    shape = 21,
+    size = 5,
+    stroke = 1.1
+  ) +
+  geom_text(
+    aes(label = label_percent(scale = 1, accuracy = 0.1)(fraud_rate)),
+    vjust = -0.9,
+    size = 3.6,
+    color = "#1F2937"
+  ) +
+  scale_y_continuous(
+    labels = label_percent(scale = 1),
+    expand = expansion(mult = c(0, 0.18))
+  ) +
+  labs(
+    title = "Fraud Rate by Account Age Group",
+    subtitle = "Lifecycle view of fraud exposure across account maturity bands",
+    x = "Account age group",
+    y = "Fraud rate"
+  ) +
+  theme_minimal(base_size = 12) +
+  theme(
+    plot.title = element_text(face = "bold", size = 15),
+    plot.subtitle = element_text(color = "#4B5563"),
+    panel.grid.major.x = element_blank(),
+    panel.grid.minor = element_blank()
+  )
+```
+
+## Key Findings
+
+- Fraud exposure can be compared across clear lifecycle stages, from early account tenure through mature accounts.
+
+- The visual shows whether newer accounts have visibly higher fraud rates than longer-tenured accounts.
+
+- Differences between account age groups indicate whether fraud risk changes as customer behaviour becomes more established.
+
+- If fraud rates decline across later lifecycle stages, this suggests account maturity is associated with more stable behaviour.
+
+- If risk remains elevated across multiple stages, account age alone may not be sufficient to separate lower-risk and higher-risk activity.
+
+## Insight (Business Interpretation)
+
+Account maturity provides important context for understanding customer behaviour and fraud risk. In banking terms, early account stages may carry greater uncertainty because there is less behavioural history available to validate whether activity is normal.
+
+The pattern across account age groups helps explain whether trust appears to strengthen over time or whether fraud exposure remains consistent across the lifecycle. This supports a lifecycle-aware view of fraud detection, where account maturity is considered alongside transaction behaviour and risk signals.
 
 ## Analysis 8: Fraud Interaction Patterns
 
