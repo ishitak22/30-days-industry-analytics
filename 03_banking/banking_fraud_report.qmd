@@ -101,7 +101,7 @@ These questions establish the baseline for understanding how customers transact 
 
 These questions focus on how transaction activity changes across risk levels and time periods, helping identify when operational teams may need stronger monitoring coverage or review capacity.
 
-3.  How do transaction values and customer behaviours vary across different levels of transaction risk?
+3.  How does authentication behaviour influence transaction risk?
 
 4.  When does transaction activity occur, and are there periods of elevated operational or fraud risk?
 
@@ -438,7 +438,7 @@ Temporal transaction patterns show when banking systems and monitoring teams are
 
 In banking terms, timing is an important operational risk signal. Fraud monitoring effectiveness depends not only on detecting suspicious transactions, but also on having enough visibility and review capacity during the periods when transaction activity is most concentrated.
 
-## Analysis 5: International vs Domestic Risk
+## Analysis 5: International Transaction Risk
 
 ### Business Question
 
@@ -539,7 +539,7 @@ The comparison shows whether international activity has a meaningfully different
 
 This section does not imply that all international activity is suspicious. Rather, it shows whether transaction type changes the risk context and whether fraud detection logic benefits from considering geographic and behavioural differences together.
 
-## Analysis 6: Authentication Behaviour
+## Analysis 6: Authentication and Security Risk
 
 ### Business Question
 
@@ -633,7 +633,7 @@ Authentication behaviour is a meaningful fraud risk context when certain methods
 
 The business interpretation is not that one authentication method is automatically weak. Rather, authentication should be assessed alongside fraud outcomes and behavioural stress signals to understand where security controls appear effective and where customer journeys may carry more risk.
 
-## Analysis 7: Account Age & Lifecycle Risk
+## Analysis 7: Account Lifecycle Risk
 
 ### Business Question
 
