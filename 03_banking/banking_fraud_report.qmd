@@ -79,23 +79,39 @@ By analysing transaction behaviour, authentication patterns, risk indicators, an
 
 ### Introduction
 
-The analysis is guided by a focused set of business questions designed to understand transaction behaviour, fraud risk, authentication patterns, and customer lifecycle behaviour in a banking context. These questions help translate transaction-level data into practical insights for fraud prevention, operational monitoring, customer protection, and risk management.
+This analysis is structured around key business questions designed to understand transaction behaviour, operational activity patterns, fraud risk signals, authentication behaviour, customer lifecycle risk, and interaction effects between behavioural and fraud indicators. Together, these questions frame the project as a banking fraud and transaction monitoring use case focused on identifying where risk may emerge and how monitoring strategies can be better aligned to customer activity.
 
-### Business Questions
+## Business Questions
+
+### Theme 1: Customer Transaction Behaviour
+
+These questions establish the baseline for understanding how customers transact and which behaviours represent normal transaction activity across the banking portfolio.
 
 1. How are transaction amounts distributed across the bank's transaction portfolio, and what does normal customer spending behaviour look like?
 
 2. Which payment channels are used most frequently, and how is transaction activity distributed across channels?
 
+### Theme 2: Operational Activity Patterns
+
+These questions focus on how transaction activity changes across risk levels and time periods, helping identify when operational teams may need stronger monitoring coverage or review capacity.
+
 3. How do transaction values and customer behaviours vary across different levels of transaction risk?
 
 4. When does transaction activity occur, and are there periods of elevated operational or fraud risk?
+
+### Theme 3: Fraud Exposure & Contextual Risk
+
+These questions examine contextual drivers of fraud exposure, including transaction geography, authentication behaviour, and account maturity.
 
 5. Do international transactions exhibit different behavioural and fraud patterns compared with domestic transactions?
 
 6. How does authentication behaviour influence fraud exposure and security risk?
 
 7. How does account maturity influence customer behaviour and fraud risk?
+
+### Theme 4: Fraud Interaction Patterns
+
+This question brings together multiple behavioural and risk indicators to understand whether fraud risk is strongest when signals occur in combination.
 
 8. Which combinations of customer behaviours and risk indicators are most strongly associated with fraudulent transactions?
 
