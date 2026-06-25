@@ -41,17 +41,6 @@ Transaction monitoring is a core capability in modern banking because fraud risk
 | Observational level | Transaction-level activity with associated behavioural, security, and risk attributes |
 | Type of data available | Transaction values, payment channels, account maturity, authentication behaviour, risk scores, fraud indicators, geographic context, and activity timing |
 
-### Key Information Available
-
-| Category | Information available | Contribution to fraud analysis and decision-making |
-|---|---|---|
-| Transaction Behaviour | Transaction values, transaction frequency, transaction velocity, and activity timing are available to describe how banking activity occurs across the transaction base. | Helps identify unusual transaction patterns, high-value exposure, operational workload peaks, and behaviours that may require closer monitoring. |
-| Payment Activity | Payment channel and card presence information show how customers interact with banking services across digital, physical, and card-based transaction contexts. | Supports channel-level risk assessment, operational planning, and understanding whether certain transaction routes carry different fraud exposure. |
-| Risk Indicators | Device risk, anomaly behaviour, fraud status, and suspicious IP signals provide direct evidence of transaction risk conditions. | Enables fraud teams to compare risk patterns across transaction types, identify elevated-risk segments, and prioritise monitoring attention. |
-| Authentication & Security | Authentication method, login attempts, and recent failed transaction activity provide insight into security behaviour surrounding transactions. | Helps assess whether certain authentication journeys or behavioural stress signals are associated with higher fraud risk. |
-| Customer Lifecycle | Account age provides a view of account maturity and supports comparison between newer and more established accounts. | Supports onboarding risk assessment and helps determine whether early account stages require stronger monitoring or controls. |
-| Geographic & Contextual Factors | Geographic distance and international transaction indicators provide context on where and how transactions occur. | Helps identify whether international or geographically unusual activity shows different fraud, risk, or monitoring requirements. |
-
 ## Business Case-study
 
 ### Introduction
