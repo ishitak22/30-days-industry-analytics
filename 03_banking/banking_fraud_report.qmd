@@ -75,9 +75,29 @@ By analysing transaction behaviour, authentication patterns, risk indicators, an
 | Customer Lifecycle | Account age provides a view of account maturity and supports comparison between newer and more established accounts. | Supports onboarding risk assessment and helps determine whether early account stages require stronger monitoring or controls. |
 | Geographic & Contextual Factors | Geographic distance and international transaction indicators provide context on where and how transactions occur. | Helps identify whether international or geographically unusual activity shows different fraud, risk, or monitoring requirements. |
 
-## Business Questions
+## Business Case-study
 
-[To be filled in next step]
+### Introduction
+
+The analysis is guided by a focused set of business questions designed to understand transaction behaviour, fraud risk, authentication patterns, and customer lifecycle behaviour in a banking context. These questions help translate transaction-level data into practical insights for fraud prevention, operational monitoring, customer protection, and risk management.
+
+### Business Questions
+
+1. How are transaction amounts distributed across the bank's transaction portfolio, and what does normal customer spending behaviour look like?
+
+2. Which payment channels are used most frequently, and how is transaction activity distributed across channels?
+
+3. How do transaction values and customer behaviours vary across different levels of transaction risk?
+
+4. When does transaction activity occur, and are there periods of elevated operational or fraud risk?
+
+5. Do international transactions exhibit different behavioural and fraud patterns compared with domestic transactions?
+
+6. How does authentication behaviour influence fraud exposure and security risk?
+
+7. How does account maturity influence customer behaviour and fraud risk?
+
+8. Which combinations of customer behaviours and risk indicators are most strongly associated with fraudulent transactions?
 
 # Analysis 1: Transaction Value Behaviour
 
