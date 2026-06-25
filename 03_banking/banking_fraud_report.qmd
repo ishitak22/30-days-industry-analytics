@@ -1,5 +1,7 @@
 ---
 format: html
+execute:
+  echo: false
 ---
 
 # Banking Fraud Behaviour and Risk Analysis Report
