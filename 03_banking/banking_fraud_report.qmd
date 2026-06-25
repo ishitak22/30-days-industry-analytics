@@ -115,6 +115,21 @@ This question brings together multiple behavioural and risk indicators to unders
 
 8. Which combinations of customer behaviours and risk indicators are most strongly associated with fraudulent transactions?
 
+```{r}
+#| label: setup
+#| include: false
+
+library(tidyverse)
+library(janitor)
+library(scales)
+
+banking_transactions <- read_csv(
+  "data/banking_transactions.csv",
+  show_col_types = FALSE
+) %>%
+  clean_names()
+```
+
 # Analysis 1: Transaction Value Behaviour
 
 [To be filled in next step]
