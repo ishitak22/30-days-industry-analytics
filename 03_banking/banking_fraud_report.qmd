@@ -130,19 +130,17 @@ banking_transactions <- read_csv(
   clean_names()
 ```
 
-# Analysis 1: Transaction Value Behaviour
+## Analysis 1: Transaction Value Behaviour
 
-## Business Question
+### Business Question
 
 How are transaction amounts distributed across the bank's transaction portfolio, and what does normal customer spending behaviour look like?
 
-## Why This Matters
+### Why This Matters
 
 Understanding transaction value distribution is essential for distinguishing normal customer behaviour from unusual activity that may require closer review. In banking, most transactions are expected to fall within a routine behavioural range, while unusually large or highly concentrated values may indicate elevated exposure or potential fraud risk.
 
 This analysis helps establish a practical view of customer spending behaviour, supports the identification of potential transaction outliers, and provides a foundation for setting risk-based monitoring thresholds that are sensitive to abnormal value patterns without over-escalating ordinary customer activity.
-
-## Visual Analysis
 
 ```{r}
 #| label: analysis-1-transaction-value-distribution
@@ -183,7 +181,7 @@ banking_transactions %>%
   )
 ```
 
-## Key Findings
+### Key Findings
 
 - Transaction amounts are concentrated within a visible central range, indicating a typical band of customer transaction behaviour.
 
@@ -193,7 +191,7 @@ banking_transactions %>%
 
 - High-value transactions appear less common than routine transactions, making them important candidates for risk-sensitive monitoring logic.
 
-## Insight (Business Interpretation)
+### Insights
 
 Normal transaction behaviour is represented by the main concentration of transaction values, where most customer activity occurs. Unusual behaviour begins where transactions move away from this central range into the higher-value tail, especially when those transactions are combined with other risk signals.
 
