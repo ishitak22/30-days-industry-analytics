@@ -378,7 +378,85 @@ The visual supports a multi-factor view of fraud detection: risk indicators are 
 
 ## Analysis 4: Transaction Activity Over Time
 
-[To be filled in next step]
+## Business Question
+
+When does transaction activity occur, and are there periods of elevated operational or fraud risk?
+
+## Why This Matters
+
+Time-based transaction behaviour is important because banking operations and fraud monitoring teams need to understand when activity is most concentrated. Periods of higher transaction volume can create operational pressure, increase alert review workload, and make unusual spikes harder to identify without a clear baseline.
+
+Understanding transaction timing also supports real-time monitoring because fraud exposure may be more difficult to manage during peak activity windows. A clear view of high and low activity periods helps interpret whether transaction patterns reflect normal customer behaviour or potential operational stress.
+
+## Visual Analysis
+
+```{r}
+#| label: analysis-4-transaction-volume-time
+#| fig-width: 9
+#| fig-height: 5
+
+time_trend_summary <- banking_transactions %>%
+  group_by(transaction_period = transaction_time_hour) %>%
+  summarise(
+    transaction_count = n(),
+    .groups = "drop"
+  ) %>%
+  arrange(transaction_period)
+
+peak_activity_period <- time_trend_summary %>%
+  slice_max(transaction_count, n = 1, with_ties = FALSE)
+
+time_trend_summary %>%
+  ggplot(aes(
+    x = transaction_period,
+    y = transaction_count
+  )) +
+  geom_line(color = "#1D4ED8", linewidth = 1) +
+  geom_point(color = "#1D4ED8", size = 2, alpha = 0.8) +
+  geom_smooth(
+    method = "loess",
+    se = FALSE,
+    color = "#F97316",
+    linewidth = 0.9,
+    linetype = "dashed"
+  ) +
+  geom_point(
+    data = peak_activity_period,
+    aes(x = transaction_period, y = transaction_count),
+    color = "#DC2626",
+    size = 3.2
+  ) +
+  scale_x_continuous(breaks = seq(0, 23, by = 3)) +
+  scale_y_continuous(labels = comma) +
+  labs(
+    title = "Transaction Volume by Hour",
+    subtitle = "Hourly activity pattern with peak period highlighted",
+    x = "Transaction hour",
+    y = "Transaction count"
+  ) +
+  theme_minimal(base_size = 12) +
+  theme(
+    plot.title = element_text(face = "bold", size = 15),
+    plot.subtitle = element_text(color = "#4B5563"),
+    panel.grid.minor = element_blank()
+  )
+```
+
+## Key Findings
+
+- Transaction activity varies across the day, indicating that operational workload is not evenly distributed.
+
+- The highlighted peak shows the hour where transaction volume is highest and operational monitoring pressure may be greatest.
+
+- Lower-volume windows are visible, providing contrast against periods of elevated activity.
+
+- The smoothed trend helps distinguish broader activity patterns from individual hourly fluctuations.
+
+## Insight (Business Interpretation)
+
+Temporal transaction patterns show when banking systems and monitoring teams are most likely to experience higher workload. During peak transaction periods, fraud alerts may be more difficult to review quickly because legitimate transaction volume is also higher.
+
+In banking terms, timing is an important operational risk signal. Fraud monitoring effectiveness depends not only on detecting suspicious transactions, but also on having enough visibility and review capacity during the periods when transaction activity is most concentrated.
 
 ## Analysis 5: International vs Domestic Risk
 
