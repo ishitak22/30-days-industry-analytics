@@ -102,12 +102,6 @@ banking_transactions <- read_csv(
 
 How are transaction amounts distributed across the bank's transaction portfolio, and what does normal customer spending behaviour look like?
 
-### Why This Matters
-
-Understanding transaction value distribution is essential for distinguishing normal customer behaviour from unusual activity that may require closer review. In banking, most transactions are expected to fall within a routine behavioural range, while unusually large or highly concentrated values may indicate elevated exposure or potential fraud risk.
-
-This analysis helps establish a practical view of customer spending behaviour, supports the identification of potential transaction outliers, and provides a foundation for setting risk-based monitoring thresholds that are sensitive to abnormal value patterns without over-escalating ordinary customer activity.
-
 ```{r}
 #| label: analysis-1-transaction-value-distribution
 #| fig-width: 9
@@ -168,12 +162,6 @@ For fraud detection systems, this means transaction value should be used as a co
 ### Business Question
 
 Which payment channels are used most frequently, and how is transaction activity distributed across channels?
-
-### Why This Matters
-
-Payment channel behaviour is important because it shows how customers choose to interact with the bank across digital and traditional transaction pathways. A clear view of channel usage helps stakeholders understand where customer demand is concentrated, where operational workload is likely to be highest, and whether transaction activity is diversified or dependent on a smaller number of channels.
-
-From a fraud monitoring perspective, channel behaviour also matters because different transaction environments can carry different risk profiles. Understanding channel concentration supports better interpretation of customer behaviour, operational capacity planning, digital adoption trends, and channel-level monitoring priorities.
 
 ```{r}
 #| label: analysis-2-payment-channel-composition
@@ -242,12 +230,6 @@ For fraud monitoring, channel behaviour should be interpreted as a context signa
 ### Business Question
 
 How do transaction values and customer behaviours vary across different levels of transaction risk?
-
-### Why This Matters
-
-Understanding transaction risk behaviour is critical because fraud often emerges through combinations of behavioural signals before a transaction is confirmed as fraudulent. Banks need to understand whether risk indicators move consistently across customer behaviours, authentication journeys, and transaction contexts.
-
-This type of analysis supports more accurate fraud detection by showing whether multiple signals reinforce each other or create noisy, inconsistent patterns. It also helps banking teams understand where risk-based authentication and monitoring strategies may need to be more sensitive to behavioural context.
 
 ```{r}
 #| label: analysis-3-risk-behaviour-heatmap
@@ -346,12 +328,6 @@ The visual supports a multi-factor view of fraud detection: risk indicators are 
 
 When does transaction activity occur, and are there periods of elevated operational or fraud risk?
 
-### Why This Matters
-
-Time-based transaction behaviour is important because banking operations and fraud monitoring teams need to understand when activity is most concentrated. Periods of higher transaction volume can create operational pressure, increase alert review workload, and make unusual spikes harder to identify without a clear baseline.
-
-Understanding transaction timing also supports real-time monitoring because fraud exposure may be more difficult to manage during peak activity windows. A clear view of high and low activity periods helps interpret whether transaction patterns reflect normal customer behaviour or potential operational stress.
-
 ```{r}
 #| label: analysis-4-transaction-volume-time
 #| fig-width: 9
@@ -425,12 +401,6 @@ In banking terms, timing is an important operational risk signal. Fraud monitori
 ### Business Question
 
 Do international transactions exhibit different behavioural and fraud patterns compared with domestic transactions?
-
-### Why This Matters
-
-Distinguishing international and domestic transactions is important because cross-border activity can introduce additional fraud and operational risk factors. International activity may involve greater geographic distance, different authentication expectations, unusual access patterns, or higher anomaly signals compared with domestic behaviour.
-
-Understanding these differences helps banking teams interpret fraud signals more accurately. If domestic and international transactions show meaningfully different risk profiles, monitoring logic can be evaluated through a more contextual lens rather than treating all transaction types as equivalent.
 
 ```{r}
 #| label: analysis-5-international-domestic-risk
@@ -533,12 +503,6 @@ This section does not imply that all international activity is suspicious. Rathe
 
 How does authentication behaviour influence fraud exposure and security risk?
 
-### Why This Matters
-
-Authentication is a primary control point in banking fraud prevention because it determines how customers prove legitimacy before or during sensitive transaction activity. Repeated login attempts, failed transaction behaviour, and high-risk authentication contexts may indicate account compromise, customer friction, or elevated fraud exposure.
-
-Different authentication methods can carry different risk profiles. Understanding these patterns helps the bank assess whether authentication journeys are supporting security effectively while still preserving a smooth customer experience for legitimate activity.
-
 ```{r}
 #| label: analysis-6-authentication-security-risk
 #| fig-width: 9
@@ -632,12 +596,6 @@ The business interpretation is not that one authentication method is automatical
 ### Business Question
 
 How does account maturity influence customer behaviour and fraud risk?
-
-### Why This Matters
-
-Account lifecycle analysis is important because new and mature accounts can behave differently from a fraud risk perspective. Early-stage accounts may not yet have established behavioural history, which can make unusual activity harder to distinguish from normal onboarding behaviour.
-
-Fraudsters may also exploit newer accounts before stable patterns are established. Understanding how risk changes as accounts mature helps banks interpret customer behaviour across the lifecycle and assess whether account age provides useful context for fraud monitoring.
 
 ```{r}
 #| label: analysis-7-account-age-risk
@@ -734,12 +692,6 @@ The pattern across account age groups helps explain whether trust appears to str
 ### Business Question
 
 Which combinations of customer behaviours and risk indicators are most strongly associated with fraudulent transactions?
-
-### Why This Matters
-
-Fraud in banking is rarely driven by a single indicator. Modern fraud detection relies on combinations of behavioural and risk signals, including anomaly behaviour, device risk, transaction velocity, suspicious activity, and authentication patterns.
-
-Understanding how these signals interact helps reveal whether fraud risk is concentrated in specific behavioural zones. This matters because combined risk patterns can provide stronger evidence for investigation prioritisation than isolated transaction characteristics.
 
 ```{r}
 #| label: fraud-risk-scatter-plot
