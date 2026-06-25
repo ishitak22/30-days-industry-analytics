@@ -12,10 +12,10 @@ This project analyses banking transaction behaviour to identify patterns associa
 
 ### Key Findings
 
-- International transactions exhibit stronger risk indicators than domestic transactions.
-- Authentication behaviour influences fraud exposure across customer journeys.
-- Newer accounts demonstrate elevated fraud risk compared with mature accounts.
-- Fraud is most strongly associated with combinations of behavioural risk indicators.
+-   International transactions exhibit stronger risk indicators than domestic transactions.
+-   Authentication behaviour influences fraud exposure across customer journeys.
+-   Newer accounts demonstrate elevated fraud risk compared with mature accounts.
+-   Fraud is most strongly associated with combinations of behavioural risk indicators.
 
 ### Business Impact
 
@@ -33,12 +33,12 @@ Transaction monitoring is a core capability in modern banking because fraud risk
 
 ### Dataset Scope
 
-| Area | Summary |
-|---|---|
-| Industry | Retail banking and digital transaction monitoring |
-| Analytical focus | Fraud risk, transaction behaviour, authentication patterns, and operational monitoring signals |
-| Unit of analysis | Individual banking transaction |
-| Observational level | Transaction-level activity with associated behavioural, security, and risk attributes |
+| Area                   | Summary                                                                                                                                                  |
+|--------------|---------------------------------------------------------|
+| Industry               | Retail banking and digital transaction monitoring                                                                                                        |
+| Analytical focus       | Fraud risk, transaction behaviour, authentication patterns, and operational monitoring signals                                                           |
+| Unit of analysis       | Individual banking transaction                                                                                                                           |
+| Observational level    | Transaction-level activity with associated behavioural, security, and risk attributes                                                                    |
 | Type of data available | Transaction values, payment channels, account maturity, authentication behaviour, risk scores, fraud indicators, geographic context, and activity timing |
 
 ## Business Case-study
@@ -53,33 +53,33 @@ This analysis is structured around key business questions designed to understand
 
 These questions establish the baseline for understanding how customers transact and which behaviours represent normal transaction activity across the banking portfolio.
 
-1. How are transaction amounts distributed across the bank's transaction portfolio, and what does normal customer spending behaviour look like?
+1.  How are transaction amounts distributed across the bank's transaction portfolio, and what does normal customer spending behaviour look like?
 
-2. Which payment channels are used most frequently, and how is transaction activity distributed across channels?
+2.  Which payment channels are used most frequently, and how is transaction activity distributed across channels?
 
 ### Theme 2: Operational Activity Patterns
 
 These questions focus on how transaction activity changes across risk levels and time periods, helping identify when operational teams may need stronger monitoring coverage or review capacity.
 
-3. How do transaction values and customer behaviours vary across different levels of transaction risk?
+3.  How do transaction values and customer behaviours vary across different levels of transaction risk?
 
-4. When does transaction activity occur, and are there periods of elevated operational or fraud risk?
+4.  When does transaction activity occur, and are there periods of elevated operational or fraud risk?
 
 ### Theme 3: Fraud Exposure & Contextual Risk
 
 These questions examine contextual drivers of fraud exposure, including transaction geography, authentication behaviour, and account maturity.
 
-5. Do international transactions exhibit different behavioural and fraud patterns compared with domestic transactions?
+5.  Do international transactions exhibit different behavioural and fraud patterns compared with domestic transactions?
 
-6. How does authentication behaviour influence fraud exposure and security risk?
+6.  How does authentication behaviour influence fraud exposure and security risk?
 
-7. How does account maturity influence customer behaviour and fraud risk?
+7.  How does account maturity influence customer behaviour and fraud risk?
 
 ### Theme 4: Fraud Interaction Patterns
 
 This question brings together multiple behavioural and risk indicators to understand whether fraud risk is strongest when signals occur in combination.
 
-8. Which combinations of customer behaviours and risk indicators are most strongly associated with fraudulent transactions?
+8.  Which combinations of customer behaviours and risk indicators are most strongly associated with fraudulent transactions?
 
 ```{r}
 #| label: setup
@@ -143,13 +143,13 @@ banking_transactions %>%
 
 ### Key Findings
 
-- Transaction amounts are concentrated within a visible central range, indicating a typical band of customer transaction behaviour.
+-   Transaction amounts are concentrated within a visible central range, indicating a typical band of customer transaction behaviour.
 
-- The distribution shows a tail of higher-value transactions, suggesting that a smaller group of transactions carries greater financial exposure.
+-   The distribution shows a tail of higher-value transactions, suggesting that a smaller group of transactions carries greater financial exposure.
 
-- The median marker provides a clear reference point for separating routine transaction values from higher-value activity.
+-   The median marker provides a clear reference point for separating routine transaction values from higher-value activity.
 
-- High-value transactions appear less common than routine transactions, making them important candidates for risk-sensitive monitoring logic.
+-   High-value transactions appear less common than routine transactions, making them important candidates for risk-sensitive monitoring logic.
 
 ### Insights
 
@@ -211,13 +211,13 @@ channel_usage_summary %>%
 
 ### Key Findings
 
-- Transaction activity is distributed across multiple payment channels, showing that customers use a mix of banking access points.
+-   Transaction activity is distributed across multiple payment channels, showing that customers use a mix of banking access points.
 
-- The composition view makes it clear whether a small number of channels account for a larger share of overall activity.
+-   The composition view makes it clear whether a small number of channels account for a larger share of overall activity.
 
-- Channel concentration has operational significance because higher-share channels are likely to carry more service demand and monitoring volume.
+-   Channel concentration has operational significance because higher-share channels are likely to carry more service demand and monitoring volume.
 
-- The spread across channels provides a useful lens for understanding digital versus traditional banking behaviour.
+-   The spread across channels provides a useful lens for understanding digital versus traditional banking behaviour.
 
 ### Insights
 
@@ -306,15 +306,15 @@ authentication_risk_summary %>%
 
 ### Key Findings
 
-- The heatmap shows whether risk is evenly distributed across authentication journeys or concentrated in specific combinations.
+-   The heatmap shows whether risk is evenly distributed across authentication journeys or concentrated in specific combinations.
 
-- Higher-risk areas are visually distinguishable through stronger colour intensity, making risk concentration easier to identify.
+-   Higher-risk areas are visually distinguishable through stronger colour intensity, making risk concentration easier to identify.
 
-- Authentication behaviour provides a meaningful behavioural lens for interpreting transaction risk beyond transaction value alone.
+-   Authentication behaviour provides a meaningful behavioural lens for interpreting transaction risk beyond transaction value alone.
 
-- If one authentication pathway shows a larger share of higher-risk activity, it indicates clearer separation between customer journeys.
+-   If one authentication pathway shows a larger share of higher-risk activity, it indicates clearer separation between customer journeys.
 
-- If risk shares appear similar across authentication pathways, the risk signal may be less dependent on authentication behaviour alone.
+-   If risk shares appear similar across authentication pathways, the risk signal may be less dependent on authentication behaviour alone.
 
 ### Insights
 
@@ -382,13 +382,13 @@ time_trend_summary %>%
 
 ### Key Findings
 
-- Transaction activity varies across the day, indicating that operational workload is not evenly distributed.
+-   Transaction activity varies across the day, indicating that operational workload is not evenly distributed.
 
-- The highlighted peak shows the hour where transaction volume is highest and operational monitoring pressure may be greatest.
+-   The highlighted peak shows the hour where transaction volume is highest and operational monitoring pressure may be greatest.
 
-- Lower-volume windows are visible, providing contrast against periods of elevated activity.
+-   Lower-volume windows are visible, providing contrast against periods of elevated activity.
 
-- The smoothed trend helps distinguish broader activity patterns from individual hourly fluctuations.
+-   The smoothed trend helps distinguish broader activity patterns from individual hourly fluctuations.
 
 ### Insights
 
@@ -481,15 +481,15 @@ international_transaction_summary %>%
 
 ### Key Findings
 
-- The heatmap clearly separates domestic and international transaction profiles across fraud, value, and behavioural risk measures.
+-   The heatmap clearly separates domestic and international transaction profiles across fraud, value, and behavioural risk measures.
 
-- Stronger colour intensity indicates where one transaction type carries higher relative exposure for a given risk measure.
+-   Stronger colour intensity indicates where one transaction type carries higher relative exposure for a given risk measure.
 
-- Differences across fraud rate, anomaly behaviour, suspicious access, and transaction value reveal whether cross-border activity behaves differently from domestic activity.
+-   Differences across fraud rate, anomaly behaviour, suspicious access, and transaction value reveal whether cross-border activity behaves differently from domestic activity.
 
-- If international transactions show consistently stronger intensity across risk measures, cross-border activity represents a distinct risk context.
+-   If international transactions show consistently stronger intensity across risk measures, cross-border activity represents a distinct risk context.
 
-- If the intensity is mixed, transaction type alone is not enough to explain fraud exposure and must be interpreted alongside other behavioural signals.
+-   If the intensity is mixed, transaction type alone is not enough to explain fraud exposure and must be interpreted alongside other behavioural signals.
 
 ### Insights
 
@@ -577,13 +577,13 @@ authentication_security_summary %>%
 
 ### Key Findings
 
-- The heatmap shows whether security risk signals are concentrated in specific authentication methods or distributed more evenly.
+-   The heatmap shows whether security risk signals are concentrated in specific authentication methods or distributed more evenly.
 
-- Stronger colour intensity highlights authentication journeys with relatively higher fraud exposure, login pressure, failed activity, or device risk.
+-   Stronger colour intensity highlights authentication journeys with relatively higher fraud exposure, login pressure, failed activity, or device risk.
 
-- Comparing multiple security signals together helps identify whether a method appears consistently higher risk or only elevated on one dimension.
+-   Comparing multiple security signals together helps identify whether a method appears consistently higher risk or only elevated on one dimension.
 
-- Authentication patterns provide a useful lens for evaluating whether security behaviour aligns with fraud exposure.
+-   Authentication patterns provide a useful lens for evaluating whether security behaviour aligns with fraud exposure.
 
 ### Insights
 
@@ -671,15 +671,15 @@ account_age_risk_summary %>%
 
 ### Key Findings
 
-- Fraud exposure can be compared across clear lifecycle stages, from early account tenure through mature accounts.
+-   Fraud exposure can be compared across clear lifecycle stages, from early account tenure through mature accounts.
 
-- The visual shows whether newer accounts have visibly higher fraud rates than longer-tenured accounts.
+-   The visual shows whether newer accounts have visibly higher fraud rates than longer-tenured accounts.
 
-- Differences between account age groups indicate whether fraud risk changes as customer behaviour becomes more established.
+-   Differences between account age groups indicate whether fraud risk changes as customer behaviour becomes more established.
 
-- If fraud rates decline across later lifecycle stages, this suggests account maturity is associated with more stable behaviour.
+-   If fraud rates decline across later lifecycle stages, this suggests account maturity is associated with more stable behaviour.
 
-- If risk remains elevated across multiple stages, account age alone may not be sufficient to separate lower-risk and higher-risk activity.
+-   If risk remains elevated across multiple stages, account age alone may not be sufficient to separate lower-risk and higher-risk activity.
 
 ### Insights
 
@@ -760,15 +760,15 @@ fraud_interaction_data <- banking_transactions %>%
 
 ### Key Findings
 
-- The scatter plot shows how fraudulent and non-fraudulent transactions are distributed across multiple risk dimensions.
+-   The scatter plot shows how fraudulent and non-fraudulent transactions are distributed across multiple risk dimensions.
 
-- Fraudulent activity can be assessed by whether it clusters in higher-risk areas rather than appearing randomly across the portfolio.
+-   Fraudulent activity can be assessed by whether it clusters in higher-risk areas rather than appearing randomly across the portfolio.
 
-- Separation between fraud and non-fraud observations indicates whether combined risk indicators provide a meaningful fraud signal.
+-   Separation between fraud and non-fraud observations indicates whether combined risk indicators provide a meaningful fraud signal.
 
-- Concentration in high-risk regions suggests that elevated fraud exposure is associated with interaction effects between behavioural indicators.
+-   Concentration in high-risk regions suggests that elevated fraud exposure is associated with interaction effects between behavioural indicators.
 
-- Overlap between fraudulent and non-fraudulent observations shows where fraud detection remains more challenging and where risk signals may be less definitive.
+-   Overlap between fraudulent and non-fraudulent observations shows where fraud detection remains more challenging and where risk signals may be less definitive.
 
 ### Insights
 
@@ -854,15 +854,15 @@ This integrated approach helps distinguish routine customer behaviour from trans
 
 ### Next Steps
 
-- Develop predictive fraud modelling to estimate the likelihood of fraud using multiple behavioural and risk indicators together.
+-   Develop predictive fraud modelling to estimate the likelihood of fraud using multiple behavioural and risk indicators together.
 
-- Build customer and transaction segmentation to identify distinct groups of normal, unusual, and high-risk behaviour.
+-   Build customer and transaction segmentation to identify distinct groups of normal, unusual, and high-risk behaviour.
 
-- Explore real-time risk scoring to support faster alert prioritisation and more responsive fraud monitoring.
+-   Explore real-time risk scoring to support faster alert prioritisation and more responsive fraud monitoring.
 
-- Expand behavioural anomaly detection to identify transactions that deviate from expected customer or account-level patterns.
+-   Expand behavioural anomaly detection to identify transactions that deviate from expected customer or account-level patterns.
 
-- Optimise transaction monitoring rules using insights from channel usage, activity timing, account lifecycle, and fraud interaction patterns.
+-   Optimise transaction monitoring rules using insights from channel usage, activity timing, account lifecycle, and fraud interaction patterns.
 
 ### Closing Statement
 
