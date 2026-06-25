@@ -565,7 +565,103 @@ This section does not imply that all international activity is suspicious. Rathe
 
 ## Analysis 6: Authentication Behaviour
 
-[To be filled in next step]
+### Business Question
+
+How does authentication behaviour influence fraud exposure and security risk?
+
+### Why This Matters
+
+Authentication is a primary control point in banking fraud prevention because it determines how customers prove legitimacy before or during sensitive transaction activity. Repeated login attempts, failed transaction behaviour, and high-risk authentication contexts may indicate account compromise, customer friction, or elevated fraud exposure.
+
+Different authentication methods can carry different risk profiles. Understanding these patterns helps the bank assess whether authentication journeys are supporting security effectively while still preserving a smooth customer experience for legitimate activity.
+
+```{r}
+#| label: analysis-6-authentication-security-risk
+#| fig-width: 9
+#| fig-height: 5
+
+authentication_security_summary <- banking_transactions %>%
+  mutate(
+    fraud_indicator = as.integer(as.logical(fraud_flag))
+  ) %>%
+  group_by(authentication_type) %>%
+  summarise(
+    fraud_rate = mean(fraud_indicator, na.rm = TRUE) * 100,
+    average_login_attempts = mean(login_attempts, na.rm = TRUE),
+    average_failed_transactions = mean(
+      failed_transactions_last_30d,
+      na.rm = TRUE
+    ),
+    average_device_risk_score = mean(device_risk_score, na.rm = TRUE),
+    .groups = "drop"
+  ) %>%
+  pivot_longer(
+    cols = -authentication_type,
+    names_to = "security_signal",
+    values_to = "signal_value"
+  ) %>%
+  group_by(security_signal) %>%
+  mutate(
+    indexed_value = signal_value / max(signal_value, na.rm = TRUE)
+  ) %>%
+  ungroup() %>%
+  mutate(
+    security_signal = recode(
+      security_signal,
+      fraud_rate = "Fraud rate",
+      average_login_attempts = "Login attempts",
+      average_failed_transactions = "Failed transactions",
+      average_device_risk_score = "Device risk score"
+    )
+  )
+
+authentication_security_summary %>%
+  ggplot(aes(
+    x = authentication_type,
+    y = security_signal,
+    fill = indexed_value
+  )) +
+  geom_tile(color = "white", linewidth = 0.8) +
+  geom_text(
+    aes(label = round(signal_value, 1)),
+    size = 3.5,
+    color = "#111827"
+  ) +
+  scale_fill_gradient(
+    low = "#DBEAFE",
+    high = "#DC2626"
+  ) +
+  labs(
+    title = "Authentication Behaviour and Security Risk",
+    subtitle = "Indexed comparison of fraud, login pressure, failed activity, and device risk",
+    x = "Authentication type",
+    y = NULL,
+    fill = "Relative intensity"
+  ) +
+  theme_minimal(base_size = 12) +
+  theme(
+    plot.title = element_text(face = "bold", size = 15),
+    plot.subtitle = element_text(color = "#4B5563"),
+    panel.grid = element_blank(),
+    legend.position = "bottom"
+  )
+```
+
+### Key Findings
+
+- The heatmap shows whether security risk signals are concentrated in specific authentication methods or distributed more evenly.
+
+- Stronger colour intensity highlights authentication journeys with relatively higher fraud exposure, login pressure, failed activity, or device risk.
+
+- Comparing multiple security signals together helps identify whether a method appears consistently higher risk or only elevated on one dimension.
+
+- Authentication patterns provide a useful lens for evaluating whether security behaviour aligns with fraud exposure.
+
+### Insights
+
+Authentication behaviour is a meaningful fraud risk context when certain methods show stronger intensity across security signals. In banking terms, this can indicate that some authentication journeys are more exposed to compromised-account behaviour, repeated access attempts, or higher device risk.
+
+The business interpretation is not that one authentication method is automatically weak. Rather, authentication should be assessed alongside fraud outcomes and behavioural stress signals to understand where security controls appear effective and where customer journeys may carry more risk.
 
 ## Analysis 7: Account Age & Lifecycle Risk
 
