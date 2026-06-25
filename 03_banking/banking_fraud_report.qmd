@@ -197,9 +197,79 @@ Normal transaction behaviour is represented by the main concentration of transac
 
 For fraud detection systems, this means transaction value should be used as a contextual risk signal rather than a standalone trigger. Higher-value activity may not be fraudulent on its own, but it can materially increase exposure when paired with suspicious behaviour, abnormal device signals, or unusual transaction context.
 
-# Analysis 2: Payment Channel Usage
+## Analysis 2: Payment Channel Usage
 
-[To be filled in next step]
+### Business Question
+
+Which payment channels are used most frequently, and how is transaction activity distributed across channels?
+
+### Why This Matters
+
+Payment channel behaviour is important because it shows how customers choose to interact with the bank across digital and traditional transaction pathways. A clear view of channel usage helps stakeholders understand where customer demand is concentrated, where operational workload is likely to be highest, and whether transaction activity is diversified or dependent on a smaller number of channels.
+
+From a fraud monitoring perspective, channel behaviour also matters because different transaction environments can carry different risk profiles. Understanding channel concentration supports better interpretation of customer behaviour, operational capacity planning, digital adoption trends, and channel-level monitoring priorities.
+
+```{r}
+#| label: analysis-2-payment-channel-composition
+#| fig-width: 9
+#| fig-height: 4.8
+
+channel_usage_summary <- banking_transactions %>%
+  count(
+    channel = payment_channel,
+    name = "total_transactions",
+    sort = TRUE
+  ) %>%
+  mutate(
+    percentage_share = total_transactions / sum(total_transactions) * 100,
+    channel = fct_reorder(channel, percentage_share)
+  )
+
+channel_usage_summary %>%
+  ggplot(aes(
+    x = "All transactions",
+    y = percentage_share,
+    fill = channel
+  )) +
+  geom_col(width = 0.48, color = "white", linewidth = 0.6) +
+  coord_flip() +
+  scale_y_continuous(
+    labels = label_percent(scale = 1),
+    expand = c(0, 0)
+  ) +
+  scale_fill_brewer(palette = "Set2") +
+  labs(
+    title = "Share of Transaction Activity by Channel",
+    subtitle = "Composition view showing how total transaction activity is distributed across channels",
+    x = NULL,
+    y = "Share of transactions",
+    fill = "Payment channel"
+  ) +
+  theme_minimal(base_size = 12) +
+  theme(
+    plot.title = element_text(face = "bold", size = 15),
+    plot.subtitle = element_text(color = "#4B5563"),
+    panel.grid = element_blank(),
+    axis.text.y = element_blank(),
+    legend.position = "bottom"
+  )
+```
+
+### Key Findings
+
+- Transaction activity is distributed across multiple payment channels, showing that customers use a mix of banking access points.
+
+- The composition view makes it clear whether a small number of channels account for a larger share of overall activity.
+
+- Channel concentration has operational significance because higher-share channels are likely to carry more service demand and monitoring volume.
+
+- The spread across channels provides a useful lens for understanding digital versus traditional banking behaviour.
+
+### Insights
+
+Payment channel usage reveals where customer activity is concentrated across the bank's transaction ecosystem. Channels with larger shares represent the main pathways through which customers interact with banking services and therefore carry greater operational visibility and monitoring importance.
+
+For fraud monitoring, channel behaviour should be interpreted as a context signal. A transaction's channel can influence how suspicious activity is assessed, because digital, card-based, and in-person contexts may involve different customer behaviours, authentication expectations, and fraud exposure patterns.
 
 # Analysis 3: Transaction Risk Behaviour
 
