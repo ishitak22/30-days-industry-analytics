@@ -854,7 +854,7 @@ fraud_interaction_data <- banking_transactions %>%
 
 - Overlap between fraudulent and non-fraudulent observations shows where fraud detection remains more challenging and where risk signals may be less definitive.
 
-### Insight (Business Interpretation)
+### Insights
 
 The scatter plot helps show whether fraud accumulates in specific risk regions rather than being evenly distributed across all transaction behaviour. In banking terms, this means the most meaningful fraud signals often emerge when several indicators are viewed together.
 
@@ -862,7 +862,65 @@ A typical high-risk transaction profile appears where fraud observations cluster
 
 ## Final Recommendations
 
-[To be filled in next step]
+### 1. Strengthen Risk-Based Transaction Monitoring
+
+#### Supporting Evidence
+
+Transaction value behaviour shows that the portfolio contains a normal transaction range alongside higher-value activity that may require closer monitoring. The transaction risk analysis and fraud interaction analysis also indicate that fraud risk is more meaningful when transaction value is considered alongside device risk, anomaly behaviour, and transaction velocity.
+
+#### Expected Business Benefit
+
+A stronger risk-based monitoring approach can help fraud teams prioritise transactions that combine unusual value patterns with elevated behavioural risk. This improves monitoring efficiency, reduces manual review noise, and supports faster identification of genuinely suspicious activity.
+
+### 2. Prioritise High-Risk Behavioural Combinations
+
+#### Supporting Evidence
+
+The fraud interaction analysis shows that fraudulent transactions are best understood through combinations of risk indicators rather than single signals in isolation. The transaction risk behaviour section reinforces this by showing how fraud and non-fraud activity can separate across multiple risk dimensions.
+
+#### Expected Business Benefit
+
+Prioritising multi-indicator risk profiles can improve fraud detection accuracy and help teams focus on the transactions most likely to require investigation. This supports better use of analyst capacity and reduces reliance on broad rules that may generate unnecessary customer friction.
+
+### 3. Apply Differentiated Oversight for International Transactions
+
+#### Supporting Evidence
+
+The international versus domestic risk analysis indicates that cross-border activity should be evaluated separately from domestic behaviour because international transactions may show different fraud, anomaly, device, and geographic risk patterns.
+
+#### Expected Business Benefit
+
+Differentiated oversight can help risk teams manage cross-border fraud exposure more effectively while avoiding one-size-fits-all controls. This supports stronger fraud prevention, more precise monitoring, and improved protection for customers making legitimate international transactions.
+
+### 4. Review Authentication Journeys Through a Fraud Risk Lens
+
+#### Supporting Evidence
+
+The authentication behaviour analysis highlights that authentication type, login behaviour, failed transaction history, and device risk can provide important security context. These patterns suggest that authentication performance should be assessed not only by completion rates, but also by its relationship with fraud exposure.
+
+#### Expected Business Benefit
+
+Reviewing authentication journeys through a risk lens can help balance customer experience with account security. Better alignment between authentication controls and fraud risk can reduce unnecessary friction for lower-risk customers while increasing scrutiny where behavioural signals are more concerning.
+
+### 5. Increase Monitoring Focus on Early Account Lifecycle Risk
+
+#### Supporting Evidence
+
+The account age and lifecycle analysis shows that account maturity provides useful context for fraud risk assessment. Newer accounts may behave differently from mature accounts, and lifecycle patterns can help explain where uncertainty or elevated fraud exposure may be more concentrated.
+
+#### Expected Business Benefit
+
+Lifecycle-aware monitoring can improve onboarding risk management and help customer security teams identify early warning signs before risky behaviour becomes more costly. It also supports a more tailored approach to customer protection as account relationships mature.
+
+### 6. Align Operational Coverage With Activity Patterns and Channel Usage
+
+#### Supporting Evidence
+
+Payment channel analysis shows how customer activity is distributed across banking channels, while the time-based analysis highlights when transaction activity is more concentrated. Together, these findings provide a practical view of where and when operational pressure is likely to occur.
+
+#### Expected Business Benefit
+
+Aligning monitoring coverage with channel and time-based activity patterns can improve operational readiness, staffing decisions, and alert response capacity. This helps fraud and operations teams maintain service quality during peak periods while ensuring higher-risk activity receives timely attention.
 
 ## Conclusion
 
