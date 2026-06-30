@@ -6,22 +6,22 @@ Human Resources / Workforce Analytics
 
 ## Australian context
 
-This project focuses on workforce patterns in the Australian Public Service (APS), using official employment data published by the Australian Public Service Commission (APSC). The APS provides a strong Australian HR analytics context because it covers public sector workforce composition, employment status, location, classification, diversity, and agency-level workforce trends.
+This project focuses on HR and workforce analytics from an Australian portfolio perspective. Australian public workforce sources were considered first, but the selected working dataset is a tidy employee-level attrition dataset because the available Australian options were mainly aggregated summary tables rather than row-level data suitable for dashboard analysis.
 
 ## Business problem
 
-HR and workforce leaders need a clear way to understand how the APS workforce is changing across agencies, locations, employment types, classifications, and demographic groups. Without an interactive view, it is harder to identify workforce composition trends, diversity patterns, and areas that may require workforce planning attention.
+HR and workforce leaders need a clear way to understand employee attrition patterns and the factors that may influence retention. Without an interactive view, it is harder to identify which departments, job roles, demographic groups, compensation bands, satisfaction levels, overtime patterns, and tenure profiles are associated with higher turnover.
 
 ## Project objective
 
-Build an interactive Power BI dashboard that helps users explore APS workforce composition and trends, with a focus on practical HR questions such as workforce size, distribution, diversity, classification mix, employment type, and agency comparisons.
+Build an interactive Power BI dashboard that helps users explore employee attrition and workforce patterns, with a focus on practical HR questions such as turnover hotspots, employee demographics, compensation, satisfaction, overtime, training, tenure, promotion history, and retention planning.
 
 ## Dataset source
 
-- Source: Australian Public Service Commission, APS Employment Data release
-- Dataset: APS Employment Release Tables - 31 December 2025
-- Downloaded file: `aps_employment_release_tables_31_december_2025.xlsx`
-- Source page: https://www.apsc.gov.au/employment-data/aps-employment-data-31-december-2025
+- Source: IBM HR Analytics Employee Attrition & Performance sample dataset
+- Dataset: HR Employee Attrition
+- Downloaded file: `data/HR-Employee-Attrition.csv`
+- Source page: https://www.kaggle.com/datasets/pavansubhasht/ibm-hr-analytics-attrition-dataset
 
 ## Planned tool
 
@@ -29,7 +29,7 @@ Power BI Desktop
 
 ## Planned deliverable
 
-An interactive Power BI dashboard for Australian public sector workforce analytics.
+An interactive Power BI dashboard for HR attrition and workforce analytics.
 
 ## Design note
 
