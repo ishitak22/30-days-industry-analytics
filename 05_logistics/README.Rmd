@@ -1,0 +1,41 @@
+# Logistics & Supply Chain Performance Analysis
+
+## Project Overview
+
+As part of my **30 Industry Exploration Project**, this project explores the logistics and supply chain industry using operational shipment data.
+
+The objective is to analyse logistics performance, identify operational bottlenecks, and uncover insights that can support data-driven decision-making across shipping, delivery, customer service, and supply chain operations.
+
+The final outcome will be an interactive Tableau dashboard accompanied by supporting documentation and business insights, following a consulting-style analytics approach.
+
+---
+
+## Business Objectives
+
+This project aims to answer questions such as:
+
+- How efficiently are orders being fulfilled?
+- Which shipping methods perform best?
+- Which regions generate the highest revenue and profit?
+- Where are delivery delays occurring?
+- Which customer segments contribute the most value?
+- What operational factors influence logistics performance?
+
+---
+
+## Dataset
+
+**Dataset:** DataCo Smart Supply Chain Dataset
+
+The dataset contains operational information including:
+
+- Customer information
+- Orders
+- Products
+- Shipping details
+- Delivery performance
+- Geographic locations
+- Sales and profit
+- Market information
+
+---
