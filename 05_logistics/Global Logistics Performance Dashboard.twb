@@ -873,6 +873,36 @@
         </metadata-records>
       </connection>
       <aliases enabled='yes' />
+      <column caption='Order Count' datatype='integer' name='[Calculation_3593225121148928]' role='measure' type='quantitative'>
+        <calculation class='tableau' formula='COUNTD([Order Id])' />
+      </column>
+      <column caption='Late Orders' datatype='integer' name='[Calculation_3593225121255425]' role='measure' type='quantitative'>
+        <calculation class='tableau' formula='SUM([Late_delivery_risk])' />
+      </column>
+      <column caption='Late Delivery Rate' datatype='real' default-format='p0.0%' name='[Calculation_3593225121316866]' role='measure' type='quantitative'>
+        <calculation class='tableau' formula='SUM([Late_delivery_risk]) / COUNT([Order Id])' />
+      </column>
+      <column caption='Average Shipping Days' datatype='real' name='[Calculation_3593225121513475]' role='measure' type='quantitative'>
+        <calculation class='tableau' formula='AVG([Days for shipping (real)])' />
+      </column>
+      <column caption='Service Promise Gap' datatype='integer' name='[Calculation_3593225121619972]' role='measure' type='quantitative'>
+        <calculation class='tableau' formula='[Days for shipping (real)] - [Days for shipment (scheduled)]' />
+      </column>
+      <column caption='Average Service Promise Gap' datatype='real' name='[Calculation_3593225121710085]' role='measure' type='quantitative'>
+        <calculation class='tableau' formula='AVG([Calculation_3593225121619972])' />
+      </column>
+      <column caption='Total Sales' datatype='real' name='[Calculation_3593225121816582]' role='measure' type='quantitative'>
+        <calculation class='tableau' formula='SUM([Sales])' />
+      </column>
+      <column caption='Total Profit' datatype='real' name='[Calculation_3593225121873927]' role='measure' type='quantitative'>
+        <calculation class='tableau' formula='SUM([Order Profit Per Order])' />
+      </column>
+      <column caption='Delayed Sales' datatype='real' name='[Calculation_3593225121935368]' role='measure' type='quantitative'>
+        <calculation class='tableau' formula='IF [Late_delivery_risk] = 1 THEN [Sales] ELSE 0 END' />
+      </column>
+      <column caption='Total Delayed Sales' datatype='real' name='[Calculation_3593225122009097]' role='measure' type='quantitative'>
+        <calculation class='tableau' formula='SUM([Calculation_3593225121935368])' />
+      </column>
       <column datatype='integer' name='[Category Id]' role='dimension' type='ordinal' />
       <column datatype='string' name='[Customer City]' role='dimension' semantic-role='[City].[Name]' type='nominal' />
       <column datatype='string' name='[Customer Country]' role='dimension' semantic-role='[Country].[ISO3166_2]' type='nominal' />
