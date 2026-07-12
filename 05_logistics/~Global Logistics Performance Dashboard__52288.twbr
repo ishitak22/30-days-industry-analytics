@@ -114,6 +114,7 @@
             <attributes>
               <attribute datatype='string' name='DebugRemoteType'>&quot;WSTR&quot;</attribute>
             </attributes>
+            <object-id>[DataCoSupplyChainDataset_2F69BF4116A840CD82C5A7666B395C3B]</object-id>
           </metadata-record>
           <metadata-record class='column'>
             <remote-name>Days for shipping (real)</remote-name>
@@ -128,6 +129,7 @@
             <attributes>
               <attribute datatype='string' name='DebugRemoteType'>&quot;I8&quot;</attribute>
             </attributes>
+            <object-id>[DataCoSupplyChainDataset_2F69BF4116A840CD82C5A7666B395C3B]</object-id>
           </metadata-record>
           <metadata-record class='column'>
             <remote-name>Days for shipment (scheduled)</remote-name>
@@ -142,6 +144,7 @@
             <attributes>
               <attribute datatype='string' name='DebugRemoteType'>&quot;I8&quot;</attribute>
             </attributes>
+            <object-id>[DataCoSupplyChainDataset_2F69BF4116A840CD82C5A7666B395C3B]</object-id>
           </metadata-record>
           <metadata-record class='column'>
             <remote-name>Benefit per order</remote-name>
@@ -157,6 +160,7 @@
             <attributes>
               <attribute datatype='string' name='DebugRemoteType'>&quot;R8&quot;</attribute>
             </attributes>
+            <object-id>[DataCoSupplyChainDataset_2F69BF4116A840CD82C5A7666B395C3B]</object-id>
           </metadata-record>
           <metadata-record class='column'>
             <remote-name>Sales per customer</remote-name>
@@ -172,6 +176,7 @@
             <attributes>
               <attribute datatype='string' name='DebugRemoteType'>&quot;R8&quot;</attribute>
             </attributes>
+            <object-id>[DataCoSupplyChainDataset_2F69BF4116A840CD82C5A7666B395C3B]</object-id>
           </metadata-record>
           <metadata-record class='column'>
             <remote-name>Delivery Status</remote-name>
@@ -187,6 +192,7 @@
             <attributes>
               <attribute datatype='string' name='DebugRemoteType'>&quot;WSTR&quot;</attribute>
             </attributes>
+            <object-id>[DataCoSupplyChainDataset_2F69BF4116A840CD82C5A7666B395C3B]</object-id>
           </metadata-record>
           <metadata-record class='column'>
             <remote-name>Late_delivery_risk</remote-name>
@@ -201,6 +207,7 @@
             <attributes>
               <attribute datatype='string' name='DebugRemoteType'>&quot;I8&quot;</attribute>
             </attributes>
+            <object-id>[DataCoSupplyChainDataset_2F69BF4116A840CD82C5A7666B395C3B]</object-id>
           </metadata-record>
           <metadata-record class='column'>
             <remote-name>Category Id</remote-name>
@@ -215,6 +222,7 @@
             <attributes>
               <attribute datatype='string' name='DebugRemoteType'>&quot;I8&quot;</attribute>
             </attributes>
+            <object-id>[DataCoSupplyChainDataset_2F69BF4116A840CD82C5A7666B395C3B]</object-id>
           </metadata-record>
           <metadata-record class='column'>
             <remote-name>Category Name</remote-name>
@@ -230,6 +238,7 @@
             <attributes>
               <attribute datatype='string' name='DebugRemoteType'>&quot;WSTR&quot;</attribute>
             </attributes>
+            <object-id>[DataCoSupplyChainDataset_2F69BF4116A840CD82C5A7666B395C3B]</object-id>
           </metadata-record>
           <metadata-record class='column'>
             <remote-name>Customer City</remote-name>
@@ -245,6 +254,7 @@
             <attributes>
               <attribute datatype='string' name='DebugRemoteType'>&quot;WSTR&quot;</attribute>
             </attributes>
+            <object-id>[DataCoSupplyChainDataset_2F69BF4116A840CD82C5A7666B395C3B]</object-id>
           </metadata-record>
           <metadata-record class='column'>
             <remote-name>Customer Country</remote-name>
@@ -260,6 +270,7 @@
             <attributes>
               <attribute datatype='string' name='DebugRemoteType'>&quot;WSTR&quot;</attribute>
             </attributes>
+            <object-id>[DataCoSupplyChainDataset_2F69BF4116A840CD82C5A7666B395C3B]</object-id>
           </metadata-record>
           <metadata-record class='column'>
             <remote-name>Customer Email</remote-name>
@@ -275,6 +286,7 @@
             <attributes>
               <attribute datatype='string' name='DebugRemoteType'>&quot;WSTR&quot;</attribute>
             </attributes>
+            <object-id>[DataCoSupplyChainDataset_2F69BF4116A840CD82C5A7666B395C3B]</object-id>
           </metadata-record>
           <metadata-record class='column'>
             <remote-name>Customer Fname</remote-name>
@@ -290,6 +302,7 @@
             <attributes>
               <attribute datatype='string' name='DebugRemoteType'>&quot;WSTR&quot;</attribute>
             </attributes>
+            <object-id>[DataCoSupplyChainDataset_2F69BF4116A840CD82C5A7666B395C3B]</object-id>
           </metadata-record>
           <metadata-record class='column'>
             <remote-name>Customer Id</remote-name>
@@ -304,6 +317,7 @@
             <attributes>
               <attribute datatype='string' name='DebugRemoteType'>&quot;I8&quot;</attribute>
             </attributes>
+            <object-id>[DataCoSupplyChainDataset_2F69BF4116A840CD82C5A7666B395C3B]</object-id>
           </metadata-record>
           <metadata-record class='column'>
             <remote-name>Customer Lname</remote-name>
@@ -319,6 +333,7 @@
             <attributes>
               <attribute datatype='string' name='DebugRemoteType'>&quot;WSTR&quot;</attribute>
             </attributes>
+            <object-id>[DataCoSupplyChainDataset_2F69BF4116A840CD82C5A7666B395C3B]</object-id>
           </metadata-record>
           <metadata-record class='column'>
             <remote-name>Customer Password</remote-name>
@@ -334,6 +349,7 @@
             <attributes>
               <attribute datatype='string' name='DebugRemoteType'>&quot;WSTR&quot;</attribute>
             </attributes>
+            <object-id>[DataCoSupplyChainDataset_2F69BF4116A840CD82C5A7666B395C3B]</object-id>
           </metadata-record>
           <metadata-record class='column'>
             <remote-name>Customer Segment</remote-name>
@@ -349,6 +365,7 @@
             <attributes>
               <attribute datatype='string' name='DebugRemoteType'>&quot;WSTR&quot;</attribute>
             </attributes>
+            <object-id>[DataCoSupplyChainDataset_2F69BF4116A840CD82C5A7666B395C3B]</object-id>
           </metadata-record>
           <metadata-record class='column'>
             <remote-name>Customer State</remote-name>
@@ -364,6 +381,7 @@
             <attributes>
               <attribute datatype='string' name='DebugRemoteType'>&quot;WSTR&quot;</attribute>
             </attributes>
+            <object-id>[DataCoSupplyChainDataset_2F69BF4116A840CD82C5A7666B395C3B]</object-id>
           </metadata-record>
           <metadata-record class='column'>
             <remote-name>Customer Street</remote-name>
@@ -379,6 +397,7 @@
             <attributes>
               <attribute datatype='string' name='DebugRemoteType'>&quot;WSTR&quot;</attribute>
             </attributes>
+            <object-id>[DataCoSupplyChainDataset_2F69BF4116A840CD82C5A7666B395C3B]</object-id>
           </metadata-record>
           <metadata-record class='column'>
             <remote-name>Customer Zipcode</remote-name>
@@ -393,6 +412,7 @@
             <attributes>
               <attribute datatype='string' name='DebugRemoteType'>&quot;I8&quot;</attribute>
             </attributes>
+            <object-id>[DataCoSupplyChainDataset_2F69BF4116A840CD82C5A7666B395C3B]</object-id>
           </metadata-record>
           <metadata-record class='column'>
             <remote-name>Department Id</remote-name>
@@ -407,6 +427,7 @@
             <attributes>
               <attribute datatype='string' name='DebugRemoteType'>&quot;I8&quot;</attribute>
             </attributes>
+            <object-id>[DataCoSupplyChainDataset_2F69BF4116A840CD82C5A7666B395C3B]</object-id>
           </metadata-record>
           <metadata-record class='column'>
             <remote-name>Department Name</remote-name>
@@ -422,6 +443,7 @@
             <attributes>
               <attribute datatype='string' name='DebugRemoteType'>&quot;WSTR&quot;</attribute>
             </attributes>
+            <object-id>[DataCoSupplyChainDataset_2F69BF4116A840CD82C5A7666B395C3B]</object-id>
           </metadata-record>
           <metadata-record class='column'>
             <remote-name>Latitude</remote-name>
@@ -437,6 +459,7 @@
             <attributes>
               <attribute datatype='string' name='DebugRemoteType'>&quot;R8&quot;</attribute>
             </attributes>
+            <object-id>[DataCoSupplyChainDataset_2F69BF4116A840CD82C5A7666B395C3B]</object-id>
           </metadata-record>
           <metadata-record class='column'>
             <remote-name>Longitude</remote-name>
@@ -452,6 +475,7 @@
             <attributes>
               <attribute datatype='string' name='DebugRemoteType'>&quot;R8&quot;</attribute>
             </attributes>
+            <object-id>[DataCoSupplyChainDataset_2F69BF4116A840CD82C5A7666B395C3B]</object-id>
           </metadata-record>
           <metadata-record class='column'>
             <remote-name>Market</remote-name>
@@ -467,6 +491,7 @@
             <attributes>
               <attribute datatype='string' name='DebugRemoteType'>&quot;WSTR&quot;</attribute>
             </attributes>
+            <object-id>[DataCoSupplyChainDataset_2F69BF4116A840CD82C5A7666B395C3B]</object-id>
           </metadata-record>
           <metadata-record class='column'>
             <remote-name>Order City</remote-name>
@@ -482,6 +507,7 @@
             <attributes>
               <attribute datatype='string' name='DebugRemoteType'>&quot;WSTR&quot;</attribute>
             </attributes>
+            <object-id>[DataCoSupplyChainDataset_2F69BF4116A840CD82C5A7666B395C3B]</object-id>
           </metadata-record>
           <metadata-record class='column'>
             <remote-name>Order Country</remote-name>
@@ -497,6 +523,7 @@
             <attributes>
               <attribute datatype='string' name='DebugRemoteType'>&quot;WSTR&quot;</attribute>
             </attributes>
+            <object-id>[DataCoSupplyChainDataset_2F69BF4116A840CD82C5A7666B395C3B]</object-id>
           </metadata-record>
           <metadata-record class='column'>
             <remote-name>Order Customer Id</remote-name>
@@ -511,6 +538,7 @@
             <attributes>
               <attribute datatype='string' name='DebugRemoteType'>&quot;I8&quot;</attribute>
             </attributes>
+            <object-id>[DataCoSupplyChainDataset_2F69BF4116A840CD82C5A7666B395C3B]</object-id>
           </metadata-record>
           <metadata-record class='column'>
             <remote-name>order date (DateOrders)</remote-name>
@@ -523,6 +551,7 @@
             <aggregation>Year</aggregation>
             <contains-null>true</contains-null>
             <collation flag='1' name='LEN_RAU_S2' />
+            <object-id>[DataCoSupplyChainDataset_2F69BF4116A840CD82C5A7666B395C3B]</object-id>
           </metadata-record>
           <metadata-record class='column'>
             <remote-name>Order Id</remote-name>
@@ -537,6 +566,7 @@
             <attributes>
               <attribute datatype='string' name='DebugRemoteType'>&quot;I8&quot;</attribute>
             </attributes>
+            <object-id>[DataCoSupplyChainDataset_2F69BF4116A840CD82C5A7666B395C3B]</object-id>
           </metadata-record>
           <metadata-record class='column'>
             <remote-name>Order Item Cardprod Id</remote-name>
@@ -551,6 +581,7 @@
             <attributes>
               <attribute datatype='string' name='DebugRemoteType'>&quot;I8&quot;</attribute>
             </attributes>
+            <object-id>[DataCoSupplyChainDataset_2F69BF4116A840CD82C5A7666B395C3B]</object-id>
           </metadata-record>
           <metadata-record class='column'>
             <remote-name>Order Item Discount</remote-name>
@@ -566,6 +597,7 @@
             <attributes>
               <attribute datatype='string' name='DebugRemoteType'>&quot;R8&quot;</attribute>
             </attributes>
+            <object-id>[DataCoSupplyChainDataset_2F69BF4116A840CD82C5A7666B395C3B]</object-id>
           </metadata-record>
           <metadata-record class='column'>
             <remote-name>Order Item Discount Rate</remote-name>
@@ -581,6 +613,7 @@
             <attributes>
               <attribute datatype='string' name='DebugRemoteType'>&quot;R8&quot;</attribute>
             </attributes>
+            <object-id>[DataCoSupplyChainDataset_2F69BF4116A840CD82C5A7666B395C3B]</object-id>
           </metadata-record>
           <metadata-record class='column'>
             <remote-name>Order Item Id</remote-name>
@@ -595,6 +628,7 @@
             <attributes>
               <attribute datatype='string' name='DebugRemoteType'>&quot;I8&quot;</attribute>
             </attributes>
+            <object-id>[DataCoSupplyChainDataset_2F69BF4116A840CD82C5A7666B395C3B]</object-id>
           </metadata-record>
           <metadata-record class='column'>
             <remote-name>Order Item Product Price</remote-name>
@@ -610,6 +644,7 @@
             <attributes>
               <attribute datatype='string' name='DebugRemoteType'>&quot;R8&quot;</attribute>
             </attributes>
+            <object-id>[DataCoSupplyChainDataset_2F69BF4116A840CD82C5A7666B395C3B]</object-id>
           </metadata-record>
           <metadata-record class='column'>
             <remote-name>Order Item Profit Ratio</remote-name>
@@ -625,6 +660,7 @@
             <attributes>
               <attribute datatype='string' name='DebugRemoteType'>&quot;R8&quot;</attribute>
             </attributes>
+            <object-id>[DataCoSupplyChainDataset_2F69BF4116A840CD82C5A7666B395C3B]</object-id>
           </metadata-record>
           <metadata-record class='column'>
             <remote-name>Order Item Quantity</remote-name>
@@ -639,6 +675,7 @@
             <attributes>
               <attribute datatype='string' name='DebugRemoteType'>&quot;I8&quot;</attribute>
             </attributes>
+            <object-id>[DataCoSupplyChainDataset_2F69BF4116A840CD82C5A7666B395C3B]</object-id>
           </metadata-record>
           <metadata-record class='column'>
             <remote-name>Sales</remote-name>
@@ -654,6 +691,7 @@
             <attributes>
               <attribute datatype='string' name='DebugRemoteType'>&quot;R8&quot;</attribute>
             </attributes>
+            <object-id>[DataCoSupplyChainDataset_2F69BF4116A840CD82C5A7666B395C3B]</object-id>
           </metadata-record>
           <metadata-record class='column'>
             <remote-name>Order Item Total</remote-name>
@@ -669,6 +707,7 @@
             <attributes>
               <attribute datatype='string' name='DebugRemoteType'>&quot;R8&quot;</attribute>
             </attributes>
+            <object-id>[DataCoSupplyChainDataset_2F69BF4116A840CD82C5A7666B395C3B]</object-id>
           </metadata-record>
           <metadata-record class='column'>
             <remote-name>Order Profit Per Order</remote-name>
@@ -684,6 +723,7 @@
             <attributes>
               <attribute datatype='string' name='DebugRemoteType'>&quot;R8&quot;</attribute>
             </attributes>
+            <object-id>[DataCoSupplyChainDataset_2F69BF4116A840CD82C5A7666B395C3B]</object-id>
           </metadata-record>
           <metadata-record class='column'>
             <remote-name>Order Region</remote-name>
@@ -699,6 +739,7 @@
             <attributes>
               <attribute datatype='string' name='DebugRemoteType'>&quot;WSTR&quot;</attribute>
             </attributes>
+            <object-id>[DataCoSupplyChainDataset_2F69BF4116A840CD82C5A7666B395C3B]</object-id>
           </metadata-record>
           <metadata-record class='column'>
             <remote-name>Order State</remote-name>
@@ -714,6 +755,7 @@
             <attributes>
               <attribute datatype='string' name='DebugRemoteType'>&quot;WSTR&quot;</attribute>
             </attributes>
+            <object-id>[DataCoSupplyChainDataset_2F69BF4116A840CD82C5A7666B395C3B]</object-id>
           </metadata-record>
           <metadata-record class='column'>
             <remote-name>Order Status</remote-name>
@@ -729,6 +771,7 @@
             <attributes>
               <attribute datatype='string' name='DebugRemoteType'>&quot;WSTR&quot;</attribute>
             </attributes>
+            <object-id>[DataCoSupplyChainDataset_2F69BF4116A840CD82C5A7666B395C3B]</object-id>
           </metadata-record>
           <metadata-record class='column'>
             <remote-name>Order Zipcode</remote-name>
@@ -743,6 +786,7 @@
             <attributes>
               <attribute datatype='string' name='DebugRemoteType'>&quot;I8&quot;</attribute>
             </attributes>
+            <object-id>[DataCoSupplyChainDataset_2F69BF4116A840CD82C5A7666B395C3B]</object-id>
           </metadata-record>
           <metadata-record class='column'>
             <remote-name>Product Card Id</remote-name>
@@ -757,6 +801,7 @@
             <attributes>
               <attribute datatype='string' name='DebugRemoteType'>&quot;I8&quot;</attribute>
             </attributes>
+            <object-id>[DataCoSupplyChainDataset_2F69BF4116A840CD82C5A7666B395C3B]</object-id>
           </metadata-record>
           <metadata-record class='column'>
             <remote-name>Product Category Id</remote-name>
@@ -771,6 +816,7 @@
             <attributes>
               <attribute datatype='string' name='DebugRemoteType'>&quot;I8&quot;</attribute>
             </attributes>
+            <object-id>[DataCoSupplyChainDataset_2F69BF4116A840CD82C5A7666B395C3B]</object-id>
           </metadata-record>
           <metadata-record class='column'>
             <remote-name>Product Description</remote-name>
@@ -786,6 +832,7 @@
             <attributes>
               <attribute datatype='string' name='DebugRemoteType'>&quot;WSTR&quot;</attribute>
             </attributes>
+            <object-id>[DataCoSupplyChainDataset_2F69BF4116A840CD82C5A7666B395C3B]</object-id>
           </metadata-record>
           <metadata-record class='column'>
             <remote-name>Product Image</remote-name>
@@ -801,6 +848,7 @@
             <attributes>
               <attribute datatype='string' name='DebugRemoteType'>&quot;WSTR&quot;</attribute>
             </attributes>
+            <object-id>[DataCoSupplyChainDataset_2F69BF4116A840CD82C5A7666B395C3B]</object-id>
           </metadata-record>
           <metadata-record class='column'>
             <remote-name>Product Name</remote-name>
@@ -816,6 +864,7 @@
             <attributes>
               <attribute datatype='string' name='DebugRemoteType'>&quot;WSTR&quot;</attribute>
             </attributes>
+            <object-id>[DataCoSupplyChainDataset_2F69BF4116A840CD82C5A7666B395C3B]</object-id>
           </metadata-record>
           <metadata-record class='column'>
             <remote-name>Product Price</remote-name>
@@ -831,6 +880,7 @@
             <attributes>
               <attribute datatype='string' name='DebugRemoteType'>&quot;R8&quot;</attribute>
             </attributes>
+            <object-id>[DataCoSupplyChainDataset_2F69BF4116A840CD82C5A7666B395C3B]</object-id>
           </metadata-record>
           <metadata-record class='column'>
             <remote-name>Product Status</remote-name>
@@ -845,6 +895,7 @@
             <attributes>
               <attribute datatype='string' name='DebugRemoteType'>&quot;I8&quot;</attribute>
             </attributes>
+            <object-id>[DataCoSupplyChainDataset_2F69BF4116A840CD82C5A7666B395C3B]</object-id>
           </metadata-record>
           <metadata-record class='column'>
             <remote-name>shipping date (DateOrders)</remote-name>
@@ -857,6 +908,7 @@
             <aggregation>Year</aggregation>
             <contains-null>true</contains-null>
             <collation flag='1' name='LEN_RAU_S2' />
+            <object-id>[DataCoSupplyChainDataset_2F69BF4116A840CD82C5A7666B395C3B]</object-id>
           </metadata-record>
           <metadata-record class='column'>
             <remote-name>Shipping Mode</remote-name>
@@ -872,6 +924,7 @@
             <attributes>
               <attribute datatype='string' name='DebugRemoteType'>&quot;WSTR&quot;</attribute>
             </attributes>
+            <object-id>[DataCoSupplyChainDataset_2F69BF4116A840CD82C5A7666B395C3B]</object-id>
           </metadata-record>
         </metadata-records>
       </connection>
@@ -924,7 +977,7 @@
       <column datatype='integer' default-format='*0000' name='[Order Zipcode]' role='dimension' semantic-role='[ZipCode].[Name]' type='ordinal' />
       <column datatype='string' name='[Product Image]' role='dimension' semantic-role='[URL]' type='nominal' />
       <column caption='DataCoSupplyChainDataset' datatype='table' name='[__tableau_internal_object_id__].[DataCoSupplyChainDataset_2F69BF4116A840CD82C5A7666B395C3B]' role='measure' type='quantitative' />
-      <extract count='-1' enabled='true' object-id='' units='records' user-specific='false'>
+      <extract count='-1' enabled='false' object-id='' units='records' user-specific='false'>
         <connection access_mode='readonly' author-locale='en_US' class='hyper' dbname='C:/Users/ISHITA~1/AppData/Local/Temp/TableauTemp/#TableauTemp_18d1o0y1ed1ihu1eme1ft0ho69l1.hyper' default-settings='hyper' schema='Extract' sslmode='' tablename='Extract' update-time='07/08/2026 07:39:40 PM' username='tableau_internal_user'>
           <relation name='Extract' table='[Extract].[Extract]' type='table' />
           <metadata-records>
@@ -1787,22 +1840,26 @@
           </datasource-dependencies>
           <aggregation value='true' />
         </view>
-        <style />
+        <style>
+          <style-rule element='cell'>
+            <format attr='font-family' field='[federated.1qb95xu10chtvx1do8bgz13rvqkq].[usr:Calculation_3593225121148928:qk]' value='Tableau Medium' />
+          </style-rule>
+        </style>
         <panes>
           <pane selection-relaxation-option='selection-relaxation-allow'>
             <view>
               <breakdown value='auto' />
             </view>
-            <mark class='Text' />
+            <mark class='Automatic' />
             <mark-sizing mark-sizing-setting='marks-scaling-off' />
             <encodings>
               <text column='[federated.1qb95xu10chtvx1do8bgz13rvqkq].[usr:Calculation_3593225121148928:qk]' />
             </encodings>
             <style>
               <style-rule element='mark'>
-                <format attr='mark-labels-cull' value='true' />
                 <format attr='mark-labels-show' value='true' />
-                <format attr='size' value='1.9010497331619263' />
+                <format attr='mark-labels-cull' value='true' />
+                <format attr='size' value='1.9450275897979736' />
               </style-rule>
             </style>
           </pane>
@@ -1842,18 +1899,8 @@
         <devicelayout auto-generated='true' name='Phone'>
           <size maxheight='700' minheight='700' sizing-mode='vscroll' />
           <zones>
-            <zone h='100000' id='9' type-v2='layout-basic' w='100000' x='0' y='0'>
-              <zone h='98222' id='8' param='vert' type-v2='layout-flow' w='98858' x='571' y='889'>
-                <zone h='6445' id='7' type-v2='title' w='98858' x='571' y='889'>
-                  <zone-style>
-                    <format attr='border-color' value='#000000' />
-                    <format attr='border-style' value='none' />
-                    <format attr='border-width' value='0' />
-                    <format attr='margin' value='4' />
-                    <format attr='padding' value='0' />
-                  </zone-style>
-                </zone>
-              </zone>
+            <zone h='100000' id='2' type-v2='layout-basic' w='100000' x='0' y='0'>
+              <zone h='84000' id='1' param='vert' type-v2='layout-flow' w='84000' x='8000' y='8000' />
               <zone-style>
                 <format attr='border-color' value='#000000' />
                 <format attr='border-style' value='none' />
@@ -1864,7 +1911,7 @@
           </zones>
         </devicelayout>
       </devicelayouts>
-      <simple-id uuid='{DAA7A359-2B7E-4868-AC2D-53EB4785B8B1}' />
+      <simple-id uuid='{61B95027-7057-4405-BC41-74923EF529B4}' />
     </dashboard>
   </dashboards>
   <windows saved-dpi-scale-factor='1.5' source-height='44'>
@@ -1894,89 +1941,7 @@
     <window class='dashboard' name='Executive Command Centre'>
       <viewpoints />
       <active id='-1' />
-      <simple-id uuid='{7301BA34-4CBD-4290-84BB-4D4C73ED139B}' />
+      <simple-id uuid='{3B8E1E5F-3F3A-499B-9DA5-75CC923A9163}' />
     </window>
   </windows>
-  <thumbnails>
-    <thumbnail height='192' name='Executive Command Centre' width='192'>
-      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
-      rwAAAABJRU5ErkJggg==
-    </thumbnail>
-    <thumbnail height='29' name='KPI - Total Orders' width='84'>
-      iVBORw0KGgoAAAANSUhEUgAAAFQAAAAdCAYAAAA0PEtlAAAACXBIWXMAABYlAAAWJQFJUiTw
-      AAAFt0lEQVRoge2aX0hTbxjHvy6dc26mGy60SQRSkGVrF5HVzbwoFUGEmMOgFKNgIDWtm+gP
-      mHTVHyWw9C6FwN2IXoh642IhMUqbdGEya7acUs1lnuPOce28vwtxddrcn7Pz4wc/9oHd7Hnf
-      5/vue573fc45LIMQQpBGNCT/9QL+b6QNFZm0oSKTNlRk0oaKTNpQkUkbKjJpQ0UmbajIpA0V
-      mbShIpM2VGQyU03g9XrR09ODyclJsCyLrKws7N+/HyaTCVVVVZBKpeGxLMvi+fPn+PLly475
-      DAYDDAZDTM1E8gBAWVkZGhoaUtbnOA6Tk5OwWq2Ym5sDTdNQqVQ4ffo0Ll26hOLi4vDYlAx9
-      +/Ytbty4gcLCQly/fh16vR6Li4uw2+0YGBjAiRMnoNFowuNpmsbY2BjUajWKiopSkY4JwzCY
-      mpriXUyh+h8/fsStW7fw6dMnVFRUwGKxQCqV4tu3bxgcHITNZsOjR4+g0+m2JhCBeDweUldX
-      R27fvk1Ylo2Ih0IhEgqFeN8tLi6S6upqYrfbhcomhM1mI5WVlcTpdKakT1EUaW5uJq2trWRp
-      aSkivra2RlpaWsjly5fJxsYGIYQQQWcox3Ho7++HXC4PX7G/kUgkkEj46VdWVgAAe/bsESKb
-      EIFAAC9evIBOp8OhQ4dS0s/IyEBLSwu6urp423qbvLw8nDt3Dh6PB+vr6wAENiWfz4c3b97A
-      aDSioKAg4XlerxcymQxqtVqIbEI4HA7Mz8+jsbERmZn8Ey1ZfblcjlOnTkUUxp/8rSHI0A8f
-      PoCmaZSVlSU1z+v1QqVSQSaTCZGNSyAQgNVqhV6vx9GjR/91/c3NTYyOjqKkpARKpRKAwKb0
-      +fNn5ObmQq1Wg+M4uFwuuFwuAEBBQQH0ej2ys7N5cziOg9vthlKpBEVRoCgK2dnZ2L17d4o/
-      6zezs7OYn59HZ2dnROWIrc8wDB4/fgyn04mHDx8iJycHgEBDKYoCIQRdXV2w2WxgGAb5+fkI
-      hUJYW1uDUqlEe3s7ampqwtuFYRisrq7i3bt3sNvt4VwSiQSFhYUwGo1oaGgQXD2bm5sYHBzE
-      kSNHcOzYsYi4mPoejwc3b97E8vIyOjo6fnd4QFiX7+3tJU1NTYSiqKhxlmWJxWLhdb94zMzM
-      EIPBQLq7u5NeTzAYJG1tbUnpJavv9/uJxWIhFRUV5NmzZyQQCEQdJ+gMVSgU8Pl8oGk6alwq
-      leLMmTO87hcPnU6HyspKzMzM7Jh3J5xOJ6anp9HY2BjeeskSS395eRlmsxlzc3N4+vQprly5
-      smMlCzK0tLQUDMOEb0Oi8fcZlggajSbmhYrGr1+/MDQ0hAMHDuD48eNJa8bTp2kad+7cwcbG
-      Bvr6+qI2uz8RbKhCoYDNZttxDEVRkMlkSRlLURQ0Gg0UCkXCc1wuFxwOB+rr6wVXZyz98fFx
-      uFwu3L17F1qtNm4OQYaqVCpUVVVhdHQUbrc7Ik7TNIaHh6HT6ZCfnw9gqwNPTU2B47ioOd1u
-      NyYmJlBeXg65XJ7wWqxWKzQaDU6ePBlznBD9QCCA8fFxGAyGuJW5jeC3TSaTCVqtFmazmbdQ
-      v9+Pe/fuYWlpCSaTKdzl/X4/2tracPHiRTgcDrAsC2DrhcXY2BjMZjO0Wi2ampp4OisrK6it
-      rUVzc3PUo+Dly5cwGo3Iy8uLuV4h+uvr6/B4PNi3bx++f/+Or1+/7vgJBoMAgAxChP8V58eP
-      H+jo6MCrV6+wa9cu5OTk4OfPnyguLsb9+/dx+PBh3viFhQV0d3fj9evXvEqRSCQ4e/Ys2tvb
-      wxW9zcjICDo7O3H16lWcP3+eF+M4DhcuXEBPT09cQ4Xoz87OorW1Ne6ZnpubiydPnqC8vDw1
-      Q7dZXV3F+/fvwTAMDh48iJKSkpiPa8FgED6fDwsLCygqKsLevXsjHgSArS137do1ZGZm4sGD
-      BymfkcnqC+EfCgTkgK+0Ly8AAAAASUVORK5CYII=
-    </thumbnail>
-  </thumbnails>
 </workbook>
