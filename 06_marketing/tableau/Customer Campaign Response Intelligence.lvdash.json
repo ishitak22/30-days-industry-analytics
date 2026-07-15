@@ -1,0 +1,712 @@
+{
+  "datasets": [
+    {
+      "name": "f10e2b23",
+      "displayName": "customer_features",
+      "config": {
+        "version": "1.1",
+        "source": "workspace.marketing_campaign.gold_customer_features",
+        "dimensions": [
+          {
+            "expr": "source.*"
+          },
+          {
+            "name": "income_band",
+            "expr": "CASE WHEN `income` < 30000 THEN 'Under 30k' WHEN `income` >= 30000 AND `income` < 60000 THEN '30k-59k' WHEN `income` >= 60000 AND `income` < 90000 THEN '60k-89k' ELSE '90k+' END",
+            "displayName": "Income Band"
+          },
+          {
+            "name": "spend_band",
+            "expr": "CASE WHEN `total_spend` < 500 THEN 'Low Spend (Under $500)' WHEN `total_spend` >= 500 AND `total_spend` < 1500 THEN 'Medium Spend ($500-$1,499)' ELSE 'High Spend ($1,500+)' END",
+            "displayName": "Spend Band"
+          },
+          {
+            "name": "response_label",
+            "expr": "CASE WHEN `response` = 1 THEN 'Responded' ELSE 'Did not respond' END",
+            "displayName": "Response Label"
+          },
+          {
+            "name": "age_band",
+            "expr": "CASE WHEN `customer_age` < 30 THEN 'Under 30' WHEN `customer_age` >= 30 AND `customer_age` < 40 THEN '30-39' WHEN `customer_age` >= 40 AND `customer_age` < 50 THEN '40-49' WHEN `customer_age` >= 50 AND `customer_age` < 60 THEN '50-59' ELSE '60+' END",
+            "displayName": "Age Band"
+          }
+        ],
+        "measures": [
+          {
+            "name": "count",
+            "expr": "COUNT(*)",
+            "comment": "Represents the total number of rows in the dataset. Use this measure to count all",
+            "displayName": "Count"
+          },
+          {
+            "name": "response_rate_pct",
+            "expr": "AVG(`response`) * 100",
+            "displayName": "Response Rate %",
+            "comment": "Campaign response rate as a percentage"
+          },
+          {
+            "name": "avg_customer_spend",
+            "expr": "ROUND(AVG(`total_spend`), 0)",
+            "displayName": "Avg Customer Spend",
+            "comment": "Average customer spend rounded to 0 decimals"
+          },
+          {
+            "name": "previous_campaign_responders",
+            "expr": "SUM(`accepted_previous_campaign`)",
+            "displayName": "Previous Campaign Responders",
+            "comment": "Count of customers who accepted a previous campaign"
+          },
+          {
+            "name": "customer_count",
+            "expr": "COUNT(DISTINCT `customer_id`)",
+            "displayName": "Customer Count",
+            "comment": "Count of distinct customers"
+          }
+        ]
+      }
+    },
+    {
+      "name": "a89a5edc",
+      "displayName": "campaign_summary",
+      "config": {
+        "version": "1.1",
+        "source": "workspace.marketing_campaign.gold_campaign_summary",
+        "dimensions": [
+          {
+            "expr": "source.*"
+          }
+        ],
+        "measures": [
+          {
+            "name": "count",
+            "expr": "COUNT(*)",
+            "comment": "Represents the total number of rows in the dataset. Use this measure to count all",
+            "displayName": "Count"
+          }
+        ]
+      }
+    },
+    {
+      "name": "customer_segments",
+      "displayName": "customer_segments",
+      "config": {
+        "version": "1.1",
+        "source": "WITH base_features AS (\n  SELECT \n    education,\n    marital_status,\n    income,\n    customer_age,\n    total_spend,\n    response,\n    customer_id,\n    CASE WHEN income < 30000 THEN 'Under 30k' \n         WHEN income >= 30000 AND income < 60000 THEN '30k-59k' \n         WHEN income >= 60000 AND income < 90000 THEN '60k-89k' \n         ELSE '90k+' END AS income_band,\n    CASE WHEN customer_age < 30 THEN 'Under 30' \n         WHEN customer_age >= 30 AND customer_age < 40 THEN '30-39' \n         WHEN customer_age >= 40 AND customer_age < 50 THEN '40-49' \n         WHEN customer_age >= 50 AND customer_age < 60 THEN '50-59' \n         ELSE '60+' END AS age_band\n  FROM workspace.marketing_campaign.gold_customer_features\n), segment_stats AS (\n  SELECT \n    education,\n    marital_status,\n    income_band,\n    age_band,\n    COUNT(DISTINCT customer_id) AS customer_count,\n    AVG(response) * 100 AS response_rate_pct,\n    ROUND(AVG(total_spend), 0) AS avg_customer_spend\n  FROM base_features\n  GROUP BY education, marital_status, income_band, age_band\n  HAVING COUNT(DISTINCT customer_id) >= 5\n) SELECT * FROM segment_stats ORDER BY response_rate_pct DESC\n",
+        "dimensions": [
+          {
+            "name": "education",
+            "expr": "education"
+          },
+          {
+            "name": "marital_status",
+            "expr": "marital_status"
+          },
+          {
+            "name": "income_band",
+            "expr": "income_band",
+            "displayName": "Income Band"
+          },
+          {
+            "name": "age_band",
+            "expr": "age_band",
+            "displayName": "Age Band"
+          }
+        ],
+        "measures": [
+          {
+            "name": "customer_count",
+            "expr": "SUM(customer_count)",
+            "displayName": "Customer Count"
+          },
+          {
+            "name": "response_rate_pct",
+            "expr": "AVG(response_rate_pct)",
+            "displayName": "Response Rate %"
+          },
+          {
+            "name": "avg_customer_spend",
+            "expr": "AVG(avg_customer_spend)",
+            "displayName": "Avg Customer Spend"
+          }
+        ]
+      }
+    },
+    {
+      "name": "customer_signups",
+      "displayName": "customer_signups",
+      "config": {
+        "version": "1.1",
+        "source": "workspace.marketing_campaign.silver_marketing_campaign",
+        "dimensions": [
+          {
+            "name": "signup_month",
+            "expr": "DATE_TRUNC('MONTH', dt_customer)",
+            "displayName": "Signup Month"
+          }
+        ],
+        "measures": [
+          {
+            "name": "customer_count",
+            "expr": "COUNT(DISTINCT id)",
+            "displayName": "Customer Count"
+          }
+        ]
+      }
+    }
+  ],
+  "pages": [
+    {
+      "name": "153a6919",
+      "displayName": "KPIs",
+      "layout": [
+        {
+          "widget": {
+            "name": "86b250c0",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "f10e2b23",
+                  "fields": [
+                    {
+                      "name": "countdistinct(customer_id)",
+                      "expression": "COUNT(DISTINCT `customer_id`)"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "version": 2,
+              "frame": {
+                "title": "Total Customers",
+                "showTitle": true
+              },
+              "widgetType": "counter",
+              "encodings": {
+                "value": {
+                  "fieldName": "countdistinct(customer_id)"
+                }
+              },
+              "data": {
+                "queryName": "main_query"
+              }
+            }
+          },
+          "position": {
+            "x": 0,
+            "y": 0,
+            "width": 3,
+            "height": 3
+          }
+        },
+        {
+          "widget": {
+            "name": "104eb7d2",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "f10e2b23",
+                  "fields": [
+                    {
+                      "name": "measure(response_rate_pct)",
+                      "expression": "MEASURE(`response_rate_pct`)"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "version": 2,
+              "frame": {
+                "title": "Actual Response Rate",
+                "showTitle": true,
+                "showDescription": false
+              },
+              "widgetType": "counter",
+              "encodings": {
+                "value": {
+                  "fieldName": "measure(response_rate_pct)"
+                }
+              },
+              "data": {
+                "queryName": "main_query"
+              }
+            }
+          },
+          "position": {
+            "x": 3,
+            "y": 0,
+            "width": 3,
+            "height": 3
+          }
+        },
+        {
+          "widget": {
+            "name": "06168a4f",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "f10e2b23",
+                  "fields": [
+                    {
+                      "name": "measure(avg_customer_spend)",
+                      "expression": "MEASURE(`avg_customer_spend`)"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "version": 2,
+              "frame": {
+                "title": "Avg Customer Spend",
+                "showTitle": true
+              },
+              "widgetType": "counter",
+              "encodings": {
+                "value": {
+                  "fieldName": "measure(avg_customer_spend)"
+                }
+              },
+              "data": {
+                "queryName": "main_query"
+              }
+            }
+          },
+          "position": {
+            "x": 6,
+            "y": 0,
+            "width": 3,
+            "height": 3
+          }
+        },
+        {
+          "widget": {
+            "name": "b55534ea",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "f10e2b23",
+                  "fields": [
+                    {
+                      "name": "measure(previous_campaign_responders)",
+                      "expression": "MEASURE(`previous_campaign_responders`)"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "version": 2,
+              "frame": {
+                "title": "Previous Campaign Responders",
+                "showTitle": true
+              },
+              "widgetType": "counter",
+              "encodings": {
+                "value": {
+                  "fieldName": "measure(previous_campaign_responders)"
+                }
+              },
+              "data": {
+                "queryName": "main_query"
+              }
+            }
+          },
+          "position": {
+            "x": 9,
+            "y": 0,
+            "width": 3,
+            "height": 3
+          }
+        },
+        {
+          "widget": {
+            "name": "c369956c",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "f10e2b23",
+                  "fields": [
+                    {
+                      "name": "measure(response_rate_pct)",
+                      "expression": "MEASURE(`response_rate_pct`)"
+                    },
+                    {
+                      "name": "income_band",
+                      "expression": "`income_band`"
+                    },
+                    {
+                      "name": "education",
+                      "expression": "`education`"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "version": 3,
+              "frame": {
+                "title": "Response Rate by Education and Income",
+                "showTitle": true
+              },
+              "widgetType": "heatmap",
+              "encodings": {
+                "x": {
+                  "fieldName": "income_band",
+                  "scale": {
+                    "type": "categorical"
+                  }
+                },
+                "y": {
+                  "fieldName": "education",
+                  "scale": {
+                    "type": "categorical"
+                  }
+                },
+                "color": {
+                  "fieldName": "measure(response_rate_pct)",
+                  "scale": {
+                    "type": "quantitative"
+                  }
+                }
+              },
+              "data": {
+                "queryName": "main_query"
+              }
+            }
+          },
+          "position": {
+            "x": 0,
+            "y": 3,
+            "width": 6,
+            "height": 5
+          }
+        },
+        {
+          "widget": {
+            "name": "spend_donut",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "f10e2b23",
+                  "fields": [
+                    {
+                      "name": "measure(customer_count)",
+                      "expression": "MEASURE(`customer_count`)"
+                    },
+                    {
+                      "name": "spend_band",
+                      "expression": "`spend_band`"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "version": 3,
+              "mark": {
+                "shape": "circle"
+              },
+              "frame": {
+                "title": "Customer Mix by Spend Band",
+                "showTitle": true
+              },
+              "widgetType": "pie",
+              "encodings": {
+                "angle": {
+                  "fieldName": "measure(customer_count)",
+                  "scale": {
+                    "type": "quantitative"
+                  }
+                },
+                "color": {
+                  "fieldName": "spend_band",
+                  "scale": {
+                    "type": "categorical",
+                    "sort": {
+                      "by": "custom-order",
+                      "orderedValues": [
+                        "Low Spend (Under $500)",
+                        "Medium Spend ($500-$1,499)",
+                        "High Spend ($1,500+)"
+                      ]
+                    }
+                  }
+                }
+              },
+              "data": {
+                "queryName": "main_query"
+              }
+            }
+          },
+          "position": {
+            "x": 6,
+            "y": 3,
+            "width": 6,
+            "height": 5
+          }
+        },
+        {
+          "widget": {
+            "name": "f7653485",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "f10e2b23",
+                  "fields": [
+                    {
+                      "name": "response_label",
+                      "expression": "`response_label`"
+                    },
+                    {
+                      "name": "income",
+                      "expression": "`income`"
+                    },
+                    {
+                      "name": "total_spend",
+                      "expression": "`total_spend`"
+                    }
+                  ],
+                  "filters": [
+                    {
+                      "expression": "`income` BETWEEN 0 AND 200000"
+                    }
+                  ],
+                  "disaggregated": true
+                }
+              }
+            ],
+            "spec": {
+              "frame": {
+                "title": "Income vs Spend by Campaign Response",
+                "showTitle": true
+              },
+              "version": 3,
+              "mark": {
+                "opacity": 0.5,
+                "size": -1
+              },
+              "widgetType": "scatter",
+              "encodings": {
+                "x": {
+                  "fieldName": "income",
+                  "scale": {
+                    "type": "quantitative"
+                  }
+                },
+                "y": {
+                  "fieldName": "total_spend",
+                  "scale": {
+                    "type": "quantitative"
+                  }
+                },
+                "color": {
+                  "fieldName": "response_label",
+                  "scale": {
+                    "type": "categorical"
+                  }
+                }
+              },
+              "data": {
+                "queryName": "main_query"
+              }
+            }
+          },
+          "position": {
+            "x": 0,
+            "y": 8,
+            "width": 5,
+            "height": 6
+          }
+        },
+        {
+          "widget": {
+            "name": "75e9f6b2",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "customer_segments",
+                  "fields": [
+                    {
+                      "name": "education",
+                      "expression": "`education`"
+                    },
+                    {
+                      "name": "marital_status",
+                      "expression": "`marital_status`"
+                    },
+                    {
+                      "name": "income_band",
+                      "expression": "`income_band`"
+                    },
+                    {
+                      "name": "age_band",
+                      "expression": "`age_band`"
+                    },
+                    {
+                      "name": "measure(customer_count)",
+                      "expression": "MEASURE(`customer_count`)"
+                    },
+                    {
+                      "name": "measure(response_rate_pct)",
+                      "expression": "MEASURE(`response_rate_pct`)"
+                    },
+                    {
+                      "name": "measure(avg_customer_spend)",
+                      "expression": "MEASURE(`avg_customer_spend`)"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "version": 2,
+              "frame": {
+                "title": "Highest Response Customer Segments",
+                "showTitle": true
+              },
+              "widgetType": "table",
+              "encodings": {
+                "columns": [
+                  {
+                    "fieldName": "education",
+                    "useForSearch": true
+                  },
+                  {
+                    "fieldName": "marital_status",
+                    "useForSearch": true
+                  },
+                  {
+                    "fieldName": "income_band",
+                    "useForSearch": true
+                  },
+                  {
+                    "fieldName": "age_band",
+                    "useForSearch": true
+                  },
+                  {
+                    "fieldName": "measure(customer_count)",
+                    "useForSearch": false
+                  },
+                  {
+                    "fieldName": "measure(response_rate_pct)",
+                    "useForSearch": false,
+                    "format": {
+                      "type": "number-plain",
+                      "abbreviation": "none",
+                      "decimalPlaces": {
+                        "type": "exact",
+                        "places": 1
+                      }
+                    }
+                  },
+                  {
+                    "fieldName": "measure(avg_customer_spend)",
+                    "useForSearch": false,
+                    "format": {
+                      "type": "number-currency",
+                      "abbreviation": "none",
+                      "currencyCode": "USD",
+                      "decimalPlaces": {
+                        "type": "exact",
+                        "places": 0
+                      }
+                    }
+                  }
+                ]
+              },
+              "data": {
+                "queryName": "main_query"
+              }
+            }
+          },
+          "position": {
+            "x": 0,
+            "y": 14,
+            "width": 12,
+            "height": 7
+          }
+        },
+        {
+          "widget": {
+            "name": "ec2dc267",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "customer_signups",
+                  "fields": [
+                    {
+                      "name": "signup_month",
+                      "expression": "`signup_month`"
+                    },
+                    {
+                      "name": "measure(customer_count)",
+                      "expression": "MEASURE(`customer_count`)"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "version": 3,
+              "frame": {
+                "title": "Customer Join Trend",
+                "showTitle": true
+              },
+              "widgetType": "line",
+              "encodings": {
+                "x": {
+                  "fieldName": "signup_month",
+                  "scale": {
+                    "type": "temporal"
+                  }
+                },
+                "y": {
+                  "fieldName": "measure(customer_count)",
+                  "scale": {
+                    "type": "quantitative"
+                  }
+                }
+              },
+              "data": {
+                "queryName": "main_query"
+              }
+            }
+          },
+          "position": {
+            "x": 5,
+            "y": 8,
+            "width": 7,
+            "height": 6
+          }
+        }
+      ],
+      "pageType": "PAGE_TYPE_CANVAS",
+      "layoutVersion": "GRID_V1"
+    }
+  ],
+  "uiSettings": {
+    "theme": {
+      "widgetHeaderAlignment": "ALIGNMENT_UNSPECIFIED"
+    },
+    "applyModeEnabled": false
+  }
+}
