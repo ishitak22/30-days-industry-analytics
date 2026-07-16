@@ -310,11 +310,5 @@ Completed:
 - Databricks dashboard
 - Tableau workbook
 - ML training and evaluation notebooks
+<<<<<<< Updated upstream
 - Prediction table
-
-Next recommended step:
-
-```text
-Create a Lakeflow Job to orchestrate the notebooks in order.
-```
-
