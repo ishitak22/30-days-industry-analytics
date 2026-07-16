@@ -310,5 +310,4 @@ Completed:
 - Databricks dashboard
 - Tableau workbook
 - ML training and evaluation notebooks
-<<<<<<< Updated upstream
 - Prediction table
