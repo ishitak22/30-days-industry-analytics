@@ -1,0 +1,10 @@
+/data/raw/
+/.validation/
+.env
+.env.*
+!.env.example
+.Renviron
+.Rhistory
+.RData
+.Rproj.user/
+*.tmp

@@ -1,0 +1,3 @@
+"metric","value","interpretation"
+"audit_state","NOT RUN","Required original source files are missing."
+"dataset_decision","NO-GO","Input readiness only; no conclusion about Olist suitability."
