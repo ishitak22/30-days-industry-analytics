@@ -2,13 +2,15 @@
 
 Customer Value, Repeat Purchasing & Experience.
 
-## Phase 1 only
+## Current phase
 
-This is a dataset suitability audit, not a completed business case study.
-The original Olist CSVs were absent at implementation time. Obtain them from
-the original source documented in [DATASET.md](DATASET.md) and extract unchanged
-into `data/raw/`. The existing ABS workbook is separate Australian context.
-`business_questions.md` is an earlier brainstorm, not the Phase 1 scope.
+Phase 1 documents and audits dataset readiness. Phase 2 prepares analytical
+tables from the unchanged Olist source files when they are available.
+
+The original Olist CSVs were absent at implementation time. Obtain them from the
+original source documented in [DATASET.md](DATASET.md) and extract unchanged into
+`data/raw/`. The existing ABS workbook is separate Australian context.
+`business_questions.md` is an earlier brainstorm, not the current build scope.
 
 ## Run
 
@@ -29,20 +31,33 @@ In RStudio with the repository project open:
 source("07_ecommerce/scripts/00_dataset_overview.R")
 ```
 
-Each run replaces the four generated audit CSVs in `outputs/`. Missing files
+Each Phase 1 run replaces the four generated audit CSVs in `outputs/`. Missing files
 produce a manifest, quality checks and a NOT RUN summary, then an explicit error.
 That guard is not a successful dataset audit. Never manually edit generated CSVs.
+
+Build Phase 2 processed tables:
+
+```sh
+Rscript --vanilla 07_ecommerce/scripts/01_build_analytics_tables.R
+```
+
+With the real Olist files present, this writes safe-grain tables to
+`data/processed/` and summary files to `outputs/`. Without the raw files, it
+writes `outputs/phase2_summary.csv` and `outputs/phase2_table_inventory.csv`
+showing `NOT RUN`, then stops. That is intentional; no findings are invented.
 
 ## Validate
 
 ```sh
 Rscript --vanilla 07_ecommerce/scripts/validate_audit.R
+Rscript --vanilla 07_ecommerce/scripts/validate_phase2_tables.R
 ```
 
 Validation uses explicitly labelled temporary synthetic test fixtures, never
 presented as real Olist observations. They are isolated from `data/raw/` and
 removed afterwards. Tests cover missing files, malformed data, grain failures,
-date/money parsing, reconciliation, fan-out and immutable inputs.
+date/money parsing, reconciliation, fan-out, immutable inputs and processed-table
+grain checks.
 
 ## Interpret
 

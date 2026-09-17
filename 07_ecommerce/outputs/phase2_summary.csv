@@ -1,0 +1,4 @@
+"metric","value","interpretation"
+"phase2_state","NOT RUN","Raw Olist CSVs are not available, so analytics tables were not built."
+"missing_source_files","olist_customers_dataset.csv|olist_geolocation_dataset.csv|olist_order_items_dataset.csv|olist_order_payments_dataset.csv|olist_order_reviews_dataset.csv|olist_orders_dataset.csv|olist_products_dataset.csv|olist_sellers_dataset.csv|product_category_name_translation.csv","Download the unchanged source files documented in DATASET.md."
+"processed_tables","0","No processed outputs were created or refreshed."

@@ -80,6 +80,8 @@ multiplicity without choosing a production deduplication rule.
 - `audit_summary.csv`: concise decision and capability evidence.
 - `audit_details.csv`: distributions, monthly coverage, follow-up capacity,
   reconciliation and a small set of order-level fan-out examples.
+- `phase2_summary.csv`: whether analytical tables were rebuilt and why.
+- `phase2_table_inventory.csv`: processed table names, grains, row counts and paths.
 
 All outputs are generated under `outputs/`; never manually edit them. INFO is a
 structural observation; WARN needs qualification; FAIL violates a requirement.
@@ -92,6 +94,32 @@ with 30 orders each, and 100 delivered orders with usable dates and review score
 These are pragmatic suitability screens, not power calculations. Structural or
 commercial blockers yield NO-GO; limited capability yields GO WITH LIMITATIONS.
 Historical/truncated data retain limitations even if every screen passes.
+
+## Phase 2 analytical tables
+
+`01_build_analytics_tables.R` builds the first analysis layer after the source
+files pass the input gate. It reads raw data as text, parses money to whole
+centavos, keeps source IDs unchanged and writes CSVs under `data/processed/`.
+The important grain decisions are:
+
+| Table | Planned grain |
+|---|---|
+| `fact_orders.csv` | One row per `order_id`, with item, payment and review aggregates |
+| `fact_order_items.csv` | One row per `(order_id, order_item_id)` |
+| `fact_payments.csv` | One row per payment component |
+| `fact_reviews.csv` | One row per source review record |
+| `dim_customers.csv` | One row per order-specific `customer_id` |
+| `dim_products.csv` | One row per `product_id` with translated category |
+| `dim_sellers.csv` | One row per `seller_id` |
+| `dim_date.csv` | One row per observed calendar date |
+| `customer_order_history.csv` | One row per observed `customer_unique_id` |
+| `monthly_kpis.csv` | One row per purchase month |
+| `category_performance.csv` | One row per translated product category |
+
+`fact_orders.csv` is the safe base for order-level GMV, payments, review and
+delivery KPIs. Item, payment and review records are aggregated independently
+before joining to order grain, which avoids inflated revenue from raw
+items-payments-reviews fan-out.
 
 ## Observation-window candidates
 
